@@ -9,7 +9,7 @@
         <router-view/>
       </a-layout-content>
       <a-layout-footer class="footer">
-        Music Management
+        MelodyHub
       </a-layout-footer>
     </a-layout>
   </div>

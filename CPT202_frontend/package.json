@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run openapi && vite",
     "build": "run-p type-check \"build-only {@}\" --",
+    "openapi": "node openapi.config.js",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "ant-design-vue": "^4.2.6",
+    "axios": "^1.8.4",
     "pinia": "^2.2.6",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5"
@@ -21,6 +23,7 @@
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
     "@types/node": "^22.9.3",
+    "@umijs/openapi": "^1.13.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.1.0",
     "@vue/eslint-config-typescript": "^14.1.3",
