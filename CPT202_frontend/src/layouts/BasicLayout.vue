@@ -1,7 +1,7 @@
 <template>
   <div id="basicLayout">
     <a-layout style="min-height: 100vh">
-      <a-layout-header class="header">
+      <a-layout-header class="header" v-if="!isUserOrAdminPage">
         <GlobalHeader />
       </a-layout-header>
 
@@ -17,6 +17,16 @@
 
 <script setup lang="ts">
 import GlobalHeader from "@/components/GlobalHeader.vue";
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+// 判断当前页面是否为 user 或 admin 目录下的页面
+const isUserOrAdminPage = computed(() => {
+  const path = route.path;
+  return path.includes('/user/');
+});
 </script>
 
 
