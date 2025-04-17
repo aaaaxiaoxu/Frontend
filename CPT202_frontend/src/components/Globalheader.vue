@@ -1,6 +1,6 @@
 <template>
   <div id="globalHeader">
-    <a-row :wrap="false">
+    <a-row :wrap="false" align="middle">
       <a-col flex="250px">
         <router-link to="/">
           <div class="title-bar">
@@ -10,58 +10,71 @@
         </router-link>
       </a-col>
       <a-col flex="auto">
-        <a-menu v-model:selectedKeys="current" mode="horizontal" :items="filteredItems" @click="doMenuClick"/>
+        <a-menu
+          v-model:selectedKeys="current"
+          mode="horizontal"
+          :items="filteredItems"
+          @click="doMenuClick"
+        />
       </a-col>
-      <!-- 用户信息展示栏 -->
-      <a-col flex="120px">
-        <div class="user-login-status">
-          <div v-if="loginUserStore.loginUser.id" class="user-info">
-            <a-dropdown>
-              <a-space>
-                <a-avatar :size="36" :src="loginUserStore.loginUser.userAvatar" class="user-avatar" />
-                <span class="user-name">{{loginUserStore.loginUser.userName ?? "无名"}}</span>
-              </a-space>
+      <!-- 用户信息展示栏和上传按钮 -->
+      <a-col>
+        <div class="right-section">
+          <a-button type="primary" class="upload-btn" @click="showUploadModal">
+            <upload-outlined></upload-outlined>
+            upload
+          </a-button>
+          <div class="user-login-status">
+            <div v-if="loginUserStore.loginUser.id" class="user-info">
+              <a-dropdown>
+                <a-space>
+                  <a-avatar
+                    :size="36"
+                    :src="loginUserStore.loginUser.userAvatar"
+                    class="user-avatar"
+                  />
+                  <span class="user-name">{{ loginUserStore.loginUser.userName ?? '无名' }}</span>
+                </a-space>
 
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item @click="goToUserEdit">
-                    <UserOutlined/>
-                    Personal Information
-                  </a-menu-item>
-                  <a-menu-item @click="doLogout">
-                    <LogoutOutlined/>
-                    Logout
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
-          </div>
-          <div v-else>
-            <a-button type="primary" href="/user/login">
-              Login
-            </a-button>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item @click="goToUserEdit">
+                      <UserOutlined />
+                      Personal Information
+                    </a-menu-item>
+                    <a-menu-item @click="doLogout">
+                      <LogoutOutlined />
+                      Logout
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </div>
+            <div v-else>
+              <a-button type="primary" href="/user/login"> Login </a-button>
+            </div>
           </div>
         </div>
       </a-col>
     </a-row>
-
+    <!-- 上传模态框 -->
+    <a-modal v-model:visible="uploadModalVisible" title="上传音乐" @cancel="handleCancel">
+      <music-file-upload @upload-success="handleUploadSuccess"></music-file-upload>
+    </a-modal>
   </div>
 </template>
 
-
 <script lang="ts" setup>
 import { h, ref, computed } from 'vue'
-import { HomeOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { HomeOutlined, LogoutOutlined, UserOutlined, UploadOutlined } from '@ant-design/icons-vue'
 import { MenuProps, message } from 'ant-design-vue'
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userLogoutUsingPost } from '@/api/userController.ts'
 import checkAccess from '@/access/checkAccess'
-
+import MusicFileUpload from '@/components/MusicFileUpload.vue'
 
 const loginUserStore = useLoginUserStore()
-
-
 
 const current = ref<string[]>([])
 const menus = ref<MenuProps['items']>([
@@ -72,7 +85,7 @@ const menus = ref<MenuProps['items']>([
     title: '主页',
     meta: {
       access: 'notLogin',
-    }
+    },
   },
   {
     key: '/admin/userManage',
@@ -80,7 +93,15 @@ const menus = ref<MenuProps['items']>([
     title: 'about',
     meta: {
       access: 'admin',
-    }
+    },
+  },
+  {
+    key: '/add_musicFile',
+    label: 'Upload Music',
+    title: 'Upload Music',
+    meta: {
+      access: 'notLogin',
+    },
   },
 ])
 
@@ -89,54 +110,62 @@ const filteredItems = computed(() => {
   return menus.value.filter((menu) => {
     // 如果菜单项设置了 hideInMenu，则不显示
     if (menu?.meta?.hideInMenu) {
-      return false;
+      return false
     }
     // 根据登录用户的权限过滤菜单项
-    return checkAccess(loginUserStore.loginUser, menu?.meta?.access as string);
-  });
-});
+    return checkAccess(loginUserStore.loginUser, menu?.meta?.access as string)
+  })
+})
 
-
-const router = useRouter();
+const router = useRouter()
 // 路由跳转事件
-const doMenuClick = ({key}) => {
+const doMenuClick = ({ key }) => {
   router.push({
-    path: key
+    path: key,
   })
 }
 
 // 跳转到用户编辑页面
 const goToUserEdit = () => {
   router.push({
-    path: "/user/edit"
+    path: '/user/edit',
   })
 }
 
 // 用户注销
 const doLogout = async () => {
-  const res = await userLogoutUsingPost();
+  const res = await userLogoutUsingPost()
   if (res.data.code === 0) {
     loginUserStore.setLoginUser({
-      userName: "未登录",
+      userName: '未登录',
     })
-    message.success("退出登录成功");
+    message.success('退出登录成功')
     await router.push({
-      path: "/user/login",
-    });
-  }else {
-    message.error("退出登录失败" + res.data.message)
+      path: '/user/login',
+    })
+  } else {
+    message.error('退出登录失败' + res.data.message)
   }
 }
 
-
 // 监听路由变化，更新当前选中菜单
 router.afterEach((to, from, next) => {
-  current.value = [to.path];
-});
+  current.value = [to.path]
+})
 
+const uploadModalVisible = ref(false)
+const handleCancel = () => {
+  uploadModalVisible.value = false
+}
+const handleUploadSuccess = () => {
+  message.success('音乐上传成功')
+  uploadModalVisible.value = false
+}
 
+const showUploadModal = () => {
+  uploadModalVisible.value = true
+}
 </script>
-
 
 <style scoped>
 #globalHeader .title-bar {
@@ -154,12 +183,24 @@ router.afterEach((to, from, next) => {
   height: 48px;
 }
 
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-right: 28px;
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+}
+
 .user-login-status {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   height: 100%;
-  padding-right: 28px; /* 增加右边距，保持右侧间距 */
 }
 
 .user-info {

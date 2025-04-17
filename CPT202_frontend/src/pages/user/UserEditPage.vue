@@ -14,9 +14,9 @@
           <div class="avatar-wrapper">
             <a-avatar :size="100" :src="userForm.userAvatar" />
             <div style="margin-top: 16px">
-              <a-input 
-                v-model:value="userForm.userAvatar" 
-                placeholder="Enter avatar URL" 
+              <a-input
+                v-model:value="userForm.userAvatar"
+                placeholder="Enter avatar URL"
                 style="width: 100%"
               />
             </div>
@@ -29,8 +29,8 @@
         </a-form-item>
 
         <!-- User Name -->
-        <a-form-item 
-          label="Username" 
+        <a-form-item
+          label="Username"
           name="userName"
           :rules="[{ required: true, message: 'Please input your username!' }]"
         >
@@ -39,9 +39,9 @@
 
         <!-- User Profile -->
         <a-form-item label="Profile" name="userProfile">
-          <a-textarea 
-            v-model:value="userForm.userProfile" 
-            :rows="4" 
+          <a-textarea
+            v-model:value="userForm.userProfile"
+            :rows="4"
             placeholder="Tell us about yourself"
           />
         </a-form-item>
@@ -63,19 +63,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue';
-import { message } from 'ant-design-vue';
-import { useLoginUserStore } from '@/stores/useLoginUserStore.ts';
-import { updateUserUsingPost } from '@/api/userController.ts';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, reactive, onMounted } from 'vue'
+import { message } from 'ant-design-vue'
+import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
+import { updateUserUsingPost } from '@/api/userController.ts'
+import { useRouter, useRoute } from 'vue-router'
 
-
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
 // Get login user store
-const loginUserStore = useLoginUserStore();
-const loading = ref(false);
+const loginUserStore = useLoginUserStore()
+const loading = ref(false)
 
 // Initialize form with current user data
 const userForm = reactive({
@@ -84,57 +83,57 @@ const userForm = reactive({
   userName: loginUserStore.loginUser.userName,
   userAvatar: loginUserStore.loginUser.userAvatar,
   userProfile: loginUserStore.loginUser.userProfile,
-  userRole: loginUserStore.loginUser.userRole
-});
+  userRole: loginUserStore.loginUser.userRole,
+})
 
 // Submit form handler
 const onFinish = async () => {
   try {
-    loading.value = true;
-    
+    loading.value = true
+
     // Prepare update request
     const updateRequest = {
       id: userForm.id,
       userName: userForm.userName,
       userAvatar: userForm.userAvatar,
-      userProfile: userForm.userProfile
-    };
-    
+      userProfile: userForm.userProfile,
+    }
+
     // Call API to update user
-    const res = await updateUserUsingPost(updateRequest);
-    
+    const res = await updateUserUsingPost(updateRequest)
+
     if (res.data.code === 0) {
-      message.success('Your information has been updated successfully');
-      
+      message.success('Your information has been updated successfully')
+
       // Update local user data
-      await loginUserStore.fetchLoginUser();
-      
+      await loginUserStore.fetchLoginUser()
+
       // Redirect to previous page or home page
       if (route.query.redirect) {
         // If there's a redirect query parameter, use it
-        router.push(route.query.redirect as string);
+        router.push(route.query.redirect as string)
       } else if (route.query.from) {
         // If there's a from query parameter, use it
-        router.push(route.query.from as string);
+        router.push(route.query.from as string)
       } else {
         // Otherwise, go back to the previous page or home if no history
-        router.go(-1);
+        router.go(-1)
       }
     } else {
-      message.error('Failed to update: ' + res.data.message);
+      message.error('Failed to update: ' + res.data.message)
     }
   } catch (error) {
-    message.error('An error occurred: ' + error);
+    message.error('An error occurred: ' + error)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 // Load user data when component mounts
 onMounted(async () => {
   // Refresh user data from server
-  await loginUserStore.fetchLoginUser();
-  
+  await loginUserStore.fetchLoginUser()
+
   // Update form with fresh data
   Object.assign(userForm, {
     id: loginUserStore.loginUser.id,
@@ -142,13 +141,9 @@ onMounted(async () => {
     userName: loginUserStore.loginUser.userName,
     userAvatar: loginUserStore.loginUser.userAvatar,
     userProfile: loginUserStore.loginUser.userProfile,
-    userRole: loginUserStore.loginUser.userRole
-  });
-});
-
-
-
-
+    userRole: loginUserStore.loginUser.userRole,
+  })
+})
 </script>
 
 <style scoped>

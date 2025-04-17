@@ -6,30 +6,26 @@
       </a-layout-header>
 
       <a-layout-content class="content">
-        <router-view/>
+        <router-view />
       </a-layout-content>
-      <a-layout-footer class="footer">
-        MelodyHub
-      </a-layout-footer>
+      <a-layout-footer class="footer"> MelodyHub </a-layout-footer>
     </a-layout>
   </div>
 </template>
 
 <script setup lang="ts">
-import GlobalHeader from "@/components/GlobalHeader.vue";
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import GlobalHeader from '@/components/GlobalHeader.vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
+const route = useRoute()
 
 // 判断当前页面是否为 user 或 admin 目录下的页面
 const isUserOrAdminPage = computed(() => {
-  const path = route.path;
-  return path.includes('/user/');
-});
+  const path = route.path
+  return path.includes('/user/')
+})
 </script>
-
-
 
 <style scoped>
 #basicLayout .footer {
@@ -42,13 +38,11 @@ const isUserOrAdminPage = computed(() => {
   text-align: center;
 }
 
-
 #basicLayout .content {
   background: linear-gradient(to right, #fefefe, #fff);
   margin-bottom: 28px;
   padding: 20px;
 }
-
 
 #basicLayout .header {
   padding-inline: 20px;
@@ -56,6 +50,4 @@ const isUserOrAdminPage = computed(() => {
   color: unset;
   background: white;
 }
-
-
 </style>

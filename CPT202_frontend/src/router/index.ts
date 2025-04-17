@@ -7,6 +7,7 @@ import UserManagePage from '@/pages/admin/UserManagePage.vue'
 import UserEditPage from '@/pages/user/UserEditPage.vue'
 import NoAuth from '@/pages/NoAuth.vue'
 import ACCESS_ENUM from '@/access/accessEnum.ts'
+import AddMusicFilePage from '@/pages/AddMusicFilePage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,7 +18,7 @@ const router = createRouter({
       component: HomePage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
-      }
+      },
     },
     {
       path: '/user/login',
@@ -25,7 +26,7 @@ const router = createRouter({
       component: UserLoginPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
-      }
+      },
     },
     {
       path: '/user/register',
@@ -33,7 +34,7 @@ const router = createRouter({
       component: UserRegisterPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
-      }
+      },
     },
     {
       path: '/admin/userManage',
@@ -41,7 +42,7 @@ const router = createRouter({
       component: UserManagePage,
       meta: {
         access: ACCESS_ENUM.ADMIN,
-      }
+      },
     },
     {
       path: '/user/edit',
@@ -49,7 +50,7 @@ const router = createRouter({
       component: UserEditPage,
       meta: {
         access: ACCESS_ENUM.USER,
-      }
+      },
     },
     {
       path: '/noAuth',
@@ -57,7 +58,7 @@ const router = createRouter({
       component: NoAuth,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
-      }
+      },
     },
     {
       path: '/',
@@ -65,7 +66,15 @@ const router = createRouter({
       component: HomePage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
-      }
+      },
+    },
+    {
+      path: '/add_musicFile',
+      name: '创建音乐文件',
+      component: AddMusicFilePage,
+      meta: {
+        access: ACCESS_ENUM.NOT_LOGIN,
+      },
     },
     {
       path: '/about',
@@ -76,7 +85,7 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
-      }
+      },
     },
   ],
 })

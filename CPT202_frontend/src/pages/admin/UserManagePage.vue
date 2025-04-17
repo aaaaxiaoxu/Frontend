@@ -1,13 +1,20 @@
 <template>
-
   <div id="UserManagePage">
     <!-- Search -->
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
       <a-form-item label="Account">
-        <a-input v-model:value="searchParams.userAccount" placeholder="Please input account" allow-clear/>
+        <a-input
+          v-model:value="searchParams.userAccount"
+          placeholder="Please input account"
+          allow-clear
+        />
       </a-form-item>
       <a-form-item label="Username">
-        <a-input v-model:value="searchParams.userName" placeholder="Please input username" allow-clear/>
+        <a-input
+          v-model:value="searchParams.userName"
+          placeholder="Please input username"
+          allow-clear
+        />
       </a-form-item>
       <a-form-item>
         <a-button type="primary" html-type="submit">Search</a-button>
@@ -16,9 +23,12 @@
     <div style="margin-bottom: 16px" />
 
     <!-- Table -->
-    <a-table :columns="columns" :data-source="datalist" :pagination="pagination" @change="doTableChange">
-
-
+    <a-table
+      :columns="columns"
+      :data-source="datalist"
+      :pagination="pagination"
+      @change="doTableChange"
+    >
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'userAvatar'">
           <div>
@@ -74,15 +84,15 @@
           {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
         <template v-else-if="column.key === 'tags'">
-        <span>
-          <a-tag
-            v-for="tag in record.tags"
-            :key="tag"
-            :color="tag === 'loser' ? 'volcano' : tag.length > 5 ? 'geekblue' : 'green'"
-          >
-            {{ tag.toUpperCase() }}
-          </a-tag>
-        </span>
+          <span>
+            <a-tag
+              v-for="tag in record.tags"
+              :key="tag"
+              :color="tag === 'loser' ? 'volcano' : tag.length > 5 ? 'geekblue' : 'green'"
+            >
+              {{ tag.toUpperCase() }}
+            </a-tag>
+          </span>
         </template>
         <template v-else-if="column.key === 'action'">
           <div class="editable-row-operations">
@@ -94,27 +104,33 @@
             </span>
             <span v-else>
               <a @click="edit(record.id)">Edit</a>
-              <a-button danger style="margin-left: 8px" @click="doDelete(record.id)">Delete</a-button>
+              <a-button danger style="margin-left: 8px" @click="doDelete(record.id)"
+                >Delete</a-button
+              >
             </span>
           </div>
         </template>
       </template>
     </a-table>
   </div>
-
 </template>
 <script lang="ts" setup>
-import { SmileOutlined, DownOutlined } from '@ant-design/icons-vue';
+import { SmileOutlined, DownOutlined } from '@ant-design/icons-vue'
 import { computed, onMounted, reactive, ref } from 'vue'
-import { deleteUserUsingPost, listUserVoByPageUsingPost, updateUserUsingPost, getLoginUserUsingGet } from '@/api/userController.ts'
+import {
+  deleteUserUsingPost,
+  listUserVoByPageUsingPost,
+  updateUserUsingPost,
+  getLoginUserUsingGet,
+} from '@/api/userController.ts'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
-import { cloneDeep } from 'lodash-es';
-import type { UnwrapRef } from 'vue';
-import { useLoginUserStore } from '@/stores/useLoginUserStore.ts';
+import { cloneDeep } from 'lodash-es'
+import type { UnwrapRef } from 'vue'
+import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 
 // Get login user store
-const loginUserStore = useLoginUserStore();
+const loginUserStore = useLoginUserStore()
 
 const columns = [
   {
@@ -152,15 +168,14 @@ const columns = [
 ]
 
 // Define data
-const datalist = ref<API.UserVO>([]);
-const total = ref(0);
+const datalist = ref<API.UserVO>([])
+const total = ref(0)
 
 // Search parameters
 const searchParams = reactive<API.UserQueryRequest>({
-  current:1,
-  pageSize:10
+  current: 1,
+  pageSize: 10,
 })
-
 
 const pagination = computed(() => {
   return {
@@ -172,7 +187,6 @@ const pagination = computed(() => {
   }
 })
 
-
 // Get data
 const doSearch = () => {
   // Reset page number
@@ -180,98 +194,94 @@ const doSearch = () => {
   fetchData()
 }
 
-
 // Table change event
 const doTableChange = (page: any) => {
-  searchParams.current = page.current;
-  searchParams.pageSize = page.pageSize;
-  fetchData();
+  searchParams.current = page.current
+  searchParams.pageSize = page.pageSize
+  fetchData()
 }
-
 
 // Delete data
 const doDelete = async (id: string) => {
-  if(!id) return
-  const res = await deleteUserUsingPost({id})
+  if (!id) return
+  const res = await deleteUserUsingPost({ id })
   if (res.data.code === 0) {
     message.success(res.data.message)
     fetchData()
-  }else {
+  } else {
     message.error('Delete failed')
   }
 }
 
-
 // Get data
 const fetchData = async () => {
   const res = await listUserVoByPageUsingPost({
-    ...searchParams
+    ...searchParams,
   })
   if (res.data.code === 0 && res.data.data) {
     datalist.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
   } else {
-    message.error("Failed to fetch data: " + res.data.message)
+    message.error('Failed to fetch data: ' + res.data.message)
   }
 }
 
 // Editable data
-const editableData: UnwrapRef<Record<string, API.UserUpdateRequest>> = reactive({});
+const editableData: UnwrapRef<Record<string, API.UserUpdateRequest>> = reactive({})
 
 // Edit user
 const edit = (id: string) => {
-  const targetUser = datalist.value.find(item => id === item.id);
+  const targetUser = datalist.value.find((item) => id === item.id)
   if (targetUser) {
     editableData[id] = {
       id: targetUser.id,
       userName: targetUser.userName,
       userAvatar: targetUser.userAvatar,
       userProfile: targetUser.userProfile,
-      userRole: targetUser.userRole
-    };
+      userRole: targetUser.userRole,
+    }
   }
-};
+}
 
 // Save user information
 const save = async (id: string) => {
   try {
-    const res = await updateUserUsingPost(editableData[id]);
+    const res = await updateUserUsingPost(editableData[id])
     if (res.data.code === 0) {
-      message.success('User updated successfully');
-      
+      message.success('User updated successfully')
+
       // Update local data
-      const index = datalist.value.findIndex(item => id === item.id);
+      const index = datalist.value.findIndex((item) => id === item.id)
       if (index !== -1) {
-        Object.assign(datalist.value[index], editableData[id]);
+        Object.assign(datalist.value[index], editableData[id])
       }
-      
+
       // If the updated user is the current login user, update the navigation bar
       if (loginUserStore.loginUser.id === id) {
         // Fetch the latest login user information
-        await loginUserStore.fetchLoginUser();
-        message.success('Navigation bar updated with latest user info');
+        await loginUserStore.fetchLoginUser()
+        message.success('Navigation bar updated with latest user info')
       }
-      
+
       // Remove edit status
-      delete editableData[id];
+      delete editableData[id]
     } else {
-      message.error('Update failed: ' + res.data.message);
+      message.error('Update failed: ' + res.data.message)
     }
   } catch (error) {
-    message.error('Update failed: ' + error);
+    message.error('Update failed: ' + error)
   }
-};
+}
 
 // Cancel edit
 const cancel = (id: string) => {
-  delete editableData[id];
-};
+  delete editableData[id]
+}
 
 // Page mounted event
 onMounted(() => {
-  fetchData();
+  fetchData()
 })
-
 </script>
 
 <style scoped>
