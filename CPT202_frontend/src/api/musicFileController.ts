@@ -2,6 +2,63 @@
 /* eslint-disable */
 import request from '@/request'
 
+/** listApprovedMusicFiles GET /api/musicfile/admin/list/approved */
+export async function listApprovedMusicFilesUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.listApprovedMusicFilesUsingGETParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePageMusicFile_>('/api/musicfile/admin/list/approved', {
+    method: 'GET',
+    params: {
+      // current has a default value: 1
+      current: '1',
+      // pageSize has a default value: 10
+      pageSize: '10',
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
+/** listPendingMusicFiles GET /api/musicfile/admin/list/pending */
+export async function listPendingMusicFilesUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.listPendingMusicFilesUsingGETParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePageMusicFile_>('/api/musicfile/admin/list/pending', {
+    method: 'GET',
+    params: {
+      // current has a default value: 1
+      current: '1',
+      // pageSize has a default value: 10
+      pageSize: '10',
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
+/** listRejectedMusicFiles GET /api/musicfile/admin/list/rejected */
+export async function listRejectedMusicFilesUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.listRejectedMusicFilesUsingGETParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePageMusicFile_>('/api/musicfile/admin/list/rejected', {
+    method: 'GET',
+    params: {
+      // current has a default value: 1
+      current: '1',
+      // pageSize has a default value: 10
+      pageSize: '10',
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
 /** deleteMusicFile POST /api/musicfile/delete */
 export async function deleteMusicFileUsingPost(
   body: API.DeleteRequest,
