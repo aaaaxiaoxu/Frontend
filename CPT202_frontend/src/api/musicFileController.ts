@@ -134,6 +134,26 @@ export async function listMusicFileByPageUsingPost(
   })
 }
 
+/** listMusicFileVOByCategoryPage GET /api/musicfile/list/page/category/${param0} */
+export async function listMusicFileVoByCategoryPageUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.listMusicFileVOByCategoryPageUsingGETParams,
+  options?: { [key: string]: any }
+) {
+  const { category: param0, ...queryParams } = params
+  return request<API.BaseResponsePageMusicFileVO_>(`/api/musicfile/list/page/category/${param0}`, {
+    method: 'GET',
+    params: {
+      // current has a default value: 1
+      current: '1',
+      // pageSize has a default value: 10
+      pageSize: '10',
+      ...queryParams,
+    },
+    ...(options || {}),
+  })
+}
+
 /** listMusicFileVOByPage POST /api/musicfile/list/page/vo */
 export async function listMusicFileVoByPageUsingPost(
   body: API.MusicFileQueryRequest,

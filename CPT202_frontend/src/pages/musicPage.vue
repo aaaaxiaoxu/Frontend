@@ -39,7 +39,6 @@
                 :url="item.url"
                 :artist="item.artist || '未知艺术家'"
                 :category="item.category"
-                :language="item.language"
                 @download="handleDownload(item)"
                 @edit="handleEdit(item)"
                 @delete="handleDelete(item.id)"
@@ -89,13 +88,13 @@ import {
   DeleteOutlined,
   PlayCircleOutlined,
 } from '@ant-design/icons-vue';
-import { listMusicFileVoByPageUsingPost } from '@/api/musicFileController';
+import { listMusicFileVoByPageUsingPost, listMusicFileVoByCategoryPageUsingGet } from '@/api/musicFileController';
 import MusicCard from '@/components/MusicCard.vue';
 
 const musicList = ref<API.MusicFileVO[]>([]);
 const loading = ref(false);
-const selectedCategoryKeys = ref<string[]>(['pop']);
-const selectedCategoryLabel = ref<string>('Pop');
+const selectedCategoryKeys = ref<string[]>(['uploaded']);
+const selectedCategoryLabel = ref<string>('Uploaded');
 
 const pagination = reactive({
   current: 1,
@@ -116,26 +115,44 @@ const paginationProps = computed(() => ({
     pageSizeOptions: ['12', '24', '36', '48'],
 }))
 
-const searchParams = reactive<API.MusicFileQueryRequest>({
-  current: pagination.current,
-  pageSize: pagination.pageSize,
-  category: selectedCategoryKeys.value[0] === 'uploaded' ? undefined : selectedCategoryKeys.value[0],
-});
-
 const fetchMusicData = async () => {
   loading.value = true;
-  try {
-    searchParams.current = pagination.current;
-    searchParams.pageSize = pagination.pageSize;
-    const categoryKey = selectedCategoryKeys.value[0];
-    searchParams.category = (categoryKey === 'uploaded' || categoryKey === 'popular' || categoryKey === 'custom') ? undefined : categoryKey;
+  const currentCategory = selectedCategoryKeys.value[0];
+  let response = null;
 
-    const res = await listMusicFileVoByPageUsingPost(searchParams);
-    if (res.data.code === 0 && res.data.data) {
-      musicList.value = res.data.data.records || [];
-      pagination.total = parseInt(String(res.data.data.total ?? '0'), 10);
+  try {
+    if (currentCategory === 'uploaded') {
+       // Fetch all music using POST endpoint
+       const queryParams: API.MusicFileQueryRequest = {
+           current: pagination.current,
+           pageSize: pagination.pageSize,
+           category: undefined, // Ensure category is not sent when fetching all
+           // Add other necessary sort/filter params if needed for "Uploaded"
+       };
+       response = await listMusicFileVoByPageUsingPost(queryParams);
+    } else if (currentCategory && currentCategory !== 'popular' && currentCategory !== 'custom') {
+        // Fetch music by specific category using GET endpoint
+        const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
+            category: currentCategory,
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+        };
+        response = await listMusicFileVoByCategoryPageUsingGet(params);
     } else {
-      message.error('Failed to load music: ' + (res.data.message || 'Unknown error'));
+        // Handle cases for 'popular' or 'custom' parent items if they shouldn't fetch data
+        console.log('No data fetch for category:', currentCategory);
+        musicList.value = [];
+        pagination.total = 0;
+        loading.value = false;
+        return; // Exit fetch function
+    }
+
+    // Process the response (same logic for both endpoints)
+    if (response && response.data.code === 0 && response.data.data) {
+      musicList.value = response.data.data.records || [];
+      pagination.total = parseInt(String(response.data.data.total ?? '0'), 10);
+    } else {
+      message.error('Failed to load music: ' + (response?.data.message || 'Unknown error'));
       musicList.value = [];
       pagination.total = 0;
     }

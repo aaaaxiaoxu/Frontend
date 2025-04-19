@@ -139,6 +139,15 @@ declare namespace API {
     pageSize?: number
   }
 
+  type listMusicFileVOByCategoryPageUsingGETParams = {
+    /** category */
+    category: string
+    /** current */
+    current?: number
+    /** pageSize */
+    pageSize?: number
+  }
+
   type listPendingMusicFilesUsingGETParams = {
     /** current */
     current?: number
@@ -363,6 +372,7 @@ declare namespace API {
     id?: number
     userAvatar?: string
     userName?: string
+    userPassword?: string
     userProfile?: string
     userRole?: string
     user_status?: number
