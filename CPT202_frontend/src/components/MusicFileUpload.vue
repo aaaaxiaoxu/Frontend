@@ -13,10 +13,10 @@
   </a-upload>
 </template>
 <script lang="ts">
-import { message } from 'ant-design-vue';
-import { UploadOutlined } from '@ant-design/icons-vue';
-import { defineComponent, ref } from 'vue';
-import type { UploadChangeParam } from 'ant-design-vue';
+import { message } from 'ant-design-vue'
+import { UploadOutlined } from '@ant-design/icons-vue'
+import { defineComponent, ref } from 'vue'
+import type { UploadChangeParam } from 'ant-design-vue'
 
 export default defineComponent({
   components: {
@@ -26,25 +26,24 @@ export default defineComponent({
   setup(props, { emit }) {
     const handleChange = (info: UploadChangeParam) => {
       if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
+        console.log(info.file, info.fileList)
       }
       if (info.file.status === 'done') {
-        message.success(`${info.file.name} 文件上传成功`);
-        emit('upload-success', info.file);
+        message.success(`${info.file.name} 文件上传成功`)
+        emit('upload-success', info.file)
       } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} 文件上传失败`);
+        message.error(`${info.file.name} 文件上传失败`)
       }
-    };
+    }
 
-    const fileList = ref([]);
+    const fileList = ref([])
     return {
       fileList,
       headers: {
         authorization: 'authorization-text',
       },
       handleChange,
-    };
+    }
   },
-});
+})
 </script>
-

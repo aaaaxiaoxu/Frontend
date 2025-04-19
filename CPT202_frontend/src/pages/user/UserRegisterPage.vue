@@ -16,10 +16,13 @@
           class="register-form"
         >
           <div class="form-label">邮箱</div>
-          <a-form-item name="email" :rules="[
-            { required: true, message: '请输入您的邮箱' },
-            { type: 'email', message: '请输入有效的邮箱地址' }
-          ]">
+          <a-form-item
+            name="email"
+            :rules="[
+              { required: true, message: '请输入您的邮箱' },
+              { type: 'email', message: '请输入有效的邮箱地址' },
+            ]"
+          >
             <div class="input-with-button">
               <a-input
                 v-model:value="formState.email"
@@ -68,10 +71,7 @@
           </a-form-item>
 
           <div class="form-label">验证码</div>
-          <a-form-item
-            name="code"
-            :rules="[{ required: true, message: '请输入验证码' }]"
-          >
+          <a-form-item name="code" :rules="[{ required: true, message: '请输入验证码' }]">
             <a-input
               v-model:value="formState.code"
               placeholder="请输入验证码"
@@ -89,16 +89,18 @@
           <RouterLink to="/user/login" class="link">登录</RouterLink>
         </div>
       </div>
-      
+
       <!-- 图片区域 -->
       <div class="music-image">
         <img src="https://img.picui.cn/free/2025/04/16/67ffc996a79ef.png" alt="Music tools" />
       </div>
-      
+
       <!-- 文字区域 -->
       <div class="image-text">
         <h3>Music tools for efficient minds</h3>
-        <p>MelodyHub帮助您轻松管理、组织和享受您的音乐。随时随地上传、标记和访问您的音乐，简单便捷。</p>
+        <p>
+          MelodyHub帮助您轻松管理、组织和享受您的音乐。随时随地上传、标记和访问您的音乐，简单便捷。
+        </p>
       </div>
     </div>
   </div>
@@ -118,7 +120,7 @@ const formState = reactive({
   userPassword: '',
   checkPassword: '',
   code: '',
-  userAccount: ''
+  userAccount: '',
 })
 
 // 获取路由实例
@@ -147,7 +149,7 @@ const sendVerificationCode = async () => {
 
   try {
     const res = await sendVerificationCodeUsingPost({
-      email: formState.email
+      email: formState.email,
     })
 
     if (res.data.code === 0) {
@@ -196,7 +198,7 @@ const handleSubmit = async (values: any) => {
     userPassword: values.userPassword,
     checkPassword: values.checkPassword,
     email: values.email,
-    code: values.code
+    code: values.code,
   }
 
   try {
@@ -239,9 +241,9 @@ const handleSubmit = async (values: any) => {
   display: grid;
   grid-template-columns: 380px 1fr;
   grid-template-rows: auto auto;
-  grid-template-areas: 
-    "form image"
-    "form text";
+  grid-template-areas:
+    'form image'
+    'form text';
   gap: 20px;
   width: 900px;
   max-width: 90%;
@@ -394,25 +396,25 @@ const handleSubmit = async (values: any) => {
   .page-container {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
-    grid-template-areas: 
-      "form"
-      "image"
-      "text";
+    grid-template-areas:
+      'form'
+      'image'
+      'text';
     width: 100%;
     max-width: 380px;
   }
-  
+
   .form-container {
     border-right: none;
     border-bottom: 1px solid #f0f0f0;
     padding-bottom: 30px;
     max-height: none;
   }
-  
+
   .music-image {
     padding: 30px 20px;
   }
-  
+
   .image-text {
     border-top: 1px solid #f0f0f0;
     padding: 20px;

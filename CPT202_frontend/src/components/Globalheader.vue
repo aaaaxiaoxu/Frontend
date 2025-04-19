@@ -66,18 +66,33 @@
 
 <script lang="ts" setup>
 import { h, ref, computed } from 'vue'
-import { HomeOutlined, LogoutOutlined, UserOutlined, UploadOutlined } from '@ant-design/icons-vue'
-import { MenuProps, message } from 'ant-design-vue'
+import { HomeOutlined, LogoutOutlined, UserOutlined, UploadOutlined, CustomerServiceOutlined } from '@ant-design/icons-vue'
+import type { MenuProps } from 'ant-design-vue'
+import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userLogoutUsingPost } from '@/api/userController.ts'
 import checkAccess from '@/access/checkAccess'
 import MusicFileUpload from '@/components/MusicFileUpload.vue'
+import type { VNode } from 'vue'
+
+// Define a custom type for menu items including meta
+interface CustomMenuItem {
+  key: string
+  icon?: () => VNode
+  label: string
+  title: string
+  meta?: {
+    access: string
+    hideInMenu?: boolean
+  }
+}
 
 const loginUserStore = useLoginUserStore()
 
 const current = ref<string[]>([])
-const menus = ref<MenuProps['items']>([
+// Use the custom type for the menus ref
+const menus = ref<CustomMenuItem[]>([
   {
     key: '/',
     icon: () => h(HomeOutlined),
@@ -96,6 +111,15 @@ const menus = ref<MenuProps['items']>([
     },
   },
   {
+    key: '/music',
+    icon: () => h(CustomerServiceOutlined),
+    label: 'Listening Music',
+    title: 'Listening Music',
+    meta: {
+      access: 'user',
+    },
+  },
+  {
     key: '/add_musicFile',
     label: 'Upload Music',
     title: 'Upload Music',
@@ -105,34 +129,34 @@ const menus = ref<MenuProps['items']>([
   },
 ])
 
-// 过滤菜单项
+// Filter menu items using the custom type
 const filteredItems = computed(() => {
-  return menus.value.filter((menu) => {
-    // 如果菜单项设置了 hideInMenu，则不显示
+  return menus.value.filter((menu: CustomMenuItem) => {
+    // If the menu item is set to hideInMenu, do not display it
     if (menu?.meta?.hideInMenu) {
       return false
     }
-    // 根据登录用户的权限过滤菜单项
+    // Filter menu items based on the logged-in user's permissions
     return checkAccess(loginUserStore.loginUser, menu?.meta?.access as string)
   })
 })
 
 const router = useRouter()
-// 路由跳转事件
-const doMenuClick = ({ key }) => {
+// Route jump event
+const doMenuClick = ({ key }: { key: string }) => {
   router.push({
     path: key,
   })
 }
 
-// 跳转到用户编辑页面
+// Jump to the user edit page
 const goToUserEdit = () => {
   router.push({
     path: '/user/edit',
   })
 }
 
-// 用户注销
+// User logout
 const doLogout = async () => {
   const res = await userLogoutUsingPost()
   if (res.data.code === 0) {
@@ -148,7 +172,7 @@ const doLogout = async () => {
   }
 }
 
-// 监听路由变化，更新当前选中菜单
+// Listen for route changes, update current selected menu
 router.afterEach((to, from, next) => {
   current.value = [to.path]
 })

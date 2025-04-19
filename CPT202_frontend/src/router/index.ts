@@ -8,6 +8,7 @@ import UserEditPage from '@/pages/user/UserEditPage.vue'
 import NoAuth from '@/pages/NoAuth.vue'
 import ACCESS_ENUM from '@/access/accessEnum.ts'
 import AddMusicFilePage from '@/pages/AddMusicFilePage.vue'
+import MusicPage from '@/pages/musicPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +75,14 @@ const router = createRouter({
       component: AddMusicFilePage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
+      },
+    },
+    {
+      path: '/music',
+      name: '音乐列表',
+      component: MusicPage,
+      meta: {
+        access: ACCESS_ENUM.USER,
       },
     },
     {

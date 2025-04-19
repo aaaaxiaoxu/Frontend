@@ -54,11 +54,13 @@
       <div class="music-image">
         <img src="https://img.picui.cn/free/2025/04/16/67ffc996a79ef.png" alt="Music tools" />
       </div>
-      
+
       <!-- 文字区域 -->
       <div class="image-text">
         <h3>Music tools for efficient minds</h3>
-        <p>MelodyHub帮助您轻松管理、组织和享受您的音乐。随时随地上传、标记和访问您的音乐，简单便捷。</p>
+        <p>
+          MelodyHub帮助您轻松管理、组织和享受您的音乐。随时随地上传、标记和访问您的音乐，简单便捷。
+        </p>
       </div>
     </div>
   </div>
@@ -122,9 +124,9 @@ const handleSubmit = async (values: any) => {
   display: grid;
   grid-template-columns: 380px 1fr;
   grid-template-rows: auto auto;
-  grid-template-areas: 
-    "form image"
-    "form text";
+  grid-template-areas:
+    'form image'
+    'form text';
   gap: 20px;
   width: 900px;
   max-width: 90%;
@@ -261,24 +263,24 @@ const handleSubmit = async (values: any) => {
   .page-container {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
-    grid-template-areas: 
-      "form"
-      "image"
-      "text";
+    grid-template-areas:
+      'form'
+      'image'
+      'text';
     width: 100%;
     max-width: 380px;
   }
-  
+
   .form-container {
     border-right: none;
     border-bottom: 1px solid #f0f0f0;
     padding-bottom: 30px;
   }
-  
+
   .music-image {
     padding: 30px 20px;
   }
-  
+
   .image-text {
     border-top: 1px solid #f0f0f0;
     padding: 20px;
