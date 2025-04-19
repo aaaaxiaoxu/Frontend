@@ -32,6 +32,7 @@
           </a-breadcrumb>
           <a-row :gutter="[16, 16]">
             <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
+<<<<<<< Updated upstream
               <music-card
                 :id="item.id"
                 :name="item.name"
@@ -44,6 +45,9 @@
                 @delete="handleDelete(item.id)"
                 @play="handlePlay(item)"
               />
+=======
+              <music-card :musicId="item.id" />
+>>>>>>> Stashed changes
             </a-col>
           </a-row>
           <a-pagination
@@ -70,18 +74,14 @@ import {
   Menu as AMenu,
   MenuItem as AMenuItem,
   SubMenu as ASubMenu,
-  List as AList,
-  ListItem as AListItem,
-  Card as ACard,
   Breadcrumb as ABreadcrumb,
   BreadcrumbItem as ABreadcrumbItem,
-  Popconfirm as APopconfirm,
-  Tooltip as ATooltip,
   message,
   Row as ARow,
   Col as ACol,
   Pagination as APagination,
 } from 'ant-design-vue';
+<<<<<<< Updated upstream
 import {
   DownloadOutlined,
   EditOutlined,
@@ -89,9 +89,18 @@ import {
   PlayCircleOutlined,
 } from '@ant-design/icons-vue';
 import { listMusicFileVoByPageUsingPost, listMusicFileVoByCategoryPageUsingGet } from '@/api/musicFileController';
+=======
+import { listMusicFileVoByPageUsingPost } from '@/api/musicFileController';
+>>>>>>> Stashed changes
 import MusicCard from '@/components/MusicCard.vue';
 
-const musicList = ref<API.MusicFileVO[]>([]);
+// 定义数据结构（如果你还没有定义类型，这里简化处理）
+interface MusicItem {
+  id: number;
+  [key: string]: any;
+}
+
+const musicList = ref<MusicItem[]>([]);
 const loading = ref(false);
 const selectedCategoryKeys = ref<string[]>(['uploaded']);
 const selectedCategoryLabel = ref<string>('Uploaded');
@@ -120,6 +129,7 @@ const fetchMusicData = async () => {
   const currentCategory = selectedCategoryKeys.value[0];
   let response = null;
 
+<<<<<<< Updated upstream
   try {
     if (currentCategory === 'uploaded') {
        // Fetch all music using POST endpoint
@@ -138,6 +148,15 @@ const fetchMusicData = async () => {
             pageSize: pagination.pageSize,
         };
         response = await listMusicFileVoByCategoryPageUsingGet(params);
+=======
+    const res = await listMusicFileVoByPageUsingPost(searchParams);
+    if (res.data.code === 0 && res.data.data) {
+      // 只保留必要的id信息，其他数据由MusicCard组件自行获取
+      musicList.value = (res.data.data.records || []).map(item => ({
+        id: item.id
+      }));
+      pagination.total = parseInt(String(res.data.data.total ?? '0'), 10);
+>>>>>>> Stashed changes
     } else {
         // Handle cases for 'popular' or 'custom' parent items if they shouldn't fetch data
         console.log('No data fetch for category:', currentCategory);
@@ -188,35 +207,27 @@ const handleCategoryClick = (info: MenuInfo) => {
   fetchMusicData();
 };
 
-const handleDownload = (item: API.MusicFileVO) => {
+const handleDownload = (item: any) => {
   console.log('Download:', item);
-  if (item.url) {
-      window.open(item.url, '_blank');
-  } else {
-      message.warning('No download URL available.')
-  }
+  // 功能可以移至MusicCard组件内部
 };
 
-const handleEdit = (item: API.MusicFileVO) => {
+const handleEdit = (item: any) => {
   console.log('Edit:', item);
-  message.info(`Edit functionality not implemented for ${item.name}`);
+  // 功能可以移至MusicCard组件内部
 };
 
 const handleDelete = async (id?: number) => {
   if (!id) return;
   console.log('Delete:', id);
-   message.success(`Delete confirmed for ID: ${id} (API call not implemented)`);
-   fetchMusicData();
+  // 功能可以移至MusicCard组件内部，删除后可以发出事件通知父组件刷新列表
+  fetchMusicData();
 };
 
-const cancelDelete = () => {
-  message.info('Delete cancelled');
+const handlePlay = (item: any) => {
+  console.log('Play:', item);
+  // 功能可以移至MusicCard组件内部
 };
-
-const handlePlay = (item: API.MusicFileVO) => {
-   console.log('Play:', item);
-   message.info(`Play functionality not implemented for ${item.name}`);
-}
 
 const handlePaginationChange = (page: number, pageSize: number) => {
   pagination.current = page;
