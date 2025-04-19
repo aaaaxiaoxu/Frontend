@@ -132,6 +132,27 @@ declare namespace API {
     id?: number
   }
 
+  type listApprovedMusicFilesUsingGETParams = {
+    /** current */
+    current?: number
+    /** pageSize */
+    pageSize?: number
+  }
+
+  type listPendingMusicFilesUsingGETParams = {
+    /** current */
+    current?: number
+    /** pageSize */
+    pageSize?: number
+  }
+
+  type listRejectedMusicFilesUsingGETParams = {
+    /** current */
+    current?: number
+    /** pageSize */
+    pageSize?: number
+  }
+
   type LoginUserVO = {
     createTime?: string
     editTime?: string
