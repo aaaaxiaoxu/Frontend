@@ -1,44 +1,24 @@
 <template>
   <div class="music-card-component">
-    <div class="music-card">
-      <!-- 波形图部分 -->
-      <div class="waveform-container">
-        <div class="music-note-icon">
-          <span class="music-note">♫</span>
-        </div>
-        <div class="waveform-image">
-          <img 
-            src="https://img.picui.cn/free/2025/04/16/67ffc996a79ef.png" 
-            alt="波形图"
-            class="waveform"
-          />
-        </div>
-        <div class="controls">
-          <span class="control-icon">◀◀</span>
-          <span class="control-icon">▶</span>
-          <span class="control-icon">▶▶</span>
-        </div>
+    <div v-if="loading" class="loading-state">加载中...</div>
+    <div v-else-if="error" class="error-state">加载失败</div>
+    <div v-else class="music-card">
+      <!-- 主图片部分 -->
+      <div class="cover-image">
+        <img :src="musicData.coverUrl || defaultCover" alt="音乐封面" />
       </div>
       
-      <!-- 音乐可视化部分 -->
-      <div class="visualization-container">
-        <!-- 这部分是音乐可视化的示意图，实际应用中可能需要Canvas或其他技术 -->
-        <div class="track-lines">
-          <div v-for="i in 6" :key="i" class="track-line" 
-            :style="{width: `${Math.random() * 40 + 40}%`, opacity: Math.random() * 0.5 + 0.5}"></div>
-        </div>
-      </div>
-      
-      <!-- 底部信息部分 -->
+      <!-- 音乐信息部分 -->
       <div class="music-info">
-        <h3 class="music-title">{{ name }}</h3>
+        <h3 class="music-title">{{ musicData.name }}</h3>
         <div class="tags-container">
-          <a-tag v-if="year" class="year-tag">{{ year }}</a-tag>
-          <a-tag v-if="category" class="category-tag">{{ category }}</a-tag>
-          <a-tag v-if="language" class="language-tag">{{ language }}</a-tag>
-          <a-tag v-if="isInstrumental" class="instrumental-tag">Instrumental</a-tag>
+          <a-tag v-if="musicData.year" class="year-tag">{{ musicData.year }}</a-tag>
+          <a-tag v-if="musicData.category" class="category-tag">{{ musicData.category }}</a-tag>
+          <a-tag v-if="musicData.language" class="language-tag">{{ musicData.language }}</a-tag>
+          <a-tag v-if="musicData.isInstrumental" class="instrumental-tag">Instrumental</a-tag>
         </div>
-        <div class="users-container" v-if="users && users.length">
+        <!-- 用户头像 -->
+        <div class="users-container" v-if="users.length">
           <a-avatar 
             v-for="(user, index) in users" 
             :key="index" 
@@ -48,47 +28,52 @@
           />
         </div>
       </div>
-      
-      <!-- 蓝色按钮 -->
-      <div class="blue-button">
-        <span>c</span>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, ref, onMounted, computed } from 'vue';
 import { Tag as ATag, Avatar as AAvatar } from 'ant-design-vue';
+import { getMusicFileByIdUsingGet } from '@/api/musicFileController';
 
 const props = defineProps({
-  id: Number,
-  name: {
-    type: String,
-    default: 'Summer Vibes Mix'
-  },
-  year: {
-    type: String,
-    default: '1990s'
-  },
-  category: {
-    type: String,
-    default: 'Mood'
-  },
-  language: {
-    type: String,
-    default: 'English'
-  },
-  isInstrumental: {
-    type: Boolean,
-    default: false
-  },
-  users: {
-    type: Array as () => { name: string; avatar: string }[],
-    default: () => [
-      { name: 'User 1', avatar: 'https://randomuser.me/api/portraits/men/1.jpg' },
-      { name: 'User 2', avatar: 'https://randomuser.me/api/portraits/men/2.jpg' }
-    ]
+  musicId: {
+    type: Number,
+    required: true
+  }
+});
+
+const loading = ref(true);
+const error = ref(false);
+const musicData = ref<any>({});
+const defaultCover = 'https://via.placeholder.com/300x180?text=无封面';
+
+const users = computed(() => {
+  if (!musicData.value || !musicData.value.createUser) return [];
+  
+  return [{
+    name: musicData.value.createUser.userName || '未知用户',
+    avatar: musicData.value.createUser.userAvatar || 'https://via.placeholder.com/40?text=U'
+  }];
+});
+
+onMounted(async () => {
+  try {
+    const response = await getMusicFileByIdUsingGet({
+      id: props.musicId
+    });
+    
+    if (response && response.data) {
+      musicData.value = response.data;
+    } else {
+      error.value = true;
+    }
+  } catch (err) {
+    console.error('获取音乐文件信息失败', err);
+    error.value = true;
+  } finally {
+    loading.value = false;
   }
 });
 </script>
@@ -101,7 +86,7 @@ const props = defineProps({
 
 .music-card {
   background-color: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
@@ -113,70 +98,25 @@ const props = defineProps({
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.waveform-container {
-  background-color: #f0f8ff;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid #e6e6e6;
-}
-
-.music-note-icon {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #4e89ff;
-  font-size: 18px;
-}
-
-.waveform-image {
-  flex: 1;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.waveform {
+.cover-image {
   width: 100%;
-  height: 20px;
-  object-fit: contain;
+  height: 180px;
+  overflow: hidden;
 }
 
-.controls {
-  display: flex;
-  gap: 8px;
-  color: #666;
-  font-size: 12px;
+.cover-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
 }
 
-.control-icon {
-  cursor: pointer;
-}
-
-.visualization-container {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-bottom: 1px solid #e6e6e6;
-}
-
-.track-lines {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.track-line {
-  height: 6px;
-  background-color: #4e89ff;
-  border-radius: 3px;
+.music-card:hover .cover-image img {
+  transform: scale(1.05);
 }
 
 .music-info {
-  padding: 12px;
+  padding: 15px;
 }
 
 .music-title {
@@ -190,7 +130,7 @@ const props = defineProps({
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .year-tag {
@@ -228,20 +168,15 @@ const props = defineProps({
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.blue-button {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: 24px;
-  height: 24px;
-  background-color: #4e89ff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.loading-state, .error-state {
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+}
+
+.error-state {
+  color: #ff4d4f;
 }
 </style>
