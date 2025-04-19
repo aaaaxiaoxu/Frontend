@@ -206,6 +206,25 @@ export async function reviewMusicFileUsingPost(
   })
 }
 
+/** searchMusicFiles GET /api/musicfile/search */
+export async function searchMusicFilesUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.searchMusicFilesUsingGETParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePageMusicFileVO_>('/api/musicfile/search', {
+    method: 'GET',
+    params: {
+      // current has a default value: 1
+      current: '1',
+      // pageSize has a default value: 10
+      pageSize: '10',
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
 /** streamAudio GET /api/musicfile/stream/${param0} */
 export async function streamAudioUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)

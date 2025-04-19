@@ -17,6 +17,14 @@
           @click="doMenuClick"
         />
       </a-col>
+      <a-col>
+        <a-input-search
+          v-model:value="searchValue"
+          placeholder="Search music..."
+          style="width: 200px; margin-right: 16px;"
+          @search="onSearch"
+        />
+      </a-col>
       <!-- 用户信息展示栏和上传按钮 -->
       <a-col>
         <div class="right-section">
@@ -68,7 +76,7 @@
 import { h, ref, computed } from 'vue'
 import { HomeOutlined, LogoutOutlined, UserOutlined, UploadOutlined, CustomerServiceOutlined } from '@ant-design/icons-vue'
 import type { MenuProps } from 'ant-design-vue'
-import { message } from 'ant-design-vue'
+import { message, InputSearch } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userLogoutUsingPost } from '@/api/userController.ts'
@@ -189,6 +197,18 @@ const handleUploadSuccess = () => {
 const showUploadModal = () => {
   uploadModalVisible.value = true
 }
+
+// Add search functionality
+const searchValue = ref<string>('');
+
+const onSearch = (value: string) => {
+  if (value.trim()) {
+    router.push({
+      path: '/search',
+      query: { q: value.trim() }
+    });
+  }
+};
 </script>
 
 <style scoped>
