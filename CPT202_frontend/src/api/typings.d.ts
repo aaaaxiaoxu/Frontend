@@ -363,7 +363,6 @@ declare namespace API {
     id?: number
     userAvatar?: string
     userName?: string
-    userPassword?: string
     userProfile?: string
     userRole?: string
     user_status?: number

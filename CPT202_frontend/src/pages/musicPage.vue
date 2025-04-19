@@ -30,55 +30,32 @@
           <a-breadcrumb :style="{ margin: '16px 0' }">
              <a-breadcrumb-item>{{ selectedCategoryLabel }}</a-breadcrumb-item>
           </a-breadcrumb>
-          <a-list
-             :grid="{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6 }"
-             :data-source="musicList"
-             :loading="loading"
-             :pagination="paginationProps"
-             class="music-grid"
-           >
-              <template #renderItem="{ item }">
-                  <a-list-item>
-                    <a-card hoverable class="music-card">
-                      <template #cover>
-                        <div class="music-cover-wrapper">
-                           <img v-if="item.coverUrl" :alt="item.name" :src="item.coverUrl" class="music-cover" />
-                           <div v-else class="music-cover-placeholder">
-                              <span>{{ item.name?.[0]?.toUpperCase() || 'M' }}</span>
-                           </div>
-                           <div class="music-info-overlay">
-                              <div class="music-title">{{ item.name }}</div>
-                              <div class="music-artist">{{ item.artist || 'Unknown Artist' }}</div>
-                              <!-- Action buttons -->
-                              <div class="action-buttons">
-                                 <a-tooltip title="Download">
-                                    <DownloadOutlined class="action-icon" @click.stop="handleDownload(item)"/>
-                                 </a-tooltip>
-                                 <a-tooltip title="Edit">
-                                    <EditOutlined class="action-icon" @click.stop="handleEdit(item)"/>
-                                  </a-tooltip>
-                                 <a-popconfirm
-                                    title="Are you sure delete this music?"
-                                    ok-text="Yes"
-                                    cancel-text="No"
-                                    @confirm="handleDelete(item.id)"
-                                    @cancel="cancelDelete"
-                                  >
-                                      <a-tooltip title="Delete">
-                                        <DeleteOutlined class="action-icon action-icon-delete" @click.stop/>
-                                       </a-tooltip>
-                                   </a-popconfirm>
-                                 <a-tooltip title="Play">
-                                     <PlayCircleOutlined class="action-icon action-icon-play" @click.stop="handlePlay(item)"/>
-                                  </a-tooltip>
-                               </div>
-                           </div>
-                        </div>
-                      </template>
-                    </a-card>
-                  </a-list-item>
-              </template>
-           </a-list>
+          <a-row :gutter="[16, 16]">
+            <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
+              <music-card
+                :id="item.id"
+                :name="item.name"
+                :coverUrl="item.coverUrl"
+                :url="item.url"
+                :artist="item.artist || '未知艺术家'"
+                :category="item.category"
+                :language="item.language"
+                @download="handleDownload(item)"
+                @edit="handleEdit(item)"
+                @delete="handleDelete(item.id)"
+                @play="handlePlay(item)"
+              />
+            </a-col>
+          </a-row>
+          <a-pagination
+            v-model:current="pagination.current"
+            :total="pagination.total"
+            :pageSize="pagination.pageSize"
+            :pageSizeOptions="['12', '24', '36', '48']"
+            showSizeChanger
+            @change="(page, pageSize) => handlePaginationChange(page, pageSize)"
+            style="text-align: center; margin-top: 24px;"
+          />
         </div>
     </a-layout-content>
   </a-layout>
@@ -102,6 +79,9 @@ import {
   Popconfirm as APopconfirm,
   Tooltip as ATooltip,
   message,
+  Row as ARow,
+  Col as ACol,
+  Pagination as APagination,
 } from 'ant-design-vue';
 import {
   DownloadOutlined,
@@ -110,6 +90,7 @@ import {
   PlayCircleOutlined,
 } from '@ant-design/icons-vue';
 import { listMusicFileVoByPageUsingPost } from '@/api/musicFileController';
+import MusicCard from '@/components/MusicCard.vue';
 
 const musicList = ref<API.MusicFileVO[]>([]);
 const loading = ref(false);
@@ -219,6 +200,12 @@ const handlePlay = (item: API.MusicFileVO) => {
    console.log('Play:', item);
    message.info(`Play functionality not implemented for ${item.name}`);
 }
+
+const handlePaginationChange = (page: number, pageSize: number) => {
+  pagination.current = page;
+  pagination.pageSize = pageSize;
+  fetchMusicData();
+};
 
 onMounted(() => {
   selectedCategoryLabel.value = categoryLabels[selectedCategoryKeys.value[0]] || 'Unknown Category';

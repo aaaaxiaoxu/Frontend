@@ -82,7 +82,7 @@ const router = createRouter({
       name: '音乐列表',
       component: MusicPage,
       meta: {
-        access: ACCESS_ENUM.USER,
+        access: ACCESS_ENUM.NOT_LOGIN,
       },
     },
     {
