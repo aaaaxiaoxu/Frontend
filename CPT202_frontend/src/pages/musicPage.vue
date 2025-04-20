@@ -26,37 +26,27 @@
 
     <!-- Main Content Area -->
     <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-       <div :style="{ background: '#fff', padding: '24px', margin: 0 }">
-          <a-breadcrumb :style="{ margin: '16px 0' }">
-             <a-breadcrumb-item>{{ selectedCategoryLabel }}</a-breadcrumb-item>
-          </a-breadcrumb>
-          <a-row :gutter="[16, 16]">
-            <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
-              <music-card
-                :id="item.id"
-                :name="item.name"
-                :coverUrl="item.coverUrl"
-                :url="item.url"
-                :artist="item.artist || '未知艺术家'"
-                :category="item.category"
-                @download="handleDownload(item)"
-                @edit="handleEdit(item)"
-                @delete="handleDelete(item.id)"
-                @play="handlePlay(item)"
-              />
-            </a-col>
-          </a-row>
-          <a-pagination
-            v-model:current="pagination.current"
-            :total="pagination.total"
-            :pageSize="pagination.pageSize"
-            :pageSizeOptions="['12', '24', '36', '48']"
-            showSizeChanger
-            @change="(page, pageSize) => handlePaginationChange(page, pageSize)"
-            style="text-align: center; margin-top: 24px;"
-          />
-        </div>
+      <div :style="{ background: '#fff', padding: '24px', margin: 0 }">
+        <a-breadcrumb :style="{ margin: '16px 0' }">
+          <a-breadcrumb-item>{{ selectedCategoryLabel }}</a-breadcrumb-item>
+        </a-breadcrumb>
+        <a-row :gutter="[16, 16]">
+          <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
+            <music-card :id="item.id" />
+          </a-col>
+        </a-row>
+        <a-pagination
+          v-model:current="pagination.current"
+          :total="pagination.total"
+          :pageSize="pagination.pageSize"
+          :pageSizeOptions="['12', '24', '36', '48']"
+          showSizeChanger
+          @change="(page, pageSize) => handlePaginationChange(page, pageSize)"
+          style="text-align: center; margin-top: 24px;"
+        />
+      </div>
     </a-layout-content>
+
     <!-- 添加播放器组件 -->
     <player-bar />
   </a-layout>
@@ -123,8 +113,6 @@ const fetchMusicData = async () => {
   const currentCategory = selectedCategoryKeys.value[0];
   let response = null;
 
-  console.log('获取音乐数据，当前类别:', currentCategory);
-
   try {
     if (currentCategory === 'uploaded') {
       // Fetch all music using POST endpoint
@@ -134,19 +122,14 @@ const fetchMusicData = async () => {
         category: undefined, // Ensure category is not sent when fetching all
         // Add other necessary sort/filter params if needed for "Uploaded"
       };
-      console.log('使用上传接口获取数据，参数:', queryParams);
       response = await listMusicFileVoByPageUsingPost(queryParams);
     } else if (currentCategory && currentCategory !== 'popular' && currentCategory !== 'custom') {
       // Fetch music by specific category using GET endpoint
-      // 尝试首字母大写，以匹配数据库中的格式
-      const formattedCategory = currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1);
-      
       const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
-        category: formattedCategory, // 使用格式化后的类别名称
+        category: currentCategory,
         current: pagination.current,
         pageSize: pagination.pageSize,
       };
-      console.log('使用类别接口获取数据，参数:', params);
       response = await listMusicFileVoByCategoryPageUsingGet(params);
     } else {
       // Handle cases for 'popular' or 'custom' parent items if they shouldn't fetch data
@@ -157,28 +140,19 @@ const fetchMusicData = async () => {
       return; // Exit fetch function
     }
 
-    console.log('API响应:', response);
-
     // Process the response (same logic for both endpoints)
     if (response && response.data.code === 0 && response.data.data) {
       musicList.value = response.data.data.records || [];
       pagination.total = parseInt(String(response.data.data.total ?? '0'), 10);
-      console.log('获取到音乐列表:', musicList.value);
-      
-      if (musicList.value.length === 0) {
-        message.info(`没有找到 ${selectedCategoryLabel.value} 类别的音乐文件`);
-      }
     } else {
       message.error('Failed to load music: ' + (response?.data.message || 'Unknown error'));
       musicList.value = [];
       pagination.total = 0;
-      console.error('获取音乐列表失败:', response?.data);
     }
   } catch (error: any) {
     message.error('Error fetching music data: ' + error.message);
     musicList.value = [];
     pagination.total = 0;
-    console.error('获取数据异常:', error);
   } finally {
     loading.value = false;
   }
@@ -203,56 +177,14 @@ const handleCategoryClick = (info: MenuInfo) => {
 
   selectedCategoryKeys.value = [key];
   selectedCategoryLabel.value = categoryLabels[key] || 'Unknown Category';
-  
-  // 输出详细调试信息
-  console.log('类别点击事件:', {
-    key: key,
-    label: categoryLabels[key],
-    selectedKeys: selectedCategoryKeys.value
-  });
-  
-  // 尝试调整类别名称以匹配数据库格式（首字母大写）
-  if (key !== 'uploaded') {
-    // 对非上传类别，尝试首字母大写
-    const formattedCategory = key.charAt(0).toUpperCase() + key.slice(1);
-    console.log('调整后的类别名称:', formattedCategory);
-  }
-  
   pagination.current = 1;
   fetchMusicData();
 };
 
-const handleDownload = (item: API.MusicFileVO) => {
-  console.log('Download:', item);
-  if (item.url) {
-    window.open(item.url, '_blank');
-  } else {
-    message.warning('No download URL available.');
-  }
-};
-
-const handleEdit = (item: API.MusicFileVO) => {
-  console.log('Edit:', item);
-  message.info(`Edit functionality not implemented for ${item.name}`);
-};
-
-const handleDelete = async (id?: number) => {
-  if (!id) return;
-  console.log('Delete:', id);
-  message.success(`Delete confirmed for ID: ${id} (API call not implemented)`);
-  fetchMusicData();
-};
-
-const cancelDelete = () => {
-  message.info('Delete cancelled');
-};
-
 const currentPlayingId = ref<number | null>(null);
 provide('currentPlayingId', currentPlayingId);
-const handlePlay = (item: API.MusicFileVO) => {
-  console.log('Play:', item);
-  if (item.id) currentPlayingId.value = item.id;
-  message.info(`Play functionality not implemented for ${item.name}`);
+const handlePlay = (id: number) => {
+  currentPlayingId.value = id;
 };
 
 const handlePaginationChange = (page: number, pageSize: number) => {
@@ -265,6 +197,7 @@ onMounted(() => {
   selectedCategoryLabel.value = categoryLabels[selectedCategoryKeys.value[0]] || 'Unknown Category';
   fetchMusicData();
 });
+
 </script>
 
 <style scoped>
@@ -319,7 +252,6 @@ onMounted(() => {
 .music-card:hover .music-cover {
   transform: scale(1.1);
 }
-
 
 .music-info-overlay {
   position: absolute;
