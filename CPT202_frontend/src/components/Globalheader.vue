@@ -18,16 +18,14 @@
         />
       </a-col>
       <a-col>
-        <a-input-search
-          v-model:value="searchValue"
-          placeholder="Search music..."
-          style="width: 200px; margin-right: 16px;"
-          @search="onSearch"
-        />
-      </a-col>
-      <!-- 用户信息展示栏和上传按钮 -->
-      <a-col>
         <div class="right-section">
+          <a-input-search
+            v-model:value="searchValue"
+            placeholder="input search text"
+            style="width: 240px; margin-right: 16px;"
+            enter-button
+            @search="onSearch"
+          />
           <a-button type="primary" class="upload-btn" @click="showUploadModal">
             <upload-outlined></upload-outlined>
             upload
@@ -273,5 +271,27 @@ const onSearch = (value: string) => {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 90px; /* 增加最大宽度 */
+}
+
+.custom-search-input {
+  width: 240px;
+  height: 40px;
+  margin-right: 16px;
+  margin-top: 8px;
+  border-radius: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-search-input :deep(.ant-btn) {
+  border-radius: 0 24px 24px 0;
+  background-color: #1890ff;
+}
+
+.custom-search-input :deep(.ant-input) {
+  border-radius: 24px 0 0 24px;
+}
+
+.custom-search-input:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 </style>

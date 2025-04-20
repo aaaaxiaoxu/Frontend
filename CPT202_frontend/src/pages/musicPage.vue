@@ -57,11 +57,13 @@
           />
         </div>
     </a-layout-content>
+    <!-- 添加播放器组件 -->
+    <player-bar />
   </a-layout>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive, computed } from 'vue';
+import { ref, onMounted, reactive, computed, provide } from 'vue'
 import type { MenuInfo } from 'ant-design-vue/es/menu/src/interface';
 import {
   Layout as ALayout,
@@ -70,8 +72,13 @@ import {
   Menu as AMenu,
   MenuItem as AMenuItem,
   SubMenu as ASubMenu,
+  List as AList,
+  ListItem as AListItem,
+  Card as ACard,
   Breadcrumb as ABreadcrumb,
   BreadcrumbItem as ABreadcrumbItem,
+  Popconfirm as APopconfirm,
+  Tooltip as ATooltip,
   message,
   Row as ARow,
   Col as ACol,
@@ -85,14 +92,9 @@ import {
 } from '@ant-design/icons-vue';
 import { listMusicFileVoByPageUsingPost, listMusicFileVoByCategoryPageUsingGet } from '@/api/musicFileController';
 import MusicCard from '@/components/MusicCard.vue';
+import PlayerBar from '@/components/PlayerBar.vue';
 
-// 定义数据结构（如果你还没有定义类型，这里简化处理）
-interface MusicItem {
-  id: number;
-  [key: string]: any;
-}
-
-const musicList = ref<MusicItem[]>([]);
+const musicList = ref<API.MusicFileVO[]>([]);
 const loading = ref(false);
 const selectedCategoryKeys = ref<string[]>(['uploaded']);
 const selectedCategoryLabel = ref<string>('Uploaded');
@@ -104,16 +106,16 @@ const pagination = reactive({
 });
 
 const paginationProps = computed(() => ({
-    current: pagination.current,
-    pageSize: pagination.pageSize,
-    total: pagination.total || 0,
-    onChange: (page: number, pageSize: number) => {
-        pagination.current = page;
-        pagination.pageSize = pageSize;
-        fetchMusicData();
-    },
-    showSizeChanger: true,
-    pageSizeOptions: ['12', '24', '36', '48'],
+  current: pagination.current,
+  pageSize: pagination.pageSize,
+  total: pagination.total || 0,
+  onChange: (page: number, pageSize: number) => {
+    pagination.current = page;
+    pagination.pageSize = pageSize;
+    fetchMusicData();
+  },
+  showSizeChanger: true,
+  pageSizeOptions: ['12', '24', '36', '48'],
 }))
 
 const fetchMusicData = async () => {
@@ -121,62 +123,78 @@ const fetchMusicData = async () => {
   const currentCategory = selectedCategoryKeys.value[0];
   let response = null;
 
+  console.log('获取音乐数据，当前类别:', currentCategory);
+
   try {
     if (currentCategory === 'uploaded') {
-       // Fetch all music using POST endpoint
-       const queryParams: API.MusicFileQueryRequest = {
-           current: pagination.current,
-           pageSize: pagination.pageSize,
-           category: undefined, // Ensure category is not sent when fetching all
-           // Add other necessary sort/filter params if needed for "Uploaded"
-       };
-       response = await listMusicFileVoByPageUsingPost(queryParams);
+      // Fetch all music using POST endpoint
+      const queryParams: API.MusicFileQueryRequest = {
+        current: pagination.current,
+        pageSize: pagination.pageSize,
+        category: undefined, // Ensure category is not sent when fetching all
+        // Add other necessary sort/filter params if needed for "Uploaded"
+      };
+      console.log('使用上传接口获取数据，参数:', queryParams);
+      response = await listMusicFileVoByPageUsingPost(queryParams);
     } else if (currentCategory && currentCategory !== 'popular' && currentCategory !== 'custom') {
-        // Fetch music by specific category using GET endpoint
-        const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
-            category: currentCategory,
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-        };
-        response = await listMusicFileVoByCategoryPageUsingGet(params);
+      // Fetch music by specific category using GET endpoint
+      // 尝试首字母大写，以匹配数据库中的格式
+      const formattedCategory = currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1);
+      
+      const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
+        category: formattedCategory, // 使用格式化后的类别名称
+        current: pagination.current,
+        pageSize: pagination.pageSize,
+      };
+      console.log('使用类别接口获取数据，参数:', params);
+      response = await listMusicFileVoByCategoryPageUsingGet(params);
     } else {
-        // Handle cases for 'popular' or 'custom' parent items if they shouldn't fetch data
-        console.log('No data fetch for category:', currentCategory);
-        musicList.value = [];
-        pagination.total = 0;
-        loading.value = false;
-        return; // Exit fetch function
+      // Handle cases for 'popular' or 'custom' parent items if they shouldn't fetch data
+      console.log('No data fetch for category:', currentCategory);
+      musicList.value = [];
+      pagination.total = 0;
+      loading.value = false;
+      return; // Exit fetch function
     }
+
+    console.log('API响应:', response);
 
     // Process the response (same logic for both endpoints)
     if (response && response.data.code === 0 && response.data.data) {
       musicList.value = response.data.data.records || [];
       pagination.total = parseInt(String(response.data.data.total ?? '0'), 10);
+      console.log('获取到音乐列表:', musicList.value);
+      
+      if (musicList.value.length === 0) {
+        message.info(`没有找到 ${selectedCategoryLabel.value} 类别的音乐文件`);
+      }
     } else {
       message.error('Failed to load music: ' + (response?.data.message || 'Unknown error'));
       musicList.value = [];
       pagination.total = 0;
+      console.error('获取音乐列表失败:', response?.data);
     }
   } catch (error: any) {
     message.error('Error fetching music data: ' + error.message);
     musicList.value = [];
     pagination.total = 0;
+    console.error('获取数据异常:', error);
   } finally {
     loading.value = false;
   }
 };
 
 const categoryLabels: { [key: string]: string } = {
-    uploaded: 'Uploaded',
-    popular: 'Popular Category',
-    rock: 'Rock',
-    pop: 'Pop',
-    electronic: 'Electronic',
-    jazz: 'Jazz',
-    indie: 'Indie',
-    classical: 'Classical',
-    rnb: 'R&B',
-    custom: 'Custom Category'
+  uploaded: 'Uploaded',
+  popular: 'Popular Category',
+  rock: 'Rock',
+  pop: 'Pop',
+  electronic: 'Electronic',
+  jazz: 'Jazz',
+  indie: 'Indie',
+  classical: 'Classical',
+  rnb: 'R&B',
+  custom: 'Custom Category'
 };
 
 const handleCategoryClick = (info: MenuInfo) => {
@@ -185,30 +203,56 @@ const handleCategoryClick = (info: MenuInfo) => {
 
   selectedCategoryKeys.value = [key];
   selectedCategoryLabel.value = categoryLabels[key] || 'Unknown Category';
+  
+  // 输出详细调试信息
+  console.log('类别点击事件:', {
+    key: key,
+    label: categoryLabels[key],
+    selectedKeys: selectedCategoryKeys.value
+  });
+  
+  // 尝试调整类别名称以匹配数据库格式（首字母大写）
+  if (key !== 'uploaded') {
+    // 对非上传类别，尝试首字母大写
+    const formattedCategory = key.charAt(0).toUpperCase() + key.slice(1);
+    console.log('调整后的类别名称:', formattedCategory);
+  }
+  
   pagination.current = 1;
   fetchMusicData();
 };
 
-const handleDownload = (item: any) => {
+const handleDownload = (item: API.MusicFileVO) => {
   console.log('Download:', item);
-  // 功能可以移至MusicCard组件内部
+  if (item.url) {
+    window.open(item.url, '_blank');
+  } else {
+    message.warning('No download URL available.');
+  }
 };
 
-const handleEdit = (item: any) => {
+const handleEdit = (item: API.MusicFileVO) => {
   console.log('Edit:', item);
-  // 功能可以移至MusicCard组件内部
+  message.info(`Edit functionality not implemented for ${item.name}`);
 };
 
 const handleDelete = async (id?: number) => {
   if (!id) return;
   console.log('Delete:', id);
-  // 功能可以移至MusicCard组件内部，删除后可以发出事件通知父组件刷新列表
+  message.success(`Delete confirmed for ID: ${id} (API call not implemented)`);
   fetchMusicData();
 };
 
-const handlePlay = (item: any) => {
+const cancelDelete = () => {
+  message.info('Delete cancelled');
+};
+
+const currentPlayingId = ref<number | null>(null);
+provide('currentPlayingId', currentPlayingId);
+const handlePlay = (item: API.MusicFileVO) => {
   console.log('Play:', item);
-  // 功能可以移至MusicCard组件内部
+  if (item.id) currentPlayingId.value = item.id;
+  message.info(`Play functionality not implemented for ${item.name}`);
 };
 
 const handlePaginationChange = (page: number, pageSize: number) => {
@@ -221,12 +265,12 @@ onMounted(() => {
   selectedCategoryLabel.value = categoryLabels[selectedCategoryKeys.value[0]] || 'Unknown Category';
   fetchMusicData();
 });
-
 </script>
 
 <style scoped>
 .music-page-layout {
   min-height: calc(100vh - 64px);
+  padding-bottom: 70px;
 }
 
 .music-grid {
@@ -302,17 +346,17 @@ onMounted(() => {
   font-size: 1em;
   font-weight: bold;
   margin-bottom: 2px;
-   white-space: nowrap;
-   overflow: hidden;
-   text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .music-artist {
   font-size: 0.85em;
   margin-bottom: 8px;
-   white-space: nowrap;
-   overflow: hidden;
-   text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .action-buttons {
@@ -334,12 +378,11 @@ onMounted(() => {
 }
 
 .action-icon-delete:hover {
-    color: #ff4d4f;
+  color: #ff4d4f;
 }
 .action-icon-play:hover {
-    color: #1890ff;
+  color: #1890ff;
 }
-
 
 :deep(.ant-card-cover) {
   padding: 0;
@@ -359,7 +402,7 @@ onMounted(() => {
 }
 
 :deep(.ant-layout-sider) {
-   border-right: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
 }
 
 :deep(.ant-breadcrumb) {

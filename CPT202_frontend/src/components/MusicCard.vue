@@ -1,81 +1,146 @@
 <template>
   <div class="music-card-component">
-    <div v-if="loading" class="loading-state">加载中...</div>
-    <div v-else-if="error" class="error-state">加载失败</div>
-    <div v-else class="music-card">
-      <!-- 主图片部分 -->
-      <div class="cover-image">
-        <img :src="musicData.coverUrl || defaultCover" alt="音乐封面" />
+    <div v-if="loading" class="loading-container">Loading...</div>
+    <div v-else-if="detail" class="music-card">
+      <!-- 音乐封面图部分 -->
+      <div class="cover-container">
+        <img :src="detail.coverUrl" alt="Cover" class="cover" />
+        
+        <!-- 播放状态覆盖图标 -->
+        <div v-if="isCurrentlyPlaying" class="playing-indicator">
+          <div class="playing-icon">▶</div>
+        </div>
       </div>
       
-      <!-- 音乐信息部分 -->
+      <!-- 信息部分 -->
       <div class="music-info">
-        <h3 class="music-title">{{ musicData.name }}</h3>
-        <div class="tags-container">
-          <a-tag v-if="musicData.year" class="year-tag">{{ musicData.year }}</a-tag>
-          <a-tag v-if="musicData.category" class="category-tag">{{ musicData.category }}</a-tag>
-          <a-tag v-if="musicData.language" class="language-tag">{{ musicData.language }}</a-tag>
-          <a-tag v-if="musicData.isInstrumental" class="instrumental-tag">Instrumental</a-tag>
-        </div>
-        <!-- 用户头像 -->
-        <div class="users-container" v-if="users.length">
-          <a-avatar 
-            v-for="(user, index) in users" 
-            :key="index" 
-            :src="user.avatar" 
-            size="small"
-            class="user-avatar"
-          />
-        </div>
+        <h3 class="music-title">{{ detail.name }}</h3>
+        <p class="music-artist">{{ detail.artist || '未知艺术家' }}</p>
       </div>
+      
+      <!-- 播放按钮部分 -->
+      <div class="action-buttons">
+        <a-button 
+          @click="handlePlay" 
+          type="primary"
+          :class="{ 'playing-button': isCurrentlyPlaying }">
+          <template #icon>
+            <play-circle-outlined v-if="!isCurrentlyPlaying" />
+            <pause-circle-outlined v-else />
+          </template>
+          {{ isCurrentlyPlaying ? '播放中' : '播放' }}
+        </a-button>
+      </div>
+    
     </div>
+    <div v-else class="error-container">No data available</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref, onMounted, computed } from 'vue';
-import { Tag as ATag, Avatar as AAvatar } from 'ant-design-vue';
-import { getMusicFileByIdUsingGet } from '@/api/musicFileController';
+import { ref, onMounted, computed } from 'vue'
+import { message } from 'ant-design-vue';
+import { PlayCircleOutlined, PauseCircleOutlined } from '@ant-design/icons-vue';
+import { getMusicFileByIdUsingGet } from '@/api/musicFileController'
+import { currentMusic, playMusic, isPlaying } from '@/utils/audioPlayerStore'
+import bus from '@/utils/eventBus'
 
-const props = defineProps({
-  musicId: {
-    type: Number,
-    required: true
-  }
-});
+interface MusicDetail {
+  id: number | string;
+  name: string;
+  artist?: string;
+  coverUrl?: string;
+  url?: string;
+}
 
+const props = defineProps<{ id: number }>();
+const detail = ref<MusicDetail | null>(null);
 const loading = ref(true);
-const error = ref(false);
-const musicData = ref<any>({});
-const defaultCover = 'https://via.placeholder.com/300x180?text=无封面';
+const showDebug = ref(true); // 设置为false可隐藏调试信息
 
-const users = computed(() => {
-  if (!musicData.value || !musicData.value.createUser) return [];
-  
-  return [{
-    name: musicData.value.createUser.userName || '未知用户',
-    avatar: musicData.value.createUser.userAvatar || 'https://via.placeholder.com/40?text=U'
-  }];
+// 计算当前卡片是否正在播放
+const isCurrentlyPlaying = computed(() => {
+  return isPlaying.value && String(currentMusic.id) === String(props.id);
 });
 
-onMounted(async () => {
+// 截断长URL用于显示
+const truncateUrl = (url?: string) => {
+  if (!url) return '';
+  return url.length > 40 ? url.substring(0, 40) + '...' : url;
+};
+
+// 测试事件总线
+const testEventBus = () => {
+  console.log('发送测试事件...');
+  bus.emit('test', { message: '从MusicCard发送的测试' });
+  message.info('已发送测试事件，请查看控制台');
+};
+
+const fetchDetail = async () => {
   try {
-    const response = await getMusicFileByIdUsingGet({
-      id: props.musicId
-    });
+    console.log(`获取ID为${props.id}的音乐详情...`);
+    const res = await getMusicFileByIdUsingGet({ id: props.id });
+    console.log('API响应:', res);
     
-    if (response && response.data) {
-      musicData.value = response.data;
+    if (res.data.code === 0 && res.data.data) {
+      detail.value = res.data.data;
+      console.log('音乐详情:', detail.value);
+      
+      // 检查URL
+      if (!detail.value.url) {
+        console.warn('警告: 音乐URL为空');
+      } else {
+        console.log('音乐URL:', detail.value.url);
+      }
     } else {
-      error.value = true;
+      console.error('获取详情失败:', res.data.message);
+      message.error(res.data.message || '加载详情失败');
     }
-  } catch (err) {
-    console.error('获取音乐文件信息失败', err);
-    error.value = true;
+  } catch (err: any) {
+    console.error('获取详情出错:', err);
+    message.error('错误: ' + err.message);
   } finally {
     loading.value = false;
   }
-});
+};
+
+onMounted(fetchDetail);
+
+// 处理播放事件
+const handlePlay = () => {
+  console.log('播放按钮被点击');
+  
+  if (!detail.value) {
+    console.error('错误: 没有音乐详情数据');
+    message.error('没有可播放的音乐数据');
+    return;
+  }
+  
+  if (!detail.value.url) {
+    console.error('错误: 音乐URL为空');
+    message.error('音乐URL不存在，无法播放');
+    return;
+  }
+  
+  console.log('准备播放音乐:', detail.value.name);
+  
+  // 调用全局播放函数
+  const success = playMusic({
+    id: detail.value.id,
+    name: detail.value.name,
+    artist: detail.value.artist,
+    coverUrl: detail.value.coverUrl,
+    url: detail.value.url
+  });
+  
+  if (success) {
+    console.log('播放成功:', detail.value.name);
+    message.success(`正在播放: ${detail.value.name}`);
+  } else {
+    console.error('播放失败:', detail.value.name);
+    message.error('播放失败，请重试');
+  }
+};
 </script>
 
 <style scoped>
@@ -84,9 +149,16 @@ onMounted(async () => {
   margin-bottom: 20px;
 }
 
+.loading-container,
+.error-container {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+}
+
 .music-card {
   background-color: #fff;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
@@ -98,85 +170,95 @@ onMounted(async () => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.cover-image {
+.cover-container {
+  position: relative;
   width: 100%;
-  height: 180px;
+  padding-top: 100%; /* Maintains aspect ratio */
   overflow: hidden;
+  background-color: #f0f0f0;
 }
 
-.cover-image img {
+.cover {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s;
 }
 
-.music-card:hover .cover-image img {
-  transform: scale(1.05);
+.playing-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playing-icon {
+  font-size: 48px;
+  color: white;
+  opacity: 0.8;
 }
 
 .music-info {
-  padding: 15px;
+  padding: 12px;
+  text-align: left;
 }
 
 .music-title {
-  margin: 0 0 10px 0;
+  margin: 5px 0;
   font-size: 16px;
   font-weight: 600;
   color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.tags-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 12px;
+.music-artist {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.year-tag {
-  background-color: #ffe6e6 !important;
-  border-color: #ffcccc !important;
-  color: #ff6666 !important;
-}
-
-.category-tag {
-  background-color: #e6f7ff !important;
-  border-color: #bae7ff !important;
-  color: #1890ff !important;
-}
-
-.language-tag {
-  background-color: #f6ffed !important;
-  border-color: #b7eb8f !important;
-  color: #52c41a !important;
-}
-
-.instrumental-tag {
-  background-color: #fff7e6 !important;
-  border-color: #ffd591 !important;
-  color: #fa8c16 !important;
-}
-
-.users-container {
-  display: flex;
-  gap: 5px;
-  margin-top: 10px;
-}
-
-.user-avatar {
-  border: 2px solid white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.loading-state, .error-state {
-  padding: 20px;
-  border-radius: 12px;
+.action-buttons {
+  padding: 0 12px 12px;
   text-align: center;
-  background-color: #f9f9f9;
-  margin-bottom: 20px;
 }
 
-.error-state {
-  color: #ff4d4f;
+.playing-button {
+  background-color: #1890ff;
+  color: white;
+}
+
+.debug-info {
+  margin-top: 10px;
+  padding: 5px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.debug-info p {
+  margin: 2px 0;
+  word-break: break-all;
+}
+
+.debug-info button {
+  background: #4e89ff;
+  color: white;
+  border: none;
+  padding: 3px 8px;
+  border-radius: 3px;
+  margin-top: 5px;
+  cursor: pointer;
 }
 </style>
