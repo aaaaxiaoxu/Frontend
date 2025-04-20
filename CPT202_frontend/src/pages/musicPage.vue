@@ -32,7 +32,6 @@
           </a-breadcrumb>
           <a-row :gutter="[16, 16]">
             <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
-<<<<<<< Updated upstream
               <music-card
                 :id="item.id"
                 :name="item.name"
@@ -45,9 +44,6 @@
                 @delete="handleDelete(item.id)"
                 @play="handlePlay(item)"
               />
-=======
-              <music-card :musicId="item.id" />
->>>>>>> Stashed changes
             </a-col>
           </a-row>
           <a-pagination
@@ -81,7 +77,6 @@ import {
   Col as ACol,
   Pagination as APagination,
 } from 'ant-design-vue';
-<<<<<<< Updated upstream
 import {
   DownloadOutlined,
   EditOutlined,
@@ -89,9 +84,6 @@ import {
   PlayCircleOutlined,
 } from '@ant-design/icons-vue';
 import { listMusicFileVoByPageUsingPost, listMusicFileVoByCategoryPageUsingGet } from '@/api/musicFileController';
-=======
-import { listMusicFileVoByPageUsingPost } from '@/api/musicFileController';
->>>>>>> Stashed changes
 import MusicCard from '@/components/MusicCard.vue';
 
 // 定义数据结构（如果你还没有定义类型，这里简化处理）
@@ -129,7 +121,6 @@ const fetchMusicData = async () => {
   const currentCategory = selectedCategoryKeys.value[0];
   let response = null;
 
-<<<<<<< Updated upstream
   try {
     if (currentCategory === 'uploaded') {
        // Fetch all music using POST endpoint
@@ -148,15 +139,6 @@ const fetchMusicData = async () => {
             pageSize: pagination.pageSize,
         };
         response = await listMusicFileVoByCategoryPageUsingGet(params);
-=======
-    const res = await listMusicFileVoByPageUsingPost(searchParams);
-    if (res.data.code === 0 && res.data.data) {
-      // 只保留必要的id信息，其他数据由MusicCard组件自行获取
-      musicList.value = (res.data.data.records || []).map(item => ({
-        id: item.id
-      }));
-      pagination.total = parseInt(String(res.data.data.total ?? '0'), 10);
->>>>>>> Stashed changes
     } else {
         // Handle cases for 'popular' or 'custom' parent items if they shouldn't fetch data
         console.log('No data fetch for category:', currentCategory);
@@ -386,4 +368,4 @@ onMounted(() => {
   border-radius: 4px;
   margin-bottom: 16px !important;
 }
-</style> 
+</style>
