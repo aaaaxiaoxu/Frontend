@@ -298,15 +298,6 @@ declare namespace API {
     total?: number
   }
 
-  type searchMusicFilesUsingGETParams = {
-    /** current */
-    current?: number
-    /** pageSize */
-    pageSize?: number
-    /** searchText */
-    searchText: string
-  }
-
   type streamAudioUsingGETParams = {
     /** id */
     id: number

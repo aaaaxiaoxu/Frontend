@@ -4,6 +4,7 @@ import HomePage from '@/pages/HomePage.vue'
 import UserLoginPage from '@/pages/user/UserLoginPage.vue'
 import UserRegisterPage from '@/pages/user/UserRegisterPage.vue'
 import UserManagePage from '@/pages/admin/UserManagePage.vue'
+import ResourceReviewPage from '@/pages/admin/ResourceReviewPage.vue'
 import UserEditPage from '@/pages/user/UserEditPage.vue'
 import NoAuth from '@/pages/NoAuth.vue'
 import ACCESS_ENUM from '@/access/accessEnum.ts'
@@ -42,6 +43,14 @@ const router = createRouter({
       path: '/admin/userManage',
       name: '用户管理',
       component: UserManagePage,
+      meta: {
+        access: ACCESS_ENUM.ADMIN,
+      },
+    },
+    {
+      path: '/admin/resourceReview',
+      name: '资源审核',
+      component: ResourceReviewPage,
       meta: {
         access: ACCESS_ENUM.ADMIN,
       },

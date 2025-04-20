@@ -119,6 +119,14 @@ const menus = ref<CustomMenuItem[]>([
     },
   },
   {
+    key: '/admin/resourceReview',
+    label: '资源审核',
+    title: 'Resource Review',
+    meta: {
+      access: 'admin',
+    },
+  },
+  {
     key: '/music',
     icon: () => h(CustomerServiceOutlined),
     label: 'Listening Music',
