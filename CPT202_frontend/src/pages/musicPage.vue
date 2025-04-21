@@ -32,7 +32,20 @@
         </a-breadcrumb>
         <a-row :gutter="[16, 16]">
           <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
-            <music-card :id="item.id" />
+            <div class="music-card-wrapper" @click="showMusicDetails(item)">
+              <music-card
+                :id="item.id"
+                :name="item.name"
+                :coverUrl="item.coverUrl"
+                :url="item.url"
+                :artist="item.artist || '未知艺术家'"
+                :category="item.category"
+                @download.stop="handleDownload(item)"
+                @edit.stop="handleEdit(item)"
+                @delete.stop="handleDelete(item.id)"
+                @play.stop="handlePlay(item)"
+              />
+            </div>
           </a-col>
         </a-row>
         <a-pagination
@@ -83,6 +96,8 @@ import {
 import { listMusicFileVoByPageUsingPost, listMusicFileVoByCategoryPageUsingGet } from '@/api/musicFileController';
 import MusicCard from '@/components/MusicCard.vue';
 import PlayerBar from '@/components/PlayerBar.vue';
+import { useRouter } from 'vue-router';
+import { useMusicStore } from '@/stores/musicStore';
 
 const musicList = ref<API.MusicFileVO[]>([]);
 const loading = ref(false);
@@ -107,6 +122,9 @@ const paginationProps = computed(() => ({
   showSizeChanger: true,
   pageSizeOptions: ['12', '24', '36', '48'],
 }))
+
+const router = useRouter();
+const musicStore = useMusicStore();
 
 const fetchMusicData = async () => {
   loading.value = true;
@@ -191,6 +209,20 @@ const handlePaginationChange = (page: number, pageSize: number) => {
   pagination.current = page;
   pagination.pageSize = pageSize;
   fetchMusicData();
+};
+
+const showMusicDetails = (item) => {
+  if (item && item.id) {
+    console.log("跳转到详情页，音乐ID:", item.id);
+    
+    // 存储到store
+    musicStore.setCurrentMusic(item);
+    
+    // 直接使用原始ID格式跳转，不进行转换
+    router.push(`/music/detail/${item.id}`);
+  } else {
+    message.error('无效的音乐ID');
+  }
 };
 
 onMounted(() => {
@@ -342,5 +374,15 @@ onMounted(() => {
   padding: 8px 16px;
   border-radius: 4px;
   margin-bottom: 16px !important;
+}
+
+/* 添加卡片悬停效果 */
+.music-card-wrapper {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.music-card-wrapper:hover {
+  transform: translateY(-5px);
 }
 </style>

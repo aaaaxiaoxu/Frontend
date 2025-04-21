@@ -35,6 +35,9 @@
       <a-form-item label="ID" name="id">
         <a-input v-model:value="formState.id" placeholder="请输入ID(可选)" />
       </a-form-item>
+      <a-form-item label="艺术家" name="artist">
+        <a-input v-model:value="formState.artist" placeholder="请输入艺术家" />
+      </a-form-item>
     </a-form>
 
     <div class="upload-actions">
@@ -75,6 +78,7 @@ export default defineComponent({
 
     const formState = reactive({
       id: '',
+      artist: '',
     });
 
     // 预处理音乐文件上传
@@ -114,6 +118,7 @@ export default defineComponent({
           {}, // params
           {
             id: formState.id || undefined,
+            artist: formState.artist || undefined,
           }, // body
           coverFile, // coverFile
           musicFile, // file
@@ -130,6 +135,7 @@ export default defineComponent({
           musicFileList.value = [];
           coverFileList.value = [];
           formState.id = '';
+          formState.artist = '';
         } else {
           message.error('上传失败: ' + result.data.message);
         }

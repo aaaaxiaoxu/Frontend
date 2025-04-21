@@ -200,6 +200,7 @@ declare namespace API {
   }
 
   type MusicFileEditRequest = {
+    artist?: string
     category?: string
     id?: number
     introduction?: string
@@ -246,6 +247,7 @@ declare namespace API {
   }
 
   type MusicFileUpdateRequset = {
+    artist?: string
     category?: string
     id?: number
     introduction?: string

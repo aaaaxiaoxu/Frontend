@@ -16,8 +16,8 @@
         <a-input v-model:value="formState.name" placeholder="请输入音乐名称" />
       </a-form-item>
       
-      <a-form-item label="作者" name="author">
-        <a-input v-model:value="formState.author" placeholder="请输入作者" />
+      <a-form-item label="艺术家" name="artist">
+        <a-input v-model:value="formState.artist" placeholder="请输入艺术家" />
       </a-form-item>
       
       <a-form-item label="专辑" name="album">
@@ -77,7 +77,7 @@ export default defineComponent({
     const formState = reactive({
       id: '',
       name: '',
-      author: '',
+      artist: '',
       album: '',
       category: '',
       tags: [] as string[]
@@ -88,7 +88,7 @@ export default defineComponent({
       if (newVal && newVal.id) {
         formState.id = newVal.id;
         formState.name = newVal.name || '';
-        formState.author = newVal.author || '';
+        formState.artist = newVal.artist || '';
         formState.album = newVal.album || '';
         formState.category = newVal.category || '';
         formState.tags = newVal.tags || [];
@@ -124,7 +124,7 @@ export default defineComponent({
         const res = await updateMusicFileUsingPost({
           id: formState.id,
           name: formState.name,
-          author: formState.author,
+          artist: formState.artist,
           album: formState.album,
           category: formState.category,
           tags: formState.tags

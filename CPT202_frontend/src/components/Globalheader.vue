@@ -4,7 +4,7 @@
       <a-col flex="250px">
         <router-link to="/">
           <div class="title-bar">
-            <img src="../assets/logo.svg" alt="logo" class="logo" />
+            <img src="../assets/logo.png" alt="logo" class="logo" />
             <div class="title">MelodyHub</div>
           </div>
         </router-link>

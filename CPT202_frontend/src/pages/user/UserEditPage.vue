@@ -164,7 +164,7 @@ const handlePasswordChange = async () => {
 
     const updateRequest = {
       id: userForm.id,
-      userPassword: passwordForm.newPassword, // Assuming the API expects 'userPassword'
+      userPassword: passwordForm.newPassword,
     }
 
     const res = await updateUserUsingPost(updateRequest)
@@ -173,10 +173,6 @@ const handlePasswordChange = async () => {
       message.success('Password updated successfully')
       isModalVisible.value = false
       resetPasswordForm()
-      // Optionally: Force logout or redirect after password change for security
-      // message.info('Please log in again with your new password.')
-      // await userLogoutUsingPost() // Need to import userLogoutUsingPost
-      // router.push('/user/login')
     } else {
       message.error('Failed to update password: ' + (res.data.message || 'Unknown error'))
     }
@@ -186,8 +182,7 @@ const handlePasswordChange = async () => {
     if (errorInfo instanceof Error) {
       message.error('An error occurred: ' + errorInfo.message)
     } else {
-      // Handle specific validation errors if needed, or show generic message
-      // message.error('Please check the form for errors.')
+      // Handle specific validation errors if needed
     }
   } finally {
     passwordLoading.value = false

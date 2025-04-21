@@ -11,6 +11,7 @@ import ACCESS_ENUM from '@/access/accessEnum.ts'
 import AddMusicFilePage from '@/pages/AddMusicFilePage.vue'
 import MusicPage from '@/pages/musicPage.vue'
 import SearchedMusicPage from '@/pages/searchedMusicPage.vue'
+import MusicDetailPage from '@/pages/MusicDetailPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -110,6 +111,14 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
+      meta: {
+        access: ACCESS_ENUM.NOT_LOGIN,
+      },
+    },
+    {
+      path: '/music/detail/:id',
+      name: '音乐详情',
+      component: MusicDetailPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
       },

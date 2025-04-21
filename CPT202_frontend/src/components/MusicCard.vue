@@ -2,36 +2,51 @@
   <div class="music-card-component">
     <div v-if="loading" class="loading-container">Loading...</div>
     <div v-else-if="detail" class="music-card">
-      <!-- 音乐封面图部分 -->
+      <!-- 音乐封面图部分 - 缩小比例 -->
       <div class="cover-container">
         <img :src="detail.coverUrl" alt="Cover" class="cover" />
-        
+
         <!-- 播放状态覆盖图标 -->
         <div v-if="isCurrentlyPlaying" class="playing-indicator">
           <div class="playing-icon">▶</div>
         </div>
       </div>
-      
+
       <!-- 信息部分 -->
       <div class="music-info">
         <h3 class="music-title">{{ detail.name }}</h3>
         <p class="music-artist">{{ detail.artist || '未知艺术家' }}</p>
+        <!-- 显示标签 -->
+        <div class="tags-container">
+          <span v-if="!parsedTags.length" class="no-tags">无标签</span>
+          <span v-else v-for="tag in parsedTags" :key="tag" class="tag-item">{{ tag }}</span>
+        </div>
       </div>
-      
-      <!-- 播放按钮部分 -->
-      <div class="action-buttons">
-        <a-button 
-          @click="handlePlay" 
-          type="primary"
-          :class="{ 'playing-button': isCurrentlyPlaying }">
-          <template #icon>
-            <play-circle-outlined v-if="!isCurrentlyPlaying" />
-            <pause-circle-outlined v-else />
-          </template>
-          {{ isCurrentlyPlaying ? '播放中' : '播放' }}
-        </a-button>
+
+      <!-- 底部区域：上传者信息和播放按钮 -->
+      <div class="card-footer">
+        <!-- 上传者信息 -->
+        <div class="uploader-info">
+          <div class="avatar">
+            <img :src="userInfo.userAvatar || 'https://via.placeholder.com/40'" alt="User" />
+          </div>
+          <div class="uploader-name">{{ userInfo.userName || '无名' }}</div>
+        </div>
+
+        <!-- 播放按钮 -->
+        <div class="play-button-container">
+          <a-button
+            @click="handlePlay"
+            type="primary"
+            :class="{ 'playing-button': isCurrentlyPlaying }">
+            <template #icon>
+              <play-circle-outlined v-if="!isCurrentlyPlaying" />
+              <pause-circle-outlined v-else />
+            </template>
+            {{ isCurrentlyPlaying ? '播放中' : '播放' }}
+          </a-button>
+        </div>
       </div>
-    
     </div>
     <div v-else class="error-container">No data available</div>
   </div>
@@ -42,6 +57,7 @@ import { ref, onMounted, computed } from 'vue'
 import { message } from 'ant-design-vue';
 import { PlayCircleOutlined, PauseCircleOutlined } from '@ant-design/icons-vue';
 import { getMusicFileByIdUsingGet } from '@/api/musicFileController'
+import { getUserByIdUsingGet } from '@/api/userController'
 import { currentMusic, playMusic, isPlaying } from '@/utils/audioPlayerStore'
 import bus from '@/utils/eventBus'
 
@@ -51,47 +67,99 @@ interface MusicDetail {
   artist?: string;
   coverUrl?: string;
   url?: string;
+  category?: string;
+  userId?: number;
+  tags?: string[];
+}
+
+interface UserInfo {
+  userId?: number;
+  userName?: string;
+  userAvatar?: string;
 }
 
 const props = defineProps<{ id: number }>();
 const detail = ref<MusicDetail | null>(null);
+const userInfo = ref<UserInfo>({
+  userName: '无名',
+  userAvatar: 'https://via.placeholder.com/40'
+});
 const loading = ref(true);
-const showDebug = ref(true); // 设置为false可隐藏调试信息
+const showDebug = ref(false);
 
 // 计算当前卡片是否正在播放
 const isCurrentlyPlaying = computed(() => {
   return isPlaying.value && String(currentMusic.id) === String(props.id);
 });
 
-// 截断长URL用于显示
-const truncateUrl = (url?: string) => {
-  if (!url) return '';
-  return url.length > 40 ? url.substring(0, 40) + '...' : url;
-};
+// 获取类别对应的CSS类名
+// const getCategoryClass = (category?: string) => {
+//   if (!category) return 'default';
+//
+//   const categoryMap: {[key: string]: string} = {
+//     'Pop': 'pop',
+//     'Rock': 'rock',
+//     'Electronic': 'electronic',
+//     'Jazz': 'jazz',
+//     'Indie': 'indie',
+//     'Classical': 'classical',
+//     'R&B': 'rnb'
+//   };
+//
+//   return categoryMap[category] || 'default';
+// };
 
-// 测试事件总线
-const testEventBus = () => {
-  console.log('发送测试事件...');
-  bus.emit('test', { message: '从MusicCard发送的测试' });
-  message.info('已发送测试事件，请查看控制台');
+// 获取用户信息
+const fetchUserInfo = async (userId: number) => {
+  try {
+    const res = await getUserByIdUsingGet({ id: userId });
+
+    if (res.data.code === 0 && res.data.data) {
+      userInfo.value = {
+        userId: userId,
+        userName: res.data.data.userName || '无名',
+        userAvatar: res.data.data.userAvatar || 'https://via.placeholder.com/40'
+      };
+    } else {
+      console.error('获取用户信息失败:', res.data.message);
+      // 使用默认值
+      userInfo.value = {
+        userId: userId,
+        userName: '无名',
+        userAvatar: 'https://via.placeholder.com/40'
+      };
+    }
+  } catch (err: any) {
+    console.error('获取用户信息出错:', err);
+    // 使用默认值
+    userInfo.value = {
+      userId: userId,
+      userName: '无名',
+      userAvatar: 'https://via.placeholder.com/40'
+    };
+  }
 };
 
 const fetchDetail = async () => {
   try {
-    console.log(`获取ID为${props.id}的音乐详情...`);
     const res = await getMusicFileByIdUsingGet({ id: props.id });
-    console.log('API响应:', res);
-    
+
     if (res.data.code === 0 && res.data.data) {
       detail.value = res.data.data;
-      console.log('音乐详情:', detail.value);
-      
-      // 检查URL
-      if (!detail.value.url) {
-        console.warn('警告: 音乐URL为空');
+
+      // 如果有userId，则获取用户信息
+      if (detail.value.userId) {
+        await fetchUserInfo(detail.value.userId);
       } else {
-        console.log('音乐URL:', detail.value.url);
+        // 没有userId，使用默认值
+        userInfo.value = {
+          userName: '无名',
+          userAvatar: 'https://via.placeholder.com/40'
+        };
       }
+
+      // 解析标签
+      detail.value.tags = parseTags(detail.value.tags);
     } else {
       console.error('获取详情失败:', res.data.message);
       message.error(res.data.message || '加载详情失败');
@@ -108,22 +176,16 @@ onMounted(fetchDetail);
 
 // 处理播放事件
 const handlePlay = () => {
-  console.log('播放按钮被点击');
-  
   if (!detail.value) {
-    console.error('错误: 没有音乐详情数据');
     message.error('没有可播放的音乐数据');
     return;
   }
-  
+
   if (!detail.value.url) {
-    console.error('错误: 音乐URL为空');
     message.error('音乐URL不存在，无法播放');
     return;
   }
-  
-  console.log('准备播放音乐:', detail.value.name);
-  
+
   // 调用全局播放函数
   const success = playMusic({
     id: detail.value.id,
@@ -132,14 +194,33 @@ const handlePlay = () => {
     coverUrl: detail.value.coverUrl,
     url: detail.value.url
   });
-  
+
   if (success) {
-    console.log('播放成功:', detail.value.name);
     message.success(`正在播放: ${detail.value.name}`);
   } else {
-    console.error('播放失败:', detail.value.name);
     message.error('播放失败，请重试');
   }
+};
+
+// 解析标签的计算属性
+const parsedTags = computed(() => {
+  if (!detail.value?.tags) return [];
+  return Array.isArray(detail.value.tags) ? detail.value.tags : [detail.value.tags];
+});
+
+// 在 fetchMusicDetail 或 initMusicDetail 函数中，添加标签解析逻辑
+// 将字符串形式的 JSON 标签转换为数组
+const parseTags = (tagsData) => {
+  if (!tagsData) return [];
+  if (typeof tagsData === 'string') {
+    try {
+      return JSON.parse(tagsData);
+    } catch (e) {
+      console.error('解析标签失败:', e);
+      return [];
+    }
+  }
+  return Array.isArray(tagsData) ? tagsData : [tagsData];
 };
 </script>
 
@@ -163,6 +244,9 @@ const handlePlay = () => {
   overflow: hidden;
   position: relative;
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .music-card:hover {
@@ -173,7 +257,8 @@ const handlePlay = () => {
 .cover-container {
   position: relative;
   width: 100%;
-  padding-top: 100%; /* Maintains aspect ratio */
+  /* 修改比例为80%，原来是100% */
+  padding-top: 80%;
   overflow: hidden;
   background-color: #f0f0f0;
 }
@@ -208,6 +293,7 @@ const handlePlay = () => {
 .music-info {
   padding: 12px;
   text-align: left;
+  flex-grow: 1;
 }
 
 .music-title {
@@ -221,7 +307,7 @@ const handlePlay = () => {
 }
 
 .music-artist {
-  margin: 0;
+  margin: 0 0 8px 0;
   font-size: 14px;
   color: #666;
   white-space: nowrap;
@@ -229,9 +315,90 @@ const handlePlay = () => {
   text-overflow: ellipsis;
 }
 
-.action-buttons {
-  padding: 0 12px 12px;
-  text-align: center;
+/* 类别标签样式 */
+.category-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  background-color: #888;
+}
+
+.category-pop {
+  background-color: #ff4d94;
+}
+
+.category-rock {
+  background-color: #ff6b22;
+}
+
+.category-electronic {
+  background-color: #00bcd4;
+}
+
+.category-jazz {
+  background-color: #9c27b0;
+}
+
+.category-indie {
+  background-color: #4caf50;
+}
+
+.category-classical {
+  background-color: #795548;
+}
+
+.category-rnb {
+  background-color: #3f51b5;
+}
+
+.category-default {
+  background-color: #888;
+}
+
+/* 卡片底部样式 */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* 上传者信息样式 */
+.uploader-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 8px;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uploader-name {
+  font-size: 13px;
+  color: #666;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 播放按钮容器 */
+.play-button-container {
+  flex-shrink: 0;
 }
 
 .playing-button {
@@ -239,26 +406,25 @@ const handlePlay = () => {
   color: white;
 }
 
-.debug-info {
-  margin-top: 10px;
-  padding: 5px;
-  background: #f0f0f0;
-  border-radius: 4px;
-  font-size: 12px;
-}
-
-.debug-info p {
-  margin: 2px 0;
-  word-break: break-all;
-}
-
-.debug-info button {
-  background: #4e89ff;
-  color: white;
-  border: none;
-  padding: 3px 8px;
-  border-radius: 3px;
+/* 标签容器样式 */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
   margin-top: 5px;
-  cursor: pointer;
+}
+
+.tag-item {
+  padding: 2px 8px;
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+  border-radius: 2px;
+  font-size: 12px;
+  color: #1890ff;
+}
+
+.no-tags {
+  font-size: 12px;
+  color: #999;
 }
 </style>
