@@ -1,106 +1,107 @@
 <template>
   <div id="userRegisterPage">
-    <div class="page-container">
-      <!-- 注册表单区域 -->
-      <div class="form-container">
-        <div class="logo">
-          <img src="/logo.png" alt="我们项目的Logo" class="logo-image" />
-        </div>
-        <h2 class="title">创建新账号</h2>
+    <!-- 使用多彩粒子背景，可以设置不同的颜色组合 -->
+    <MultiColorParticlesBg
+      class="particles-background"
+      :colors="['#2F54EB', '#EB2F96', '#FAAD14', '#13C2C2', '#52C41A']"
+      :quantity="480"
+    />
 
-        <a-form
-          :model="formState"
-          name="basic"
-          autocomplete="off"
-          @finish="handleSubmit"
-          class="register-form"
+    <div class="form-card">
+      <h2 class="title">{{ $t('message.welcomeToMelodyHub') }}</h2>
+      <p class="subtitle">{{ $t('message.createAccount') }}</p>
+
+      <a-form
+        :model="formState"
+        name="basic"
+        autocomplete="off"
+        @finish="handleSubmit"
+        class="register-form"
+        layout="vertical"
+      >
+        <div class="form-label">{{ $t('message.emailLabel') }}</div>
+        <a-form-item
+          name="email"
+          :rules="[
+            { required: true, message: $t('message.enterEmail') },
+            { type: 'email', message: '请输入有效的邮箱地址' },
+          ]"
         >
-          <div class="form-label">邮箱</div>
-          <a-form-item
-            name="email"
-            :rules="[
-              { required: true, message: '请输入您的邮箱' },
-              { type: 'email', message: '请输入有效的邮箱地址' },
-            ]"
-          >
-            <div class="input-with-button">
-              <a-input
-                v-model:value="formState.email"
-                placeholder="请输入邮箱地址"
-                class="custom-input"
-              />
-              <a-button
-                type="primary"
-                class="send-code-button"
-                :disabled="sendCodeDisabled"
-                @click="sendVerificationCode"
-              >
-                {{ sendCodeText }}
-              </a-button>
-            </div>
-          </a-form-item>
-
-          <div class="form-label">密码</div>
-          <a-form-item
-            name="userPassword"
-            :rules="[
-              { required: true, message: '请输入您的密码' },
-              { min: 8, message: '密码长度至少为8个字符' },
-            ]"
-          >
-            <a-input-password
-              v-model:value="formState.userPassword"
-              placeholder="请输入密码"
+          <div class="input-with-button">
+            <IInput
+              v-model="formState.email"
+              :placeholder="$t('message.enterEmail')"
               class="custom-input"
             />
-          </a-form-item>
+            <a-button
+              type="primary"
+              class="send-code-button"
+              :disabled="sendCodeDisabled"
+              @click="sendVerificationCode"
+            >
+              {{ sendCodeDisabled ? sendCodeText : $t('message.sendCode') }}
+            </a-button>
+          </div>
+        </a-form-item>
 
-          <div class="form-label">确认密码</div>
-          <a-form-item
-            name="checkPassword"
-            :rules="[
-              { required: true, message: '请确认您的密码' },
-              { min: 8, message: '确认密码长度至少为8个字符' },
-            ]"
-          >
-            <a-input-password
-              v-model:value="formState.checkPassword"
-              placeholder="请再次输入密码"
-              class="custom-input"
-            />
-          </a-form-item>
+        <div class="form-label">{{ $t('message.passwordLabel') }}</div>
+        <a-form-item
+          name="userPassword"
+          :rules="[
+            { required: true, message: $t('message.enterPassword') },
+            { min: 8, message: '密码长度至少为8个字符' },
+          ]"
+        >
+          <IInput
+            v-model="formState.userPassword"
+            type="password"
+            :placeholder="$t('message.enterPassword')"
+            class="custom-input"
+          />
+        </a-form-item>
 
-          <div class="form-label">验证码</div>
-          <a-form-item name="code" :rules="[{ required: true, message: '请输入验证码' }]">
-            <a-input
-              v-model:value="formState.code"
-              placeholder="请输入验证码"
-              class="custom-input"
-            />
-          </a-form-item>
+        <div class="form-label">{{ $t('message.confirmPasswordLabel') }}</div>
+        <a-form-item
+          name="checkPassword"
+          :rules="[
+            { required: true, message: $t('message.enterConfirmPassword') },
+            { min: 8, message: '确认密码长度至少为8个字符' },
+          ]"
+        >
+          <IInput
+            v-model="formState.checkPassword"
+            type="password"
+            :placeholder="$t('message.enterConfirmPassword')"
+            class="custom-input"
+          />
+        </a-form-item>
 
-          <a-form-item>
-            <a-button type="primary" html-type="submit" class="register-button">注册</a-button>
-          </a-form-item>
-        </a-form>
+        <div class="form-label">{{ $t('message.verificationCodeLabel') }}</div>
+        <a-form-item name="code" :rules="[{ required: true, message: $t('message.enterVerificationCode') }]">
+          <IInput
+            v-model="formState.code"
+            :placeholder="$t('message.enterVerificationCode')"
+            class="custom-input"
+          />
+        </a-form-item>
 
-        <div class="login-link">
-          已有账号？
-          <RouterLink to="/user/login" class="link">登录</RouterLink>
-        </div>
+        <a-form-item>
+          <a-button type="primary" html-type="submit" class="submit-button">
+            {{ $t('message.registerButton') }} →
+          </a-button>
+        </a-form-item>
+      </a-form>
+
+      <div class="login-link">
+        {{ $t('message.hasAccount') }}
+        <RouterLink to="/user/login" class="link">{{ $t('message.login') }}</RouterLink>
       </div>
 
-      <!-- 图片区域 -->
-      <div class="music-image">
-        <img src="https://img.picui.cn/free/2025/04/16/67ffc996a79ef.png" alt="Music tools" />
-      </div>
-
-      <!-- 文字区域 -->
-      <div class="image-text">
-        <h3>Music tools for efficient minds</h3>
-        <p>
-          MelodyHub帮助您轻松管理、组织和享受您的音乐。随时随地上传、标记和访问您的音乐，简单便捷。
-        </p>
+      <!-- 添加语言切换按钮 -->
+      <div class="language-switch">
+        <a @click="changeLanguage" class="language-link">
+          {{ locale === 'en' ? '中文' : 'English' }}
+        </a>
       </div>
     </div>
   </div>
@@ -114,6 +115,19 @@ import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userRegisterUsingPost } from '@/api/userController.ts'
 import { sendVerificationCodeUsingPost } from '@/api/emailController.ts'
 import { message } from 'ant-design-vue'
+// 导入多彩粒子背景组件
+import MultiColorParticlesBg from '@/components/ui/particles-bg/MultiColorParticlesBg.vue'
+// 导入i18n
+import { useI18n } from 'vue-i18n'
+// 导入自定义输入框组件
+import IInput from '@/components/ui/input/IInput.vue'
+
+const { t, locale } = useI18n()
+
+// 切换语言方法
+const changeLanguage = () => {
+  locale.value = locale.value === 'en' ? 'zh' : 'en'
+}
 
 const formState = reactive({
   email: '',
@@ -136,14 +150,14 @@ let timer: number | null = null
 // 发送验证码
 const sendVerificationCode = async () => {
   if (!formState.email) {
-    message.error('请先输入邮箱地址')
+    message.error(t('message.enterEmail'))
     return
   }
 
   // 验证邮箱格式
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(formState.email)) {
-    message.error('请输入有效的邮箱地址')
+    message.error(t('message.invalidEmail'))
     return
   }
 
@@ -153,13 +167,13 @@ const sendVerificationCode = async () => {
     })
 
     if (res.data.code === 0) {
-      message.success('验证码已发送，请查收邮件')
+      message.success(t('message.codeSent'))
       startCountdown()
     } else {
-      message.error('发送验证码失败：' + res.data.message)
+      message.error(t('message.sendCodeFailed') + res.data.message)
     }
   } catch (error) {
-    message.error('发送验证码失败，请稍后重试')
+    message.error(t('message.sendCodeFailed'))
   }
 }
 
@@ -188,7 +202,7 @@ const startCountdown = () => {
 const handleSubmit = async (values: any) => {
   // 校验两次输入的密码是否一致
   if (values.userPassword != values.checkPassword) {
-    message.error('两次密码不一致')
+    message.error(t('message.passwordMismatch'))
     return
   }
 
@@ -206,16 +220,16 @@ const handleSubmit = async (values: any) => {
 
     // 注册成功，跳转至登录页
     if (res.data.code === 0 && res.data.data) {
-      message.success('注册成功')
+      message.success(t('message.registerSuccess'))
       router.push({
         path: '/user/login',
         replace: true,
       })
     } else {
-      message.error('注册失败，' + res.data.message)
+      message.error(t('message.registerFailed') + res.data.message)
     }
   } catch (error) {
-    message.error('注册失败，请稍后重试')
+    message.error(t('message.registerFailed'))
   }
 }
 </script>
@@ -237,110 +251,58 @@ const handleSubmit = async (values: any) => {
   background-color: #f5f5f5;
 }
 
-.page-container {
-  display: grid;
-  grid-template-columns: 380px 1fr;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    'form image'
-    'form text';
-  gap: 20px;
-  width: 900px;
-  max-width: 90%;
-  background-color: white;
-  padding: 20px;
-}
-
-.form-container {
-  grid-area: form;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-right: 1px solid #f0f0f0;
-  overflow-y: auto;
-  max-height: 650px;
-}
-
-.music-image {
-  grid-area: image;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.music-image img {
+/* 粒子背景样式 */
+.particles-background {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  max-height: 300px;
-  object-fit: contain;
+  height: 100%;
+  z-index: 0;
 }
 
-.image-text {
-  grid-area: text;
-  padding: 0 20px 20px 20px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.image-text h3 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-.image-text p {
-  font-size: 16px;
-  color: #666;
-  line-height: 1.6;
-}
-
-.logo {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.logo-image {
-  width: 50px;
-  height: 50px;
+/* 表单卡片样式 */
+.form-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
+  max-height: 90vh;
 }
 
 .title {
-  text-align: center;
   font-size: 24px;
   font-weight: 600;
-  margin-bottom: 30px;
   color: #333;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
 }
 
 .form-label {
   font-size: 14px;
-  margin-bottom: 8px;
-  color: #666;
   font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
 }
 
 .register-form {
-  margin-bottom: 20px;
   width: 100%;
 }
 
 .custom-input {
-  height: 40px;
+  width: 100%;
   border-radius: 4px;
-  background-color: #f7f9fc;
-  border: 1px solid #e0e0e0;
   transition: all 0.3s;
-}
-
-.custom-input:hover {
-  border-color: #1890ff;
-}
-
-.custom-input:focus {
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
 .input-with-button {
@@ -355,29 +317,33 @@ const handleSubmit = async (values: any) => {
 .send-code-button {
   border-radius: 4px;
   min-width: 60px;
+  background-color: #1890ff;
 }
 
-.register-button {
+.submit-button {
   width: 100%;
-  height: 40px;
+  height: 45px;
   border-radius: 4px;
-  background-color: #1890ff;
+  background-color: #000;
   border: none;
   font-weight: 500;
   font-size: 16px;
-  margin-top: 10px;
+  margin-top: 20px;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.register-button:hover {
-  background-color: #40a9ff;
+.submit-button:hover {
+  background-color: #333;
 }
 
 .login-link {
   text-align: center;
+  margin-top: 20px;
   font-size: 14px;
   color: #666;
-  margin-top: 16px;
 }
 
 .link {
@@ -387,37 +353,23 @@ const handleSubmit = async (values: any) => {
 }
 
 .link:hover {
-  color: #40a9ff;
   text-decoration: underline;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .page-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    grid-template-areas:
-      'form'
-      'image'
-      'text';
-    width: 100%;
-    max-width: 380px;
-  }
+/* 语言切换按钮 */
+.language-switch {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
 
-  .form-container {
-    border-right: none;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 30px;
-    max-height: none;
-  }
+.language-link {
+  color: #1890ff;
+  cursor: pointer;
+  font-size: 14px;
+}
 
-  .music-image {
-    padding: 30px 20px;
-  }
-
-  .image-text {
-    border-top: 1px solid #f0f0f0;
-    padding: 20px;
-  }
+.language-link:hover {
+  text-decoration: underline;
 }
 </style>

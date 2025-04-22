@@ -4,23 +4,29 @@
     <div class="content">
       <BlurReveal :delay="0.1" :duration="1.2">
         <h1 class="title">MelodyHub</h1>
-        <p class="subtitle">The best music manangement system you will never miss!</p>
+        <p class="subtitle">{{$t('message.solgen')}}</p>
       </BlurReveal>
       <div class="buttons">
         <InteractiveHoverButton
-          text="Get Start"
+          :text="$t('message.getStarted')"
           class="enter-btn"
           @click="goToHome"
         />
         <InteractiveHoverButton
-          text="Login"
+          :text="$t('message.login')"
           class="login-btn"
           @click="goToLogin"
         />
         <InteractiveHoverButton
-          text="Registration"
+          :text="$t('message.register')"
           class="register-btn"
           @click="goToRegister"
+        />
+        <!-- 添加一个专门用于切换语言的按钮 -->
+        <InteractiveHoverButton
+        :text="locale === 'en' ? '中文' : 'English'"
+        class="language-btn"
+        @click="changeLanguage"
         />
       </div>
     </div>
@@ -32,6 +38,8 @@ import { useRouter } from 'vue-router'
 import FallingStarsBg from '@/components/ui/bg-falling-stars/FallingStarsBg.vue'
 import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
 import BlurReveal from '@/components/ui/blur-reveal/BlurReveal.vue'
+import {useI18n} from 'vue-i18n'
+import { onMounted, ref } from 'vue'
 
 const router = useRouter()
 
@@ -45,6 +53,21 @@ const goToLogin = () => {
 
 const goToRegister = () => {
   router.push('/user/register')
+}
+
+
+onMounted(() => {
+  change_language.value = locale.value
+})
+
+// 定义语言的状态
+const {locale} = useI18n()
+const change_language = ref('')
+
+// 定义切换语言的方法 - 修改为切换中英文
+const changeLanguage = () => {
+  // 如果当前是英文，切换到中文；如果是中文，切换到英文
+  locale.value = locale.value === 'en' ? 'zh' : 'en'
 }
 </script>
 

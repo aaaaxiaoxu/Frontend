@@ -1,66 +1,65 @@
 <template>
   <div id="userLoginPage">
-    <div class="page-container">
-      <!-- 登录表单区域 -->
-      <div class="form-container">
-        <div class="logo">
-          <img src="/logo.png" alt="MelodyHub Logo" class="logo-image" />
-        </div>
-        <h2 class="title">登录</h2>
+    <!-- 保留粒子背景 -->
+    <MultiColorParticlesBg
+      class="particles-background"
+      :colors="['#1890FF', '#722ED1', '#52C41A', '#FA8C16', '#F5222D']"
+      :quantity="480"
+    />
 
-        <a-form
-          :model="formState"
-          name="basic"
-          autocomplete="off"
-          @finish="handleSubmit"
-          class="login-form"
+    <div class="form-card">
+      <h2 class="title">{{ $t('message.welcomeToMelodyHub') }}</h2>
+      <p class="subtitle">{{ $t('message.loginToAccount') }}</p>
+
+      <a-form
+        :model="formState"
+        name="basic"
+        autocomplete="off"
+        @finish="handleSubmit"
+        class="login-form"
+        layout="vertical"
+      >
+        <div class="form-label">{{ $t('message.accountLabel') }}</div>
+        <a-form-item name="userAccount" :rules="[{ required: true, message: $t('message.enterAccount') }]">
+          <IInput
+            v-model="formState.userAccount"
+            :placeholder="$t('message.enterAccount')"
+            class="custom-input"
+          />
+        </a-form-item>
+
+        <div class="form-label">{{ $t('message.passwordLabel') }}</div>
+        <a-form-item
+          name="userPassword"
+          :rules="[
+            { required: true, message: $t('message.enterPassword') },
+            { min: 8, message: '密码长度至少为8个字符' },
+          ]"
         >
-          <div class="form-label">账号</div>
-          <a-form-item name="userAccount" :rules="[{ required: true, message: '请输入您的账号' }]">
-            <a-input
-              v-model:value="formState.userAccount"
-              placeholder="请输入账号"
-              class="custom-input"
-            />
-          </a-form-item>
+          <IInput
+            v-model="formState.userPassword"
+            type="password"
+            :placeholder="$t('message.enterPassword')"
+            class="custom-input"
+          />
+        </a-form-item>
 
-          <div class="form-label">密码</div>
-          <a-form-item
-            name="userPassword"
-            :rules="[
-              { required: true, message: '请输入您的密码' },
-              { min: 8, message: '密码长度至少为8个字符' },
-            ]"
-          >
-            <a-input-password
-              v-model:value="formState.userPassword"
-              placeholder="请输入密码"
-              class="custom-input"
-            />
-          </a-form-item>
+        <a-form-item>
+          <a-button type="primary" html-type="submit" class="submit-button">
+            {{ $t('message.loginButton') }} →
+          </a-button>
+        </a-form-item>
+      </a-form>
 
-          <a-form-item>
-            <a-button type="primary" html-type="submit" class="login-button">登录</a-button>
-          </a-form-item>
-        </a-form>
-
-        <div class="register-link">
-          还没有账号？
-          <RouterLink to="/user/register" class="link">注册</RouterLink>
-        </div>
+      <div class="register-link">
+        {{ $t('message.noAccount') }}
+        <RouterLink to="/user/register" class="link">{{ $t('message.register') }}</RouterLink>
       </div>
-
-      <!-- 图片区域 -->
-      <div class="music-image">
-        <img src="https://img.picui.cn/free/2025/04/16/67ffc996a79ef.png" alt="Music tools" />
-      </div>
-
-      <!-- 文字区域 -->
-      <div class="image-text">
-        <h3>Music tools for efficient minds</h3>
-        <p>
-          MelodyHub帮助您轻松管理、组织和享受您的音乐。随时随地上传、标记和访问您的音乐，简单便捷。
-        </p>
+      
+      <div class="language-switch">
+        <a @click="changeLanguage" class="language-link">
+          {{ locale === 'en' ? '中文' : 'English' }}
+        </a>
       </div>
     </div>
   </div>
@@ -73,6 +72,19 @@ import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userLoginUsingPost } from '@/api/userController.ts'
 import { message } from 'ant-design-vue'
+// 导入多彩粒子背景组件
+import MultiColorParticlesBg from '@/components/ui/particles-bg/MultiColorParticlesBg.vue'
+// 导入i18n
+import { useI18n } from 'vue-i18n'
+// 导入自定义输入框组件
+import IInput from '@/components/ui/input/IInput.vue'
+
+const { t, locale } = useI18n()
+
+// 切换语言方法
+const changeLanguage = () => {
+  locale.value = locale.value === 'en' ? 'zh' : 'en'
+}
 
 const formState = reactive<API.UserLoginRequest>({
   userAccount: '',
@@ -92,13 +104,13 @@ const handleSubmit = async (values: any) => {
   // 登录成功，把登录态保存到全局状态中
   if (res.data.code === 0 && res.data.data) {
     await loginUserStore.fetchLoginUser()
-    message.success('登录成功')
+    message.success(t('message.loginSuccess'))
     router.push({
       path: '/',
       replace: true,
     })
   } else {
-    message.error('登录失败，' + res.data.message)
+    message.error(t('message.loginFailed') + res.data.message)
   }
 }
 </script>
@@ -120,131 +132,82 @@ const handleSubmit = async (values: any) => {
   background-color: #f5f5f5;
 }
 
-.page-container {
-  display: grid;
-  grid-template-columns: 380px 1fr;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    'form image'
-    'form text';
-  gap: 20px;
-  width: 900px;
-  max-width: 90%;
-  background-color: white;
-  padding: 20px;
-}
-
-.form-container {
-  grid-area: form;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-right: 1px solid #f0f0f0;
-}
-
-.music-image {
-  grid-area: image;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.music-image img {
+/* 粒子背景样式 */
+.particles-background {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  max-height: 300px;
-  object-fit: contain;
+  height: 100%;
+  z-index: 0;
 }
 
-.image-text {
-  grid-area: text;
-  padding: 0 20px 20px 20px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.image-text h3 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-.image-text p {
-  font-size: 16px;
-  color: #666;
-  line-height: 1.6;
-}
-
-.logo {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.logo-image {
-  width: 50px;
-  height: 50px;
+/* 表单卡片样式 */
+.form-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
 }
 
 .title {
-  text-align: center;
   font-size: 24px;
   font-weight: 600;
-  margin-bottom: 30px;
   color: #333;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
 }
 
 .form-label {
   font-size: 14px;
-  margin-bottom: 8px;
-  color: #666;
   font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
 }
 
 .login-form {
-  margin-bottom: 20px;
   width: 100%;
 }
 
 .custom-input {
-  height: 40px;
+  width: 100%;
   border-radius: 4px;
-  background-color: #f7f9fc;
-  border: 1px solid #e0e0e0;
   transition: all 0.3s;
 }
 
-.custom-input:hover {
-  border-color: #1890ff;
-}
-
-.custom-input:focus {
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-}
-
-.login-button {
+.submit-button {
   width: 100%;
-  height: 40px;
+  height: 45px;
   border-radius: 4px;
-  background-color: #1890ff;
+  background-color: #000;
   border: none;
   font-weight: 500;
   font-size: 16px;
-  margin-top: 10px;
+  margin-top: 20px;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.login-button:hover {
-  background-color: #40a9ff;
+.submit-button:hover {
+  background-color: #333;
 }
 
 .register-link {
   text-align: center;
+  margin-top: 20px;
   font-size: 14px;
   color: #666;
-  margin-top: 16px;
 }
 
 .link {
@@ -254,36 +217,23 @@ const handleSubmit = async (values: any) => {
 }
 
 .link:hover {
-  color: #40a9ff;
   text-decoration: underline;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .page-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    grid-template-areas:
-      'form'
-      'image'
-      'text';
-    width: 100%;
-    max-width: 380px;
-  }
+/* 语言切换按钮 */
+.language-switch {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
 
-  .form-container {
-    border-right: none;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 30px;
-  }
+.language-link {
+  color: #1890ff;
+  cursor: pointer;
+  font-size: 14px;
+}
 
-  .music-image {
-    padding: 30px 20px;
-  }
-
-  .image-text {
-    border-top: 1px solid #f0f0f0;
-    padding: 20px;
-  }
+.language-link:hover {
+  text-decoration: underline;
 }
 </style>

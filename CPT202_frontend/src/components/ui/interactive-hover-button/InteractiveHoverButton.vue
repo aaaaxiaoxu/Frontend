@@ -13,7 +13,7 @@
         class="size-2 scale-100 rounded-lg bg-primary transition-all duration-300 group-hover:scale-[100.8]"
       ></div>
       <span
-        class="inline-block whitespace-nowrap transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0"
+        class="inline-block whitespace-nowrap text-black transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0"
       >
         {{ text }}
       </span>
