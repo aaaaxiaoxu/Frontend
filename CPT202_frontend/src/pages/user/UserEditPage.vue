@@ -63,7 +63,9 @@
 
         <!-- Submit Button -->
         <a-form-item :wrapper-col="{ offset: 6, span: 16 }">
-          <a-button type="primary" html-type="submit" :loading="loading" style="margin-right: 10px;">Save Changes</a-button>
+          <a-button type="primary" html-type="submit" :loading="loading" style="margin-right: 10px"
+            >Save Changes</a-button
+          >
           <a-button
             style="background-color: #87ceeb; border-color: #87ceeb; color: white"
             @click="showPasswordModal"
@@ -87,12 +89,18 @@
     >
       <a-form ref="passwordFormRef" :model="passwordForm" :rules="passwordRules" layout="vertical">
         <a-form-item label="New Password" name="newPassword">
-          <a-input-password v-model:value="passwordForm.newPassword" placeholder="Enter new password">
+          <a-input-password
+            v-model:value="passwordForm.newPassword"
+            placeholder="Enter new password"
+          >
             <template #prefix><LockOutlined /></template>
           </a-input-password>
         </a-form-item>
         <a-form-item label="Confirm New Password" name="confirmPassword">
-          <a-input-password v-model:value="passwordForm.confirmPassword" placeholder="Confirm new password">
+          <a-input-password
+            v-model:value="passwordForm.confirmPassword"
+            placeholder="Confirm new password"
+          >
             <template #prefix><LockOutlined /></template>
           </a-input-password>
         </a-form-item>
@@ -131,7 +139,7 @@ const validateConfirmPassword = async (_rule: FormRule, value: string) => {
   if (value === '') {
     return Promise.reject('Please confirm your new password!')
   } else if (value !== passwordForm.newPassword) {
-    return Promise.reject("确认密码应与新密码相同") // Confirm password should be the same as the new password
+    return Promise.reject('确认密码应与新密码相同') // Confirm password should be the same as the new password
   } else {
     return Promise.resolve()
   }
@@ -142,9 +150,7 @@ const passwordRules: Record<string, FormRule[]> = {
     { required: true, message: 'Please input your new password!' },
     { min: 8, message: '密码长度至少为8个字符' }, // Password length must be at least 8 characters
   ],
-  confirmPassword: [
-    { required: true, validator: validateConfirmPassword, trigger: 'change' },
-  ],
+  confirmPassword: [{ required: true, validator: validateConfirmPassword, trigger: 'change' }],
 }
 
 const showPasswordModal = () => {

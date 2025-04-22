@@ -22,7 +22,7 @@
           <a-input-search
             v-model:value="searchValue"
             placeholder="input search text"
-            style="width: 240px; margin-right: 16px;"
+            style="width: 240px; margin-right: 16px"
             enter-button
             @search="onSearch"
           />
@@ -72,7 +72,13 @@
 
 <script lang="ts" setup>
 import { h, ref, computed } from 'vue'
-import { HomeOutlined, LogoutOutlined, UserOutlined, UploadOutlined, CustomerServiceOutlined } from '@ant-design/icons-vue'
+import {
+  HomeOutlined,
+  LogoutOutlined,
+  UserOutlined,
+  UploadOutlined,
+  CustomerServiceOutlined,
+} from '@ant-design/icons-vue'
 import type { MenuProps } from 'ant-design-vue'
 import { message, InputSearch } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
@@ -205,16 +211,16 @@ const showUploadModal = () => {
 }
 
 // Add search functionality
-const searchValue = ref<string>('');
+const searchValue = ref<string>('')
 
 const onSearch = (value: string) => {
   if (value.trim()) {
     router.push({
       path: '/search',
-      query: { q: value.trim() }
-    });
+      query: { q: value.trim() },
+    })
   }
-};
+}
 </script>
 
 <style scoped>

@@ -55,7 +55,7 @@
           :pageSizeOptions="['12', '24', '36', '48']"
           showSizeChanger
           @change="(page, pageSize) => handlePaginationChange(page, pageSize)"
-          style="text-align: center; margin-top: 24px;"
+          style="text-align: center; margin-top: 24px"
         />
       </div>
     </a-layout-content>
@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed, provide } from 'vue'
-import type { MenuInfo } from 'ant-design-vue/es/menu/src/interface';
+import type { MenuInfo } from 'ant-design-vue/es/menu/src/interface'
 import {
   Layout as ALayout,
   LayoutSider as ALayoutSider,
@@ -86,50 +86,53 @@ import {
   Row as ARow,
   Col as ACol,
   Pagination as APagination,
-} from 'ant-design-vue';
+} from 'ant-design-vue'
 import {
   DownloadOutlined,
   EditOutlined,
   DeleteOutlined,
   PlayCircleOutlined,
-} from '@ant-design/icons-vue';
-import { listMusicFileVoByPageUsingPost, listMusicFileVoByCategoryPageUsingGet } from '@/api/musicFileController';
-import MusicCard from '@/components/MusicCard.vue';
-import PlayerBar from '@/components/PlayerBar.vue';
-import { useRouter } from 'vue-router';
-import { useMusicStore } from '@/stores/musicStore';
+} from '@ant-design/icons-vue'
+import {
+  listMusicFileVoByPageUsingPost,
+  listMusicFileVoByCategoryPageUsingGet,
+} from '@/api/musicFileController'
+import MusicCard from '@/components/MusicCard.vue'
+import PlayerBar from '@/components/PlayerBar.vue'
+import { useRouter } from 'vue-router'
+import { useMusicStore } from '@/stores/musicStore'
 
-const musicList = ref<API.MusicFileVO[]>([]);
-const loading = ref(false);
-const selectedCategoryKeys = ref<string[]>(['uploaded']);
-const selectedCategoryLabel = ref<string>('Uploaded');
+const musicList = ref<API.MusicFileVO[]>([])
+const loading = ref(false)
+const selectedCategoryKeys = ref<string[]>(['uploaded'])
+const selectedCategoryLabel = ref<string>('Uploaded')
 
 const pagination = reactive({
   current: 1,
   pageSize: 12,
   total: 0,
-});
+})
 
 const paginationProps = computed(() => ({
   current: pagination.current,
   pageSize: pagination.pageSize,
   total: pagination.total || 0,
   onChange: (page: number, pageSize: number) => {
-    pagination.current = page;
-    pagination.pageSize = pageSize;
-    fetchMusicData();
+    pagination.current = page
+    pagination.pageSize = pageSize
+    fetchMusicData()
   },
   showSizeChanger: true,
   pageSizeOptions: ['12', '24', '36', '48'],
 }))
 
-const router = useRouter();
-const musicStore = useMusicStore();
+const router = useRouter()
+const musicStore = useMusicStore()
 
 const fetchMusicData = async () => {
-  loading.value = true;
-  const currentCategory = selectedCategoryKeys.value[0];
-  let response = null;
+  loading.value = true
+  const currentCategory = selectedCategoryKeys.value[0]
+  let response = null
 
   try {
     if (currentCategory === 'uploaded') {
@@ -139,42 +142,42 @@ const fetchMusicData = async () => {
         pageSize: pagination.pageSize,
         category: undefined, // Ensure category is not sent when fetching all
         // Add other necessary sort/filter params if needed for "Uploaded"
-      };
-      response = await listMusicFileVoByPageUsingPost(queryParams);
+      }
+      response = await listMusicFileVoByPageUsingPost(queryParams)
     } else if (currentCategory && currentCategory !== 'popular' && currentCategory !== 'custom') {
       // Fetch music by specific category using GET endpoint
       const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
         category: currentCategory,
         current: pagination.current,
         pageSize: pagination.pageSize,
-      };
-      response = await listMusicFileVoByCategoryPageUsingGet(params);
+      }
+      response = await listMusicFileVoByCategoryPageUsingGet(params)
     } else {
       // Handle cases for 'popular' or 'custom' parent items if they shouldn't fetch data
-      console.log('No data fetch for category:', currentCategory);
-      musicList.value = [];
-      pagination.total = 0;
-      loading.value = false;
-      return; // Exit fetch function
+      console.log('No data fetch for category:', currentCategory)
+      musicList.value = []
+      pagination.total = 0
+      loading.value = false
+      return // Exit fetch function
     }
 
     // Process the response (same logic for both endpoints)
     if (response && response.data.code === 0 && response.data.data) {
-      musicList.value = response.data.data.records || [];
-      pagination.total = parseInt(String(response.data.data.total ?? '0'), 10);
+      musicList.value = response.data.data.records || []
+      pagination.total = parseInt(String(response.data.data.total ?? '0'), 10)
     } else {
-      message.error('Failed to load music: ' + (response?.data.message || 'Unknown error'));
-      musicList.value = [];
-      pagination.total = 0;
+      message.error('Failed to load music: ' + (response?.data.message || 'Unknown error'))
+      musicList.value = []
+      pagination.total = 0
     }
   } catch (error: any) {
-    message.error('Error fetching music data: ' + error.message);
-    musicList.value = [];
-    pagination.total = 0;
+    message.error('Error fetching music data: ' + error.message)
+    musicList.value = []
+    pagination.total = 0
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const categoryLabels: { [key: string]: string } = {
   uploaded: 'Uploaded',
@@ -186,50 +189,49 @@ const categoryLabels: { [key: string]: string } = {
   indie: 'Indie',
   classical: 'Classical',
   rnb: 'R&B',
-  custom: 'Custom Category'
-};
+  custom: 'Custom Category',
+}
 
 const handleCategoryClick = (info: MenuInfo) => {
-  const key = info.key as string;
-  if (key === 'popular' || key === 'custom') return;
+  const key = info.key as string
+  if (key === 'popular' || key === 'custom') return
 
-  selectedCategoryKeys.value = [key];
-  selectedCategoryLabel.value = categoryLabels[key] || 'Unknown Category';
-  pagination.current = 1;
-  fetchMusicData();
-};
+  selectedCategoryKeys.value = [key]
+  selectedCategoryLabel.value = categoryLabels[key] || 'Unknown Category'
+  pagination.current = 1
+  fetchMusicData()
+}
 
-const currentPlayingId = ref<number | null>(null);
-provide('currentPlayingId', currentPlayingId);
+const currentPlayingId = ref<number | null>(null)
+provide('currentPlayingId', currentPlayingId)
 const handlePlay = (id: number) => {
-  currentPlayingId.value = id;
-};
+  currentPlayingId.value = id
+}
 
 const handlePaginationChange = (page: number, pageSize: number) => {
-  pagination.current = page;
-  pagination.pageSize = pageSize;
-  fetchMusicData();
-};
+  pagination.current = page
+  pagination.pageSize = pageSize
+  fetchMusicData()
+}
 
 const showMusicDetails = (item) => {
   if (item && item.id) {
-    console.log("跳转到详情页，音乐ID:", item.id);
-    
+    console.log('跳转到详情页，音乐ID:', item.id)
+
     // 存储到store
-    musicStore.setCurrentMusic(item);
-    
+    musicStore.setCurrentMusic(item)
+
     // 直接使用原始ID格式跳转，不进行转换
-    router.push(`/music/detail/${item.id}`);
+    router.push(`/music/detail/${item.id}`)
   } else {
-    message.error('无效的音乐ID');
+    message.error('无效的音乐ID')
   }
-};
+}
 
 onMounted(() => {
-  selectedCategoryLabel.value = categoryLabels[selectedCategoryKeys.value[0]] || 'Unknown Category';
-  fetchMusicData();
-});
-
+  selectedCategoryLabel.value = categoryLabels[selectedCategoryKeys.value[0]] || 'Unknown Category'
+  fetchMusicData()
+})
 </script>
 
 <style scoped>

@@ -38,7 +38,8 @@
           <a-button
             @click="handlePlay"
             type="primary"
-            :class="{ 'playing-button': isCurrentlyPlaying }">
+            :class="{ 'playing-button': isCurrentlyPlaying }"
+          >
             <template #icon>
               <play-circle-outlined v-if="!isCurrentlyPlaying" />
               <pause-circle-outlined v-else />
@@ -54,43 +55,43 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { message } from 'ant-design-vue';
-import { PlayCircleOutlined, PauseCircleOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue'
+import { PlayCircleOutlined, PauseCircleOutlined } from '@ant-design/icons-vue'
 import { getMusicFileByIdUsingGet } from '@/api/musicFileController'
 import { getUserByIdUsingGet } from '@/api/userController'
 import { currentMusic, playMusic, isPlaying } from '@/utils/audioPlayerStore'
 import bus from '@/utils/eventBus'
 
 interface MusicDetail {
-  id: number | string;
-  name: string;
-  artist?: string;
-  coverUrl?: string;
-  url?: string;
-  category?: string;
-  userId?: number;
-  tags?: string[];
+  id: number | string
+  name: string
+  artist?: string
+  coverUrl?: string
+  url?: string
+  category?: string
+  userId?: number
+  tags?: string[]
 }
 
 interface UserInfo {
-  userId?: number;
-  userName?: string;
-  userAvatar?: string;
+  userId?: number
+  userName?: string
+  userAvatar?: string
 }
 
-const props = defineProps<{ id: number }>();
-const detail = ref<MusicDetail | null>(null);
+const props = defineProps<{ id: number }>()
+const detail = ref<MusicDetail | null>(null)
 const userInfo = ref<UserInfo>({
   userName: '无名',
-  userAvatar: 'https://via.placeholder.com/40'
-});
-const loading = ref(true);
-const showDebug = ref(false);
+  userAvatar: 'https://via.placeholder.com/40',
+})
+const loading = ref(true)
+const showDebug = ref(false)
 
 // 计算当前卡片是否正在播放
 const isCurrentlyPlaying = computed(() => {
-  return isPlaying.value && String(currentMusic.id) === String(props.id);
-});
+  return isPlaying.value && String(currentMusic.id) === String(props.id)
+})
 
 // 获取类别对应的CSS类名
 // const getCategoryClass = (category?: string) => {
@@ -112,78 +113,78 @@ const isCurrentlyPlaying = computed(() => {
 // 获取用户信息
 const fetchUserInfo = async (userId: number) => {
   try {
-    const res = await getUserByIdUsingGet({ id: userId });
+    const res = await getUserByIdUsingGet({ id: userId })
 
     if (res.data.code === 0 && res.data.data) {
       userInfo.value = {
         userId: userId,
         userName: res.data.data.userName || '无名',
-        userAvatar: res.data.data.userAvatar || 'https://via.placeholder.com/40'
-      };
+        userAvatar: res.data.data.userAvatar || 'https://via.placeholder.com/40',
+      }
     } else {
-      console.error('获取用户信息失败:', res.data.message);
+      console.error('获取用户信息失败:', res.data.message)
       // 使用默认值
       userInfo.value = {
         userId: userId,
         userName: '无名',
-        userAvatar: 'https://via.placeholder.com/40'
-      };
+        userAvatar: 'https://via.placeholder.com/40',
+      }
     }
   } catch (err: any) {
-    console.error('获取用户信息出错:', err);
+    console.error('获取用户信息出错:', err)
     // 使用默认值
     userInfo.value = {
       userId: userId,
       userName: '无名',
-      userAvatar: 'https://via.placeholder.com/40'
-    };
+      userAvatar: 'https://via.placeholder.com/40',
+    }
   }
-};
+}
 
 const fetchDetail = async () => {
   try {
-    const res = await getMusicFileByIdUsingGet({ id: props.id });
+    const res = await getMusicFileByIdUsingGet({ id: props.id })
 
     if (res.data.code === 0 && res.data.data) {
-      detail.value = res.data.data;
+      detail.value = res.data.data
 
       // 如果有userId，则获取用户信息
       if (detail.value.userId) {
-        await fetchUserInfo(detail.value.userId);
+        await fetchUserInfo(detail.value.userId)
       } else {
         // 没有userId，使用默认值
         userInfo.value = {
           userName: '无名',
-          userAvatar: 'https://via.placeholder.com/40'
-        };
+          userAvatar: 'https://via.placeholder.com/40',
+        }
       }
 
       // 解析标签
-      detail.value.tags = parseTags(detail.value.tags);
+      detail.value.tags = parseTags(detail.value.tags)
     } else {
-      console.error('获取详情失败:', res.data.message);
-      message.error(res.data.message || '加载详情失败');
+      console.error('获取详情失败:', res.data.message)
+      message.error(res.data.message || '加载详情失败')
     }
   } catch (err: any) {
-    console.error('获取详情出错:', err);
-    message.error('错误: ' + err.message);
+    console.error('获取详情出错:', err)
+    message.error('错误: ' + err.message)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
-onMounted(fetchDetail);
+onMounted(fetchDetail)
 
 // 处理播放事件
 const handlePlay = () => {
   if (!detail.value) {
-    message.error('没有可播放的音乐数据');
-    return;
+    message.error('没有可播放的音乐数据')
+    return
   }
 
   if (!detail.value.url) {
-    message.error('音乐URL不存在，无法播放');
-    return;
+    message.error('音乐URL不存在，无法播放')
+    return
   }
 
   // 调用全局播放函数
@@ -192,36 +193,36 @@ const handlePlay = () => {
     name: detail.value.name,
     artist: detail.value.artist,
     coverUrl: detail.value.coverUrl,
-    url: detail.value.url
-  });
+    url: detail.value.url,
+  })
 
   if (success) {
-    message.success(`正在播放: ${detail.value.name}`);
+    message.success(`正在播放: ${detail.value.name}`)
   } else {
-    message.error('播放失败，请重试');
+    message.error('播放失败，请重试')
   }
-};
+}
 
 // 解析标签的计算属性
 const parsedTags = computed(() => {
-  if (!detail.value?.tags) return [];
-  return Array.isArray(detail.value.tags) ? detail.value.tags : [detail.value.tags];
-});
+  if (!detail.value?.tags) return []
+  return Array.isArray(detail.value.tags) ? detail.value.tags : [detail.value.tags]
+})
 
 // 在 fetchMusicDetail 或 initMusicDetail 函数中，添加标签解析逻辑
 // 将字符串形式的 JSON 标签转换为数组
 const parseTags = (tagsData) => {
-  if (!tagsData) return [];
+  if (!tagsData) return []
   if (typeof tagsData === 'string') {
     try {
-      return JSON.parse(tagsData);
+      return JSON.parse(tagsData)
     } catch (e) {
-      console.error('解析标签失败:', e);
-      return [];
+      console.error('解析标签失败:', e)
+      return []
     }
   }
-  return Array.isArray(tagsData) ? tagsData : [tagsData];
-};
+  return Array.isArray(tagsData) ? tagsData : [tagsData]
+}
 </script>
 
 <style scoped>
@@ -243,7 +244,9 @@ const parseTags = (tagsData) => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
   display: flex;
   flex-direction: column;
   height: 100%;

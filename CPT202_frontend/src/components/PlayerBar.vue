@@ -7,13 +7,13 @@
         <div class="artist">{{ currentMusic.artist || '未知艺术家' }}</div>
       </div>
     </div>
-    
+
     <div class="controls">
       <button @click="togglePlay" class="play-button">
         {{ isPlaying ? '⏸️' : '▶️' }}
       </button>
     </div>
-    
+
     <div class="progress-bar-container">
       <input
         type="range"
@@ -25,7 +25,7 @@
       />
       <span class="time-info">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
     </div>
-    
+
     <div class="volume-control">
       <button @click="toggleMute" class="volume-button">
         {{ isMuted ? '🔇' : '🔊' }}
@@ -45,58 +45,58 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { 
-  currentMusic, 
-  isPlaying, 
-  currentTime, 
-  duration, 
+import { ref, computed } from 'vue'
+import {
+  currentMusic,
+  isPlaying,
+  currentTime,
+  duration,
   volume,
-  togglePlay, 
-  seekTo, 
-  setVolume, 
-  formatTime
-} from '@/utils/audioPlayerStore';
+  togglePlay,
+  seekTo,
+  setVolume,
+  formatTime,
+} from '@/utils/audioPlayerStore'
 
-const defaultCover = 'https://via.placeholder.com/300';
-const isMuted = ref(false);
-const previousVolume = ref(volume.value);
+const defaultCover = 'https://via.placeholder.com/300'
+const isMuted = ref(false)
+const previousVolume = ref(volume.value)
 
 // 处理进度条拖动
 const handleSeek = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  seekTo(Number(target.value));
-};
+  const target = e.target as HTMLInputElement
+  seekTo(Number(target.value))
+}
 
 // 处理音量调节
 const handleVolumeChange = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  const newVolume = Number(target.value);
-  setVolume(newVolume);
-  
+  const target = e.target as HTMLInputElement
+  const newVolume = Number(target.value)
+  setVolume(newVolume)
+
   if (newVolume > 0) {
-    previousVolume.value = newVolume;
+    previousVolume.value = newVolume
     if (isMuted.value) {
-      isMuted.value = false;
+      isMuted.value = false
     }
   } else if (newVolume === 0) {
-    isMuted.value = true;
+    isMuted.value = true
   }
-};
+}
 
 // 切换静音
 const toggleMute = () => {
   if (isMuted.value) {
     // 恢复音量
-    setVolume(previousVolume.value > 0 ? previousVolume.value : 0.5);
-    isMuted.value = false;
+    setVolume(previousVolume.value > 0 ? previousVolume.value : 0.5)
+    isMuted.value = false
   } else {
     // 静音前保存当前音量
-    previousVolume.value = volume.value;
-    setVolume(0);
-    isMuted.value = true;
+    previousVolume.value = volume.value
+    setVolume(0)
+    isMuted.value = true
   }
-};
+}
 </script>
 
 <style scoped>
@@ -152,7 +152,8 @@ const toggleMute = () => {
   margin: 0 15px;
 }
 
-.play-button, .volume-button {
+.play-button,
+.volume-button {
   background: none;
   border: none;
   font-size: 24px;

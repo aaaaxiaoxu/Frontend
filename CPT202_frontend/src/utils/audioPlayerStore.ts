@@ -6,7 +6,7 @@ export const currentMusic = reactive({
   name: '',
   artist: '',
   coverUrl: '',
-  url: ''
+  url: '',
 })
 
 // 播放状态
@@ -39,37 +39,39 @@ export function playMusic(musicData: any) {
     console.error('无效的音乐数据或URL')
     return false
   }
-  
+
   // 更新当前音乐信息
   currentMusic.id = musicData.id
   currentMusic.name = musicData.name || '未知歌曲'
   currentMusic.artist = musicData.artist || '未知艺术家'
   currentMusic.coverUrl = musicData.coverUrl || ''
   currentMusic.url = musicData.url
-  
+
   // 设置音频源并播放
   audioElement.src = musicData.url
-  audioElement.play()
+  audioElement
+    .play()
     .then(() => {
       isPlaying.value = true
       console.log('开始播放:', musicData.name)
     })
-    .catch(err => {
+    .catch((err) => {
       console.error('播放失败:', err)
       return false
     })
-  
+
   return true
 }
 
 // 播放/暂停切换
 export function togglePlay() {
   if (audioElement.paused) {
-    audioElement.play()
+    audioElement
+      .play()
       .then(() => {
         isPlaying.value = true
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('播放失败:', err)
       })
   } else {

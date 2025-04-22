@@ -6,19 +6,15 @@
         <h1>MelodyHub</h1>
         <p>您的个人音乐资源管理中心</p>
         <div class="banner-buttons">
-          <a-button type="primary" size="large" @click="goToMusic">
-            浏览音乐
-          </a-button>
-          <a-button size="large" @click="goToUpload">
-            上传音乐
-          </a-button>
+          <a-button type="primary" size="large" @click="goToMusic"> 浏览音乐 </a-button>
+          <a-button size="large" @click="goToUpload"> 上传音乐 </a-button>
         </div>
       </div>
     </div>
 
     <!-- 动态功能展示 -->
     <features-carousel />
-    
+
     <!-- 热门音乐推荐 -->
     <div class="popular-music">
       <div class="container">
@@ -63,27 +59,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import FeaturesCarousel from '@/components/FeaturesCarousel.vue';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import FeaturesCarousel from '@/components/FeaturesCarousel.vue'
 
-const router = useRouter();
+const router = useRouter()
 
 // 模拟的统计数据
 const stats = ref({
   musicCount: '10,000+',
   userCount: '1,500+',
   playCount: '50,000+',
-  categoryCount: '20+'
-});
+  categoryCount: '20+',
+})
 
 const goToMusic = () => {
-  router.push('/music');
-};
+  router.push('/music')
+}
 
 const goToUpload = () => {
-  router.push('/add_musicFile');
-};
+  router.push('/add_musicFile')
+}
 </script>
 
 <style scoped>
@@ -126,7 +122,7 @@ const goToUpload = () => {
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 20px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .banner-content p {
@@ -180,7 +176,7 @@ const goToUpload = () => {
   padding: 30px;
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .stat-number {
@@ -200,15 +196,15 @@ const goToUpload = () => {
   .hero-banner {
     height: 400px;
   }
-  
+
   .banner-content h1 {
     font-size: 2.5rem;
   }
-  
+
   .banner-content p {
     font-size: 1.2rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -219,7 +215,7 @@ const goToUpload = () => {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }

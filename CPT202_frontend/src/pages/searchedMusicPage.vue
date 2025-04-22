@@ -2,43 +2,43 @@
   <a-layout class="music-page-layout">
     <!-- Main Content Area -->
     <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-       <div :style="{ background: '#fff', padding: '24px', margin: 0 }">
-          <a-breadcrumb :style="{ margin: '16px 0' }">
-             <a-breadcrumb-item>Search Results for: {{ searchKeyword }}</a-breadcrumb-item>
-          </a-breadcrumb>
-          <a-row :gutter="[16, 16]">
-            <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
-              <music-card
-                :id="item.id"
-                :name="item.name"
-                :coverUrl="item.coverUrl"
-                :url="item.url"
-                :artist="item.artist || '未知艺术家'"
-                :category="item.category"
-                @download="handleDownload(item)"
-                @edit="handleEdit(item)"
-                @delete="handleDelete(item.id)"
-                @play="handlePlay(item)"
-              />
-            </a-col>
-          </a-row>
-          <a-pagination
-            v-model:current="pagination.current"
-            :total="pagination.total"
-            :pageSize="pagination.pageSize"
-            :pageSizeOptions="['12', '24', '36', '48']"
-            showSizeChanger
-            @change="(page, pageSize) => handlePaginationChange(page, pageSize)"
-            style="text-align: center; margin-top: 24px;"
-          />
-        </div>
+      <div :style="{ background: '#fff', padding: '24px', margin: 0 }">
+        <a-breadcrumb :style="{ margin: '16px 0' }">
+          <a-breadcrumb-item>Search Results for: {{ searchKeyword }}</a-breadcrumb-item>
+        </a-breadcrumb>
+        <a-row :gutter="[16, 16]">
+          <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
+            <music-card
+              :id="item.id"
+              :name="item.name"
+              :coverUrl="item.coverUrl"
+              :url="item.url"
+              :artist="item.artist || '未知艺术家'"
+              :category="item.category"
+              @download="handleDownload(item)"
+              @edit="handleEdit(item)"
+              @delete="handleDelete(item.id)"
+              @play="handlePlay(item)"
+            />
+          </a-col>
+        </a-row>
+        <a-pagination
+          v-model:current="pagination.current"
+          :total="pagination.total"
+          :pageSize="pagination.pageSize"
+          :pageSizeOptions="['12', '24', '36', '48']"
+          showSizeChanger
+          @change="(page, pageSize) => handlePaginationChange(page, pageSize)"
+          style="text-align: center; margin-top: 24px"
+        />
+      </div>
     </a-layout-content>
   </a-layout>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, onMounted, reactive, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import {
   Layout as ALayout,
   LayoutContent as ALayoutContent,
@@ -48,117 +48,117 @@ import {
   Row as ARow,
   Col as ACol,
   Pagination as APagination,
-} from 'ant-design-vue';
-import MusicCard from '@/components/MusicCard.vue';
-import { searchMusicFilesUsingGet } from '@/api/musicFileController';
+} from 'ant-design-vue'
+import MusicCard from '@/components/MusicCard.vue'
+import { searchMusicFilesUsingGet } from '@/api/musicFileController'
 
-const route = useRoute();
-const router = useRouter();
-const musicList = ref<API.MusicFileVO[]>([]);
-const loading = ref(false);
-const searchKeyword = ref('');
+const route = useRoute()
+const router = useRouter()
+const musicList = ref<API.MusicFileVO[]>([])
+const loading = ref(false)
+const searchKeyword = ref('')
 
 const pagination = reactive({
   current: 1,
   pageSize: 12,
   total: 0,
-});
+})
 
 const paginationProps = computed(() => ({
-    current: pagination.current,
-    pageSize: pagination.pageSize,
-    total: pagination.total || 0,
-    onChange: (page: number, pageSize: number) => {
-        pagination.current = page;
-        pagination.pageSize = pageSize;
-        fetchSearchResults();
-    },
-    showSizeChanger: true,
-    pageSizeOptions: ['12', '24', '36', '48'],
-}));
+  current: pagination.current,
+  pageSize: pagination.pageSize,
+  total: pagination.total || 0,
+  onChange: (page: number, pageSize: number) => {
+    pagination.current = page
+    pagination.pageSize = pageSize
+    fetchSearchResults()
+  },
+  showSizeChanger: true,
+  pageSizeOptions: ['12', '24', '36', '48'],
+}))
 
 const fetchSearchResults = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    searchKeyword.value = route.query.q as string || '';
+    searchKeyword.value = (route.query.q as string) || ''
     if (!searchKeyword.value) {
-      musicList.value = [];
-      pagination.total = 0;
-      loading.value = false;
-      return;
+      musicList.value = []
+      pagination.total = 0
+      loading.value = false
+      return
     }
 
     const params: API.searchMusicFilesUsingGETParams = {
       searchText: searchKeyword.value,
       current: pagination.current,
       pageSize: pagination.pageSize,
-    };
+    }
 
-    const response = await searchMusicFilesUsingGet(params);
+    const response = await searchMusicFilesUsingGet(params)
 
     if (response && response.data.code === 0 && response.data.data) {
-      musicList.value = response.data.data.records || [];
-      pagination.total = parseInt(String(response.data.data.total ?? '0'), 10);
+      musicList.value = response.data.data.records || []
+      pagination.total = parseInt(String(response.data.data.total ?? '0'), 10)
     } else {
-      message.error('Failed to load search results: ' + (response?.data.message || 'Unknown error'));
-      musicList.value = [];
-      pagination.total = 0;
+      message.error('Failed to load search results: ' + (response?.data.message || 'Unknown error'))
+      musicList.value = []
+      pagination.total = 0
     }
   } catch (error: any) {
-    message.error('Error fetching search results: ' + error.message);
-    musicList.value = [];
-    pagination.total = 0;
+    message.error('Error fetching search results: ' + error.message)
+    musicList.value = []
+    pagination.total = 0
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const handleDownload = (item: API.MusicFileVO) => {
   if (item.url) {
-      window.open(item.url, '_blank');
+    window.open(item.url, '_blank')
   } else {
-      message.warning('No download URL available.')
+    message.warning('No download URL available.')
   }
-};
+}
 
 const handleEdit = (item: API.MusicFileVO) => {
-  message.info(`Edit functionality not implemented for ${item.name}`);
-};
+  message.info(`Edit functionality not implemented for ${item.name}`)
+}
 
 const handleDelete = async (id?: number) => {
-  if (!id) return;
-  message.success(`Delete confirmed for ID: ${id} (API call not implemented)`);
-  fetchSearchResults();
-};
+  if (!id) return
+  message.success(`Delete confirmed for ID: ${id} (API call not implemented)`)
+  fetchSearchResults()
+}
 
 const handlePlay = (item: API.MusicFileVO) => {
-   message.info(`Play functionality not implemented for ${item.name}`);
+  message.info(`Play functionality not implemented for ${item.name}`)
 }
 
 const handlePaginationChange = (page: number, pageSize: number) => {
-  pagination.current = page;
-  pagination.pageSize = pageSize;
-  fetchSearchResults();
-};
+  pagination.current = page
+  pagination.pageSize = pageSize
+  fetchSearchResults()
+}
 
 // Re-fetch when route changes
 const handleRouteChange = () => {
-  searchKeyword.value = route.query.q as string || '';
-  pagination.current = 1;
-  fetchSearchResults();
-};
+  searchKeyword.value = (route.query.q as string) || ''
+  pagination.current = 1
+  fetchSearchResults()
+}
 
 onMounted(() => {
-  searchKeyword.value = route.query.q as string || '';
-  fetchSearchResults();
-});
+  searchKeyword.value = (route.query.q as string) || ''
+  fetchSearchResults()
+})
 
 // Watch for route changes
 router.afterEach((to, from) => {
   if (to.path === '/search' && to.query.q !== from.query.q) {
-    handleRouteChange();
+    handleRouteChange()
   }
-});
+})
 </script>
 
 <style scoped>
@@ -181,4 +181,4 @@ router.afterEach((to, from) => {
   text-align: center;
   margin-top: 24px;
 }
-</style> 
+</style>

@@ -16,12 +16,7 @@
 
         <!-- 封面图片列 -->
         <template v-if="column.dataIndex === 'coverUrl'">
-          <a-image
-            v-if="record.coverUrl"
-            :src="record.coverUrl"
-            :width="60"
-            :preview="false"
-          />
+          <a-image v-if="record.coverUrl" :src="record.coverUrl" :width="60" :preview="false" />
           <span v-else>无封面</span>
         </template>
 
@@ -58,13 +53,7 @@
             >
               拒绝
             </a-button>
-            <a-button
-              type="link"
-              size="small"
-              @click="showDetailsModal(record)"
-            >
-              详情
-            </a-button>
+            <a-button type="link" size="small" @click="showDetailsModal(record)"> 详情 </a-button>
           </div>
         </template>
       </template>
@@ -89,33 +78,42 @@
     </a-modal>
 
     <!-- 资源详情弹窗 -->
-    <a-modal
-      v-model:visible="detailsModalVisible"
-      title="资源详情"
-      width="700px"
-      :footer="null"
-    >
+    <a-modal v-model:visible="detailsModalVisible" title="资源详情" width="700px" :footer="null">
       <div v-if="currentResource" class="resource-details">
         <div class="resource-cover">
-          <a-image
-            v-if="currentResource.coverUrl"
-            :src="currentResource.coverUrl"
-            :width="200"
-          />
+          <a-image v-if="currentResource.coverUrl" :src="currentResource.coverUrl" :width="200" />
           <div v-else class="no-cover">无封面</div>
         </div>
         <div class="resource-info">
           <a-descriptions :column="1" bordered>
             <a-descriptions-item label="资源名称">{{ currentResource.name }}</a-descriptions-item>
-            <a-descriptions-item label="艺术家">{{ currentResource.artist || '未知' }}</a-descriptions-item>
-            <a-descriptions-item label="专辑">{{ currentResource.album || '未知' }}</a-descriptions-item>
-            <a-descriptions-item label="分类">{{ currentResource.category || '未分类' }}</a-descriptions-item>
-            <a-descriptions-item label="文件格式">{{ currentResource.fileFormat }}</a-descriptions-item>
-            <a-descriptions-item label="文件大小">{{ formatFileSize(currentResource.fileSize) }}</a-descriptions-item>
-            <a-descriptions-item label="时长">{{ formatDuration(currentResource.duration) }}</a-descriptions-item>
-            <a-descriptions-item label="上传时间">{{ formatTime(currentResource.createTime) }}</a-descriptions-item>
-            <a-descriptions-item label="上传用户">{{ currentResource.user?.userName || '未知用户' }}</a-descriptions-item>
-            <a-descriptions-item label="简介">{{ currentResource.introduction || '无简介' }}</a-descriptions-item>
+            <a-descriptions-item label="艺术家">{{
+              currentResource.artist || '未知'
+            }}</a-descriptions-item>
+            <a-descriptions-item label="专辑">{{
+              currentResource.album || '未知'
+            }}</a-descriptions-item>
+            <a-descriptions-item label="分类">{{
+              currentResource.category || '未分类'
+            }}</a-descriptions-item>
+            <a-descriptions-item label="文件格式">{{
+              currentResource.fileFormat
+            }}</a-descriptions-item>
+            <a-descriptions-item label="文件大小">{{
+              formatFileSize(currentResource.fileSize)
+            }}</a-descriptions-item>
+            <a-descriptions-item label="时长">{{
+              formatDuration(currentResource.duration)
+            }}</a-descriptions-item>
+            <a-descriptions-item label="上传时间">{{
+              formatTime(currentResource.createTime)
+            }}</a-descriptions-item>
+            <a-descriptions-item label="上传用户">{{
+              currentResource.user?.userName || '未知用户'
+            }}</a-descriptions-item>
+            <a-descriptions-item label="简介">{{
+              currentResource.introduction || '无简介'
+            }}</a-descriptions-item>
             <a-descriptions-item label="审核状态">
               <a-tag :color="getStatusColor(currentResource.reviewStatus)">
                 {{ getStatusText(currentResource.reviewStatus) }}
@@ -131,19 +129,27 @@
         </div>
         <div class="resource-actions">
           <a-button type="primary" @click="playMusic(currentResource)">播放</a-button>
-          <a-button v-if="currentResource.reviewStatus === 0" type="primary" style="margin-left: 8px" @click="approveResource(currentResource)">通过</a-button>
-          <a-button v-if="currentResource.reviewStatus === 0" type="primary" danger style="margin-left: 8px" @click="showRejectModal(currentResource)">拒绝</a-button>
+          <a-button
+            v-if="currentResource.reviewStatus === 0"
+            type="primary"
+            style="margin-left: 8px"
+            @click="approveResource(currentResource)"
+            >通过</a-button
+          >
+          <a-button
+            v-if="currentResource.reviewStatus === 0"
+            type="primary"
+            danger
+            style="margin-left: 8px"
+            @click="showRejectModal(currentResource)"
+            >拒绝</a-button
+          >
         </div>
       </div>
     </a-modal>
 
     <!-- 音频播放器弹窗 -->
-    <a-modal
-      v-model:visible="audioPlayerVisible"
-      title="音频播放"
-      :footer="null"
-      width="500px"
-    >
+    <a-modal v-model:visible="audioPlayerVisible" title="音频播放" :footer="null" width="500px">
       <div v-if="currentPlayingUrl" class="audio-player-container">
         <audio controls autoplay style="width: 100%">
           <source :src="currentPlayingUrl" :type="`audio/${currentPlayingFormat}`" />
@@ -161,7 +167,7 @@ import {
   listPendingMusicFilesUsingGet,
   listApprovedMusicFilesUsingGet,
   listRejectedMusicFilesUsingGet,
-  reviewMusicFileUsingPost
+  reviewMusicFileUsingPost,
 } from '@/api/musicFileController'
 import dayjs from 'dayjs'
 
@@ -169,8 +175,8 @@ import dayjs from 'dayjs'
 const props = defineProps({
   status: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 })
 
 // 定义事件
@@ -184,7 +190,7 @@ const pagination = reactive({
   pageSize: 10,
   total: 0,
   showSizeChanger: true,
-  showTotal: (total: number) => `共 ${total} 条`
+  showTotal: (total: number) => `共 ${total} 条`,
 })
 
 // 表格列定义
@@ -192,49 +198,49 @@ const columns = [
   {
     title: 'ID',
     dataIndex: 'id',
-    width: 80
+    width: 80,
   },
   {
     title: '资源名称',
     dataIndex: 'name',
-    width: 180
+    width: 180,
   },
   {
     title: '封面',
     dataIndex: 'coverUrl',
-    width: 100
+    width: 100,
   },
   {
     title: '艺术家',
     dataIndex: 'artist',
-    width: 120
+    width: 120,
   },
   {
     title: '分类',
     dataIndex: 'category',
-    width: 100
+    width: 100,
   },
   {
     title: '格式',
     dataIndex: 'fileFormat',
-    width: 80
+    width: 80,
   },
   {
     title: '上传时间',
     dataIndex: 'createTime',
     width: 170,
-    customRender: ({ text }) => formatTime(text)
+    customRender: ({ text }) => formatTime(text),
   },
   {
     title: '审核状态',
     dataIndex: 'reviewStatus',
-    width: 100
+    width: 100,
   },
   {
     title: '操作',
     dataIndex: 'action',
-    width: 180
-  }
+    width: 180,
+  },
 ]
 
 // 拒绝弹窗状态
@@ -243,7 +249,7 @@ const confirmLoading = ref(false)
 const rejectForm = reactive({
   id: null,
   reviewStatus: 2,
-  reviewMessage: ''
+  reviewMessage: '',
 })
 
 // 详情弹窗状态
@@ -261,7 +267,7 @@ const fetchData = async () => {
   try {
     const params = {
       current: pagination.current,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     }
 
     let response
@@ -304,19 +310,27 @@ const handleTableChange = (pag) => {
 // 审核状态相关函数
 const getStatusText = (status) => {
   switch (status) {
-    case 0: return '待审核'
-    case 1: return '已通过'
-    case 2: return '已拒绝'
-    default: return '未知'
+    case 0:
+      return '待审核'
+    case 1:
+      return '已通过'
+    case 2:
+      return '已拒绝'
+    default:
+      return '未知'
   }
 }
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 0: return 'blue'
-    case 1: return 'green'
-    case 2: return 'red'
-    default: return 'default'
+    case 0:
+      return 'blue'
+    case 1:
+      return 'green'
+    case 2:
+      return 'red'
+    default:
+      return 'default'
   }
 }
 
@@ -326,7 +340,7 @@ const approveResource = async (record) => {
     const response = await reviewMusicFileUsingPost({
       id: record.id,
       reviewStatus: 1,
-      reviewMessage: '审核通过'
+      reviewMessage: '审核通过',
     })
 
     if (response.data.code === 0) {
@@ -359,7 +373,7 @@ const handleRejectOk = async () => {
     const response = await reviewMusicFileUsingPost({
       id: rejectForm.id,
       reviewStatus: 2,
-      reviewMessage: rejectForm.reviewMessage
+      reviewMessage: rejectForm.reviewMessage,
     })
 
     if (response.data.code === 0) {
@@ -418,7 +432,7 @@ onMounted(() => {
 
 // 暴露fetchData方法给父组件调用
 defineExpose({
-  fetchData
+  fetchData,
 })
 </script>
 

@@ -2,25 +2,13 @@
   <div id="ResourceReviewPage">
     <a-tabs v-model:activeKey="activeTab">
       <a-tab-pane key="pending" tab="待审核">
-        <resource-review-table
-          :status="0"
-          @refresh="fetchPendingData"
-          ref="pendingTableRef"
-        />
+        <resource-review-table :status="0" @refresh="fetchPendingData" ref="pendingTableRef" />
       </a-tab-pane>
       <a-tab-pane key="approved" tab="已通过">
-        <resource-review-table
-          :status="1"
-          @refresh="fetchApprovedData"
-          ref="approvedTableRef"
-        />
+        <resource-review-table :status="1" @refresh="fetchApprovedData" ref="approvedTableRef" />
       </a-tab-pane>
       <a-tab-pane key="rejected" tab="已拒绝">
-        <resource-review-table
-          :status="2"
-          @refresh="fetchRejectedData"
-          ref="rejectedTableRef"
-        />
+        <resource-review-table :status="2" @refresh="fetchRejectedData" ref="rejectedTableRef" />
       </a-tab-pane>
     </a-tabs>
   </div>

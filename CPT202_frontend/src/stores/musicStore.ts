@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useMusicStore = defineStore('music', {
   state: () => ({
@@ -6,7 +6,7 @@ export const useMusicStore = defineStore('music', {
   }),
   actions: {
     setCurrentMusic(music) {
-      this.currentMusic = music;
+      this.currentMusic = music
     },
   },
-});
+})

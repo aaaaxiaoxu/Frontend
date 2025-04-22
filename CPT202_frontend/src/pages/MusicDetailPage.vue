@@ -2,12 +2,10 @@
   <div class="music-detail-page">
     <div class="detail-container" v-if="detail">
       <div class="detail-header">
-        <a-button @click="backToList" type="primary">
-          <arrow-left-outlined /> 返回
-        </a-button>
+        <a-button @click="backToList" type="primary"> <arrow-left-outlined /> 返回 </a-button>
         <h2>{{ detail.name }}</h2>
         <div class="header-actions">
-          <a-button type="primary" @click="showEditModal" style="margin-right: 10px;">
+          <a-button type="primary" @click="showEditModal" style="margin-right: 10px">
             <edit-outlined /> 编辑
           </a-button>
           <a-popconfirm
@@ -16,9 +14,7 @@
             cancel-text="取消"
             @confirm="handleDelete"
           >
-            <a-button type="danger">
-              <delete-outlined /> 删除
-            </a-button>
+            <a-button type="danger"> <delete-outlined /> 删除 </a-button>
           </a-popconfirm>
         </div>
       </div>
@@ -32,7 +28,8 @@
             @click="handlePlay"
             type="primary"
             class="detail-play-btn"
-            :class="{ 'playing-button': isCurrentlyPlaying }">
+            :class="{ 'playing-button': isCurrentlyPlaying }"
+          >
             <play-circle-outlined v-if="!isCurrentlyPlaying" />
             <pause-circle-outlined v-else />
             {{ isCurrentlyPlaying ? '播放中' : '播放' }}
@@ -72,7 +69,8 @@
                 v-model:value="musicForm.tags"
                 mode="tags"
                 placeholder="添加标签"
-                style="width: 100%">
+                style="width: 100%"
+              >
                 <a-select-option v-for="tag in availableTags" :key="tag" :value="tag">
                   {{ tag }}
                 </a-select-option>
@@ -86,18 +84,10 @@
       </div>
     </div>
     <div v-else-if="error" class="error-container">
-      <a-result
-        status="warning"
-        title="获取音乐详情失败"
-        :sub-title="errorMessage"
-      >
+      <a-result status="warning" title="获取音乐详情失败" :sub-title="errorMessage">
         <template #extra>
-          <a-button type="primary" @click="backToList">
-            返回列表
-          </a-button>
-          <a-button @click="retryFetch" style="margin-left: 8px">
-            重试
-          </a-button>
+          <a-button type="primary" @click="backToList"> 返回列表 </a-button>
+          <a-button @click="retryFetch" style="margin-left: 8px"> 重试 </a-button>
         </template>
       </a-result>
     </div>
@@ -145,8 +135,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, onMounted, reactive, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import {
   Spin as ASpin,
   Form as AForm,
@@ -159,79 +149,79 @@ import {
   Input as AInput,
   Textarea as ATextarea,
   Result as AResult,
-  message
-} from 'ant-design-vue';
+  message,
+} from 'ant-design-vue'
 import {
   PlayCircleOutlined,
   PauseCircleOutlined,
   ArrowLeftOutlined,
   EditOutlined,
-  DeleteOutlined
-} from '@ant-design/icons-vue';
+  DeleteOutlined,
+} from '@ant-design/icons-vue'
 import {
   getMusicFileByIdUsingGet,
   updateMusicFileUsingPost,
   deleteMusicFileUsingPost,
-  editMusicFileUsingPost
-} from '@/api/musicFileController';
-import { getUserByIdUsingGet } from '@/api/userController';
-import PlayerBar from '@/components/PlayerBar.vue';
-import { currentMusic, playMusic, isPlaying } from '@/utils/audioPlayerStore';
-import { useMusicStore } from '@/stores/musicStore';
+  editMusicFileUsingPost,
+} from '@/api/musicFileController'
+import { getUserByIdUsingGet } from '@/api/userController'
+import PlayerBar from '@/components/PlayerBar.vue'
+import { currentMusic, playMusic, isPlaying } from '@/utils/audioPlayerStore'
+import { useMusicStore } from '@/stores/musicStore'
 
 interface MusicDetail {
-  id: number | string;
-  name: string;
-  artist?: string;
-  coverUrl?: string;
-  url?: string;
-  category?: string;
-  userId?: number;
-  tags?: string[];
-  introduction?: string;
+  id: number | string
+  name: string
+  artist?: string
+  coverUrl?: string
+  url?: string
+  category?: string
+  userId?: number
+  tags?: string[]
+  introduction?: string
 }
 
 interface UserInfo {
-  userId?: number;
-  userName?: string;
-  userAvatar?: string;
+  userId?: number
+  userName?: string
+  userAvatar?: string
 }
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
 // 直接从路由参数获取ID
-const musicId = route.params.id;
+const musicId = route.params.id
 
-const detail = ref<MusicDetail | null>(null);
+const detail = ref<MusicDetail | null>(null)
 const userInfo = ref<UserInfo>({
   userName: '无名',
-  userAvatar: 'https://via.placeholder.com/40'
-});
+  userAvatar: 'https://via.placeholder.com/40',
+})
 
-const loading = ref(true);
-const error = ref(false);
-const errorMessage = ref('');
-const editModalVisible = ref(false);
-const editLoading = ref(false);
+const loading = ref(true)
+const error = ref(false)
+const errorMessage = ref('')
+const editModalVisible = ref(false)
+const editLoading = ref(false)
 
 // 计算当前卡片是否正在播放
 const isCurrentlyPlaying = computed(() => {
-  return isPlaying.value && String(currentMusic.id) === String(musicId);
-});
+  return isPlaying.value && String(currentMusic.id) === String(musicId)
+})
 
 // 解析标签的计算属性
 const parsedTags = computed(() => {
-  if (!detail.value?.tags) return [];
-  return Array.isArray(detail.value.tags) ? detail.value.tags : [detail.value.tags];
-});
+  if (!detail.value?.tags) return []
+  return Array.isArray(detail.value.tags) ? detail.value.tags : [detail.value.tags]
+})
 
 // 表单数据
 const musicForm = reactive({
   id: null as number | string | null,
   category: '',
   tags: [] as string[],
-});
+})
 
 // 编辑表单数据
 const editForm = reactive({
@@ -241,157 +231,156 @@ const editForm = reactive({
   introduction: '',
   category: '',
   tags: [] as string[],
-});
+})
 
 // 可用的类别和标签列表
-const availableCategories = ['Pop', 'Rock', 'Electronic', 'Jazz', 'Indie', 'Classical', 'R&B'];
-const availableTags = ['热门', '流行', '经典', '现代', '舒缓', '激情', '派对', '工作', '放松'];
+const availableCategories = ['Pop', 'Rock', 'Electronic', 'Jazz', 'Indie', 'Classical', 'R&B']
+const availableTags = ['热门', '流行', '经典', '现代', '舒缓', '激情', '派对', '工作', '放松']
 
 // 获取用户信息 - 与MusicCard完全相同
 const fetchUserInfo = async (userId: number) => {
   try {
-    const res = await getUserByIdUsingGet({ id: userId });
+    const res = await getUserByIdUsingGet({ id: userId })
 
     if (res.data.code === 0 && res.data.data) {
       userInfo.value = {
         userId: userId,
         userName: res.data.data.userName || '无名',
-        userAvatar: res.data.data.userAvatar || 'https://via.placeholder.com/40'
-      };
+        userAvatar: res.data.data.userAvatar || 'https://via.placeholder.com/40',
+      }
     } else {
-      console.error('获取用户信息失败:', res.data.message);
+      console.error('获取用户信息失败:', res.data.message)
       // 使用默认值
       userInfo.value = {
         userId: userId,
         userName: '无名',
-        userAvatar: 'https://via.placeholder.com/40'
-      };
+        userAvatar: 'https://via.placeholder.com/40',
+      }
     }
   } catch (err: any) {
-    console.error('获取用户信息出错:', err);
+    console.error('获取用户信息出错:', err)
     // 使用默认值
     userInfo.value = {
       userId: userId,
       userName: '无名',
-      userAvatar: 'https://via.placeholder.com/40'
-    };
+      userAvatar: 'https://via.placeholder.com/40',
+    }
   }
-};
+}
 
 // 解析标签 - 与MusicCard完全相同
 const parseTags = (tagsData) => {
-  if (!tagsData) return [];
+  if (!tagsData) return []
   if (typeof tagsData === 'string') {
     try {
-      return JSON.parse(tagsData);
+      return JSON.parse(tagsData)
     } catch (e) {
-      console.error('解析标签失败:', e);
-      return [];
+      console.error('解析标签失败:', e)
+      return []
     }
   }
-  return Array.isArray(tagsData) ? tagsData : [tagsData];
-};
+  return Array.isArray(tagsData) ? tagsData : [tagsData]
+}
 
 // 获取详情 - 采用MusicCard的方式
 const fetchDetail = async () => {
-  error.value = false;
-  loading.value = true;
-  
+  error.value = false
+  loading.value = true
+
   try {
     // 直接使用路由参数传递的ID
-    const res = await getMusicFileByIdUsingGet({ id: musicId });
+    const res = await getMusicFileByIdUsingGet({ id: musicId })
 
     if (res.data.code === 0 && res.data.data) {
-      detail.value = res.data.data;
+      detail.value = res.data.data
 
       // 如果有userId，则获取用户信息
       if (detail.value.userId) {
-        await fetchUserInfo(detail.value.userId);
+        await fetchUserInfo(detail.value.userId)
       } else {
         // 没有userId，使用默认值
         userInfo.value = {
           userName: '无名',
-          userAvatar: 'https://via.placeholder.com/40'
-        };
+          userAvatar: 'https://via.placeholder.com/40',
+        }
       }
 
       // 解析标签
-      detail.value.tags = parseTags(detail.value.tags);
-      
+      detail.value.tags = parseTags(detail.value.tags)
+
       // 初始化表单数据
-      musicForm.id = detail.value.id;
-      musicForm.category = detail.value.category || '';
-      musicForm.tags = detail.value.tags || [];
+      musicForm.id = detail.value.id
+      musicForm.category = detail.value.category || ''
+      musicForm.tags = detail.value.tags || []
     } else {
       // 设置错误状态
-      error.value = true;
-      errorMessage.value = res.data.message || '请求数据不存在';
-      console.error('获取详情失败:', res.data);
-      message.error(res.data.message || '加载详情失败');
+      error.value = true
+      errorMessage.value = res.data.message || '请求数据不存在'
+      console.error('获取详情失败:', res.data)
+      message.error(res.data.message || '加载详情失败')
     }
   } catch (err: any) {
     // 设置错误状态
-    error.value = true;
-    errorMessage.value = err.message || '请求发生错误';
-    console.error('获取详情出错:', err);
-    message.error('错误: ' + err.message);
+    error.value = true
+    errorMessage.value = err.message || '请求发生错误'
+    console.error('获取详情出错:', err)
+    message.error('错误: ' + err.message)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 // 组件挂载时获取详情
-onMounted(fetchDetail);
+onMounted(fetchDetail)
 
 // 返回列表页
 const backToList = () => {
-  router.back();
-};
+  router.back()
+}
 
 // 保存音乐修改
 const saveMusicChanges = async () => {
   try {
     const updateData = {
       id: musicForm.id,
-      tags: musicForm.tags
-    };
+      tags: musicForm.tags,
+    }
 
-    const response = await updateMusicFileUsingPost(updateData);
+    const response = await updateMusicFileUsingPost(updateData)
 
     if (response.data.code === 0 && response.data.data) {
-      message.success('标签更新成功');
-      
+      message.success('标签更新成功')
+
       // 更新当前显示的音乐信息
       if (detail.value) {
-        detail.value.tags = musicForm.tags;
+        detail.value.tags = musicForm.tags
       }
-      
     } else {
-      message.error('更新失败: ' + (response.data.message || '未知错误'));
+      message.error('更新失败: ' + (response.data.message || '未知错误'))
     }
   } catch (error: any) {
-    message.error('更新出错: ' + error.message);
+    message.error('更新出错: ' + error.message)
   }
-};
+}
 
 // 显示编辑模态框
 const showEditModal = () => {
-  if (!detail.value) return;
-  
-  // 初始化编辑表单数据
-  editForm.id = detail.value.id;
-  editForm.name = detail.value.name || '';
-  editForm.artist = detail.value.artist || '';
-  editForm.introduction = detail.value.introduction || '';
-  editForm.category = detail.value.category || '';
-  editForm.tags = detail.value.tags || [];
+  if (!detail.value) return
 
-  editModalVisible.value = true;
-};
+  // 初始化编辑表单数据
+  editForm.id = detail.value.id
+  editForm.name = detail.value.name || ''
+  editForm.artist = detail.value.artist || ''
+  editForm.introduction = detail.value.introduction || ''
+  editForm.category = detail.value.category || ''
+  editForm.tags = detail.value.tags || []
+
+  editModalVisible.value = true
+}
 
 // 提交编辑
 const handleEditSubmit = async () => {
-  editLoading.value = true;
+  editLoading.value = true
   try {
     const editData = {
       id: editForm.id,
@@ -399,48 +388,48 @@ const handleEditSubmit = async () => {
       artist: editForm.artist,
       introduction: editForm.introduction,
       category: editForm.category,
-      tags: editForm.tags
-    };
+      tags: editForm.tags,
+    }
 
-    const response = await editMusicFileUsingPost(editData);
+    const response = await editMusicFileUsingPost(editData)
 
     if (response.data.code === 0 && response.data.data) {
-      message.success('音乐信息编辑成功');
-      editModalVisible.value = false;
+      message.success('音乐信息编辑成功')
+      editModalVisible.value = false
 
       // 刷新数据
-      fetchDetail();
+      fetchDetail()
     } else {
-      message.error('编辑失败: ' + (response.data.message || '未知错误'));
+      message.error('编辑失败: ' + (response.data.message || '未知错误'))
     }
   } catch (error: any) {
-    message.error('编辑出错: ' + error.message);
+    message.error('编辑出错: ' + error.message)
   } finally {
-    editLoading.value = false;
+    editLoading.value = false
   }
-};
+}
 
 // 删除音乐
 const handleDelete = async () => {
-  if (!detail.value) return;
-  
+  if (!detail.value) return
+
   try {
     const deleteData = {
-      id: detail.value.id
-    };
+      id: detail.value.id,
+    }
 
-    const response = await deleteMusicFileUsingPost(deleteData);
+    const response = await deleteMusicFileUsingPost(deleteData)
 
     if (response.data.code === 0 && response.data.data) {
-      message.success('音乐已成功删除');
-      router.push('/music');
+      message.success('音乐已成功删除')
+      router.push('/music')
     } else {
-      message.error('删除失败: ' + (response.data.message || '未知错误'));
+      message.error('删除失败: ' + (response.data.message || '未知错误'))
     }
   } catch (error: any) {
-    message.error('删除出错: ' + error.message);
+    message.error('删除出错: ' + error.message)
   }
-};
+}
 
 // 播放音乐
 const handlePlay = () => {
@@ -450,17 +439,17 @@ const handlePlay = () => {
       name: detail.value.name,
       artist: detail.value.artist,
       coverUrl: detail.value.coverUrl,
-      url: detail.value.url
-    });
+      url: detail.value.url,
+    })
   } else {
-    message.error('无法播放：无效的音乐数据或URL');
+    message.error('无法播放：无效的音乐数据或URL')
   }
-};
+}
 
 // 添加重试方法
 const retryFetch = () => {
-  fetchDetail();
-};
+  fetchDetail()
+}
 </script>
 
 <style scoped>
@@ -476,7 +465,7 @@ const retryFetch = () => {
   padding: 24px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .detail-header {

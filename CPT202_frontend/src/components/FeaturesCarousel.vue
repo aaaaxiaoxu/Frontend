@@ -9,12 +9,15 @@
     <div class="carousel-container">
       <div class="carousel-track" :style="{ transform: `translateX(${carouselTransform}px)` }">
         <!-- 功能卡片 -->
-        <div 
-          v-for="(feature, index) in features" 
-          :key="index" 
-          class="feature-card" 
+        <div
+          v-for="(feature, index) in features"
+          :key="index"
+          class="feature-card"
           :class="{ active: currentIndex === index }"
-          :style="{ transform: currentIndex === index ? 'scale(1.15)' : 'scale(0.9)', zIndex: currentIndex === index ? 5 : 1 }"
+          :style="{
+            transform: currentIndex === index ? 'scale(1.15)' : 'scale(0.9)',
+            zIndex: currentIndex === index ? 5 : 1,
+          }"
         >
           <div class="card-icon" :style="{ backgroundColor: feature.bgColor }">
             <component :is="feature.icon" class="icon" />
@@ -35,12 +38,13 @@
           <left-outlined />
         </button>
         <div class="indicators">
-          <span 
-            v-for="(_, index) in features" 
-            :key="index" 
-            class="indicator" 
+          <span
+            v-for="(_, index) in features"
+            :key="index"
+            class="indicator"
             :class="{ active: currentIndex === index }"
-            @click="goToSlide(index)">
+            @click="goToSlide(index)"
+          >
           </span>
         </div>
         <button class="control-btn next" @click="nextSlide">
@@ -52,17 +56,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-import { 
-  CustomerServiceOutlined, 
-  CloudUploadOutlined, 
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import {
+  CustomerServiceOutlined,
+  CloudUploadOutlined,
   AppstoreOutlined,
   SearchOutlined,
   TagsOutlined,
   UserOutlined,
   LeftOutlined,
-  RightOutlined
-} from '@ant-design/icons-vue';
+  RightOutlined,
+} from '@ant-design/icons-vue'
 
 // 音乐系统功能列表数据
 const features = [
@@ -71,153 +75,153 @@ const features = [
     title: '音乐播放',
     description: '流畅播放您收藏的音乐，支持多种格式',
     details: '内置播放控制、音量调节、播放列表管理',
-    bgColor: '#4e89ff'
+    bgColor: '#4e89ff',
   },
   {
     icon: AppstoreOutlined,
     title: '分类浏览',
     description: '按流派、艺术家等分类浏览您的音乐',
     details: 'Pop、Rock、Electronic、Jazz、Indie、Classical等多种类别',
-    bgColor: '#22c55e'
+    bgColor: '#22c55e',
   },
   {
     icon: CloudUploadOutlined,
     title: '音乐上传',
     description: '轻松上传您的音乐文件并管理',
     details: '支持批量上传，自动提取音乐元数据',
-    bgColor: '#f59e0b'
+    bgColor: '#f59e0b',
   },
   {
     icon: TagsOutlined,
     title: '标签管理',
     description: '为音乐添加自定义标签，便于整理',
     details: '可创建个性化标签体系，灵活管理音乐资源',
-    bgColor: '#8b5cf6'
+    bgColor: '#8b5cf6',
   },
   {
     icon: UserOutlined,
     title: '用户系统',
     description: '个性化的用户体验与权限管理',
     details: '支持用户登录、注册和个人资料管理',
-    bgColor: '#ec4899'
+    bgColor: '#ec4899',
   },
   {
     icon: SearchOutlined,
     title: '音乐搜索',
     description: '快速搜索并找到您想要的音乐',
     details: '支持按歌曲名、艺术家、专辑等多维度搜索',
-    bgColor: '#06b6d4'
-  }
-];
+    bgColor: '#06b6d4',
+  },
+]
 
 // 控制滚动
-const currentIndex = ref(0);
-const autoSlideInterval = ref(null);
-const autoSlideDelay = 1500; // 设置为1500毫秒
-const cardWidth = 300; // 卡片宽度
-const cardMargin = 20; // 卡片边距
-const visibleCards = ref(3); // 可见卡片数量，默认为3
+const currentIndex = ref(0)
+const autoSlideInterval = ref(null)
+const autoSlideDelay = 1500 // 设置为1500毫秒
+const cardWidth = 300 // 卡片宽度
+const cardMargin = 20 // 卡片边距
+const visibleCards = ref(3) // 可见卡片数量，默认为3
 
 // 计算轮播图的移动距离，确保活动卡片始终居中
 const carouselTransform = computed(() => {
-  const containerWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
-  const centerPosition = containerWidth / 2;
-  const totalCardWidth = cardWidth + cardMargin * 2;
-  
+  const containerWidth = typeof window !== 'undefined' ? window.innerWidth : 1200
+  const centerPosition = containerWidth / 2
+  const totalCardWidth = cardWidth + cardMargin * 2
+
   // 计算所需的位移使当前活动卡片居中
-  return centerPosition - ((currentIndex.value * totalCardWidth) + totalCardWidth / 2);
-});
+  return centerPosition - (currentIndex.value * totalCardWidth + totalCardWidth / 2)
+})
 
 // 更新可见卡片数量
 const updateVisibleCards = () => {
   if (window.innerWidth < 768) {
-    visibleCards.value = 1;
+    visibleCards.value = 1
   } else if (window.innerWidth < 1024) {
-    visibleCards.value = 2;
+    visibleCards.value = 2
   } else {
-    visibleCards.value = 3;
+    visibleCards.value = 3
   }
-};
+}
 
 // 切换到下一张
 const nextSlide = () => {
-  currentIndex.value = (currentIndex.value + 1) % features.length;
-  resetAutoSlide();
-};
+  currentIndex.value = (currentIndex.value + 1) % features.length
+  resetAutoSlide()
+}
 
 // 切换到上一张
 const prevSlide = () => {
-  currentIndex.value = (currentIndex.value - 1 + features.length) % features.length;
-  resetAutoSlide();
-};
+  currentIndex.value = (currentIndex.value - 1 + features.length) % features.length
+  resetAutoSlide()
+}
 
 // 跳转到指定幻灯片
 const goToSlide = (index) => {
-  currentIndex.value = index;
-  resetAutoSlide();
-};
+  currentIndex.value = index
+  resetAutoSlide()
+}
 
 // 重置自动滚动计时器
 const resetAutoSlide = () => {
   if (autoSlideInterval.value) {
-    clearInterval(autoSlideInterval.value);
+    clearInterval(autoSlideInterval.value)
   }
-  startAutoSlide();
-};
+  startAutoSlide()
+}
 
 // 初始化自动滚动
 const startAutoSlide = () => {
   // 清除可能存在的旧计时器
   if (autoSlideInterval.value) {
-    clearInterval(autoSlideInterval.value);
+    clearInterval(autoSlideInterval.value)
   }
-  
+
   // 设置新的计时器
   autoSlideInterval.value = setInterval(() => {
-    nextSlide();
-  }, autoSlideDelay);
-};
+    nextSlide()
+  }, autoSlideDelay)
+}
 
 // 暂停自动滚动
 const pauseAutoSlide = () => {
   if (autoSlideInterval.value) {
-    clearInterval(autoSlideInterval.value);
-    autoSlideInterval.value = null;
+    clearInterval(autoSlideInterval.value)
+    autoSlideInterval.value = null
   }
-};
+}
 
 onMounted(() => {
-  updateVisibleCards();
-  window.addEventListener('resize', updateVisibleCards);
-  
+  updateVisibleCards()
+  window.addEventListener('resize', updateVisibleCards)
+
   // 确保在组件挂载后启动自动滚动
   setTimeout(() => {
-    startAutoSlide();
-    
+    startAutoSlide()
+
     // 添加鼠标悬停暂停功能
-    const container = document.querySelector('.carousel-container');
+    const container = document.querySelector('.carousel-container')
     if (container) {
-      container.addEventListener('mouseenter', pauseAutoSlide);
-      container.addEventListener('mouseleave', startAutoSlide);
+      container.addEventListener('mouseenter', pauseAutoSlide)
+      container.addEventListener('mouseleave', startAutoSlide)
     }
-  }, 500);
-});
+  }, 500)
+})
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', updateVisibleCards);
-  
+  window.removeEventListener('resize', updateVisibleCards)
+
   // 清理所有计时器
   if (autoSlideInterval.value) {
-    clearInterval(autoSlideInterval.value);
+    clearInterval(autoSlideInterval.value)
   }
-  
+
   // 清理鼠标悬停事件
-  const container = document.querySelector('.carousel-container');
+  const container = document.querySelector('.carousel-container')
   if (container) {
-    container.removeEventListener('mouseenter', pauseAutoSlide);
-    container.removeEventListener('mouseleave', startAutoSlide);
+    container.removeEventListener('mouseenter', pauseAutoSlide)
+    container.removeEventListener('mouseleave', startAutoSlide)
   }
-});
+})
 </script>
 
 <style scoped>
@@ -345,7 +349,9 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s, transform 0.2s;
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
   color: #555;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   z-index: 2;
@@ -368,7 +374,9 @@ onBeforeUnmount(() => {
   background-color: #d0d0d0;
   margin: 0 6px;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
 }
 
 .indicator.active {
@@ -382,25 +390,25 @@ onBeforeUnmount(() => {
   .section-title h2 {
     font-size: 2rem;
   }
-  
+
   .feature-card {
     width: 280px;
     height: auto;
     min-height: 300px;
   }
-  
+
   .card-icon {
     height: 100px;
   }
-  
+
   .icon {
     font-size: 40px;
   }
-  
+
   .card-content h3 {
     font-size: 1.2rem;
   }
-  
+
   .carousel-controls {
     margin-top: 30px;
   }

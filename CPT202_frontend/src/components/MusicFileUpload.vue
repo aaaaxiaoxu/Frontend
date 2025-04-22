@@ -56,62 +56,62 @@
 </template>
 
 <script lang="ts">
-import { message } from 'ant-design-vue';
-import { UploadOutlined, PlusOutlined } from '@ant-design/icons-vue';
-import { defineComponent, ref, reactive } from 'vue';
-import { uploadMusicFileUsingPost } from '@/api/musicFileController.ts';
-import MusicEditModal from './MusicEditModal.vue';
+import { message } from 'ant-design-vue'
+import { UploadOutlined, PlusOutlined } from '@ant-design/icons-vue'
+import { defineComponent, ref, reactive } from 'vue'
+import { uploadMusicFileUsingPost } from '@/api/musicFileController.ts'
+import MusicEditModal from './MusicEditModal.vue'
 
 export default defineComponent({
   components: {
     UploadOutlined,
     PlusOutlined,
-    MusicEditModal
+    MusicEditModal,
   },
   emits: ['upload-success'],
   setup(props, { emit }) {
-    const musicFileList = ref([]);
-    const coverFileList = ref([]);
-    const uploading = ref(false);
-    const editModalVisible = ref(false);
-    const uploadedMusic = ref(null);
+    const musicFileList = ref([])
+    const coverFileList = ref([])
+    const uploading = ref(false)
+    const editModalVisible = ref(false)
+    const uploadedMusic = ref(null)
 
     const formState = reactive({
       id: '',
       artist: '',
-    });
+    })
 
     // 预处理音乐文件上传
     const beforeMusicUpload = (file) => {
       // 检查文件类型
-      const isAudio = file.type.startsWith('audio/');
+      const isAudio = file.type.startsWith('audio/')
       if (!isAudio) {
-        message.error('请上传音频文件!');
+        message.error('请上传音频文件!')
       }
-      return false; // 阻止自动上传
-    };
+      return false // 阻止自动上传
+    }
 
     // 预处理封面图片上传
     const beforeCoverUpload = (file) => {
       // 检查文件类型
-      const isImage = file.type.startsWith('image/');
+      const isImage = file.type.startsWith('image/')
       if (!isImage) {
-        message.error('请上传图片文件!');
+        message.error('请上传图片文件!')
       }
-      return false; // 阻止自动上传
-    };
+      return false // 阻止自动上传
+    }
 
     // 处理文件上传
     const handleUpload = async () => {
-      const musicFile = musicFileList.value[0]?.originFileObj;
-      const coverFile = coverFileList.value[0]?.originFileObj;
+      const musicFile = musicFileList.value[0]?.originFileObj
+      const coverFile = coverFileList.value[0]?.originFileObj
 
       if (!musicFile) {
-        message.error('请选择音乐文件!');
-        return;
+        message.error('请选择音乐文件!')
+        return
       }
 
-      uploading.value = true;
+      uploading.value = true
 
       try {
         const result = await uploadMusicFileUsingPost(
@@ -122,34 +122,34 @@ export default defineComponent({
           }, // body
           coverFile, // coverFile
           musicFile, // file
-        );
+        )
 
         if (result.data.code === 0) {
-          message.success('上传成功!');
+          message.success('上传成功!')
 
           // 保存上传的音乐信息，并打开编辑弹窗
-          uploadedMusic.value = result.data.data;
-          editModalVisible.value = true;
+          uploadedMusic.value = result.data.data
+          editModalVisible.value = true
 
           // 清空表单
-          musicFileList.value = [];
-          coverFileList.value = [];
-          formState.id = '';
-          formState.artist = '';
+          musicFileList.value = []
+          coverFileList.value = []
+          formState.id = ''
+          formState.artist = ''
         } else {
-          message.error('上传失败: ' + result.data.message);
+          message.error('上传失败: ' + result.data.message)
         }
       } catch (error) {
-        message.error('上传出错: ' + error.message);
+        message.error('上传出错: ' + error.message)
       } finally {
-        uploading.value = false;
+        uploading.value = false
       }
-    };
+    }
 
     // 处理编辑成功
     const handleEditSuccess = () => {
-      emit('upload-success', uploadedMusic.value);
-    };
+      emit('upload-success', uploadedMusic.value)
+    }
 
     return {
       musicFileList,
@@ -161,8 +161,8 @@ export default defineComponent({
       beforeMusicUpload,
       beforeCoverUpload,
       handleUpload,
-      handleEditSuccess
-    };
+      handleEditSuccess,
+    }
   },
-});
+})
 </script>

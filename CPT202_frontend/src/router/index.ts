@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import HomePage from '@/pages/HomePage.vue'
+import LandingPage from '@/pages/LandingPage.vue'
 import UserLoginPage from '@/pages/user/UserLoginPage.vue'
 import UserRegisterPage from '@/pages/user/UserRegisterPage.vue'
 import UserManagePage from '@/pages/admin/UserManagePage.vue'
@@ -18,6 +19,14 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: '入口页面',
+      component: LandingPage,
+      meta: {
+        access: ACCESS_ENUM.NOT_LOGIN,
+      },
+    },
+    {
+      path: '/home',
       name: '主页',
       component: HomePage,
       meta: {
@@ -68,14 +77,6 @@ const router = createRouter({
       path: '/noAuth',
       name: '无权限',
       component: NoAuth,
-      meta: {
-        access: ACCESS_ENUM.NOT_LOGIN,
-      },
-    },
-    {
-      path: '/',
-      name: 'home',
-      component: HomePage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
       },
