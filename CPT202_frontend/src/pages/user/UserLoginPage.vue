@@ -4,7 +4,7 @@
     <MultiColorParticlesBg
       class="particles-background"
       :colors="['#1890FF', '#722ED1', '#52C41A', '#FA8C16', '#F5222D']"
-      :quantity="480"
+      :quantity="1080"
     />
 
     <div class="form-card">
@@ -55,7 +55,7 @@
         {{ $t('message.noAccount') }}
         <RouterLink to="/user/register" class="link">{{ $t('message.register') }}</RouterLink>
       </div>
-      
+
       <div class="language-switch">
         <a @click="changeLanguage" class="language-link">
           {{ locale === 'en' ? '中文' : 'English' }}

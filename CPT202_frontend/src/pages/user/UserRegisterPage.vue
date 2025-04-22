@@ -4,7 +4,7 @@
     <MultiColorParticlesBg
       class="particles-background"
       :colors="['#2F54EB', '#EB2F96', '#FAAD14', '#13C2C2', '#52C41A']"
-      :quantity="480"
+      :quantity="1080"
     />
 
     <div class="form-card">
