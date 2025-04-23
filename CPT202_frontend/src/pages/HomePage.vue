@@ -3,7 +3,14 @@
     <!-- 头部 Banner -->
     <div class="hero-banner">
       <div class="banner-content">
-        <h1>MelodyHub</h1>
+        <VideoText
+          src="https://www.youtube.com/watch?v=bt-WaEa880I&list=PLRpoXv9xf21pO6ZpWaZy8TjFxbx64xpgu&index=14"
+          class="title-video-text"
+          fontSize="120"
+          fontWeight="900"
+        >
+          MelodyHub
+        </VideoText>
         <p>您的个人音乐资源管理中心</p>
         <div class="banner-buttons">
           <a-button type="primary" size="large" @click="goToMusic"> 浏览音乐 </a-button>
@@ -62,6 +69,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import FeaturesCarousel from '@/components/FeaturesCarousel.vue'
+import VideoText from '@/components/ui/video-text/VideoText.vue'
 
 const router = useRouter()
 
@@ -89,40 +97,26 @@ const goToUpload = () => {
 }
 
 .hero-banner {
-  height: 500px;
-  background: linear-gradient(135deg, #4e89ff, #8b5cf6);
+  height: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: black;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-.hero-banner::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('/path/to/music-pattern.png') repeat;
-  opacity: 0.1;
-}
-
 .banner-content {
-  max-width: 800px;
+  max-width: 1000px;
   padding: 0 20px;
   position: relative;
   z-index: 1;
 }
 
-.banner-content h1 {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.title-video-text {
+  height: 200px;
+  margin-bottom: 30px;
 }
 
 .banner-content p {
@@ -194,11 +188,11 @@ const goToUpload = () => {
 /* 响应式设计 */
 @media (max-width: 768px) {
   .hero-banner {
-    height: 400px;
+    height: 500px;
   }
 
-  .banner-content h1 {
-    font-size: 2.5rem;
+  .title-video-text {
+    height: 150px;
   }
 
   .banner-content p {
@@ -211,6 +205,10 @@ const goToUpload = () => {
 }
 
 @media (max-width: 480px) {
+  .title-video-text {
+    height: 100px;
+  }
+
   .banner-buttons {
     flex-direction: column;
     align-items: center;

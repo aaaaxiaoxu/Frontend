@@ -23,6 +23,7 @@
     "hls.js": "^1.6.2",
     "lucide-vue-next": "^0.503.0",
     "mitt": "^3.0.1",
+    "motion": "^12.7.5",
     "motion-v": "^1.0.0-beta.2",
     "pinia": "^2.2.6",
     "tailwind-merge": "^3.2.0",

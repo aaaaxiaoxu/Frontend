@@ -12,6 +12,24 @@ const en={
     solgen: 'The best music manangement system you will never miss!',
     getStarted: 'Get Started',
     changeLanguage:'change language',
+    homepage: 'HomePage',
+    // 要添加到en.ts文件中的内容
+    // Navigation bar related text
+    search: 'Search',
+    upload: 'Upload',
+    personalInfo: 'Personal Information',
+    userManagement: 'User Management',
+    resourceReview: 'Resource Review',
+    listeningMusic: 'Listening Music',
+    homePage: 'Home',
+    uploadMusic: 'Upload Music',
+    uploadSuccess: 'Music uploaded successfully',
+    noName: 'No Name',
+    inputSearchText: 'Input search text',
+    logoutSuccess: 'Logout successful',
+    logoutFailed: 'Logout failed',
+
+
 
     // Add login page text
     welcomeToMelodyHub: 'Welcome to MelodyHub',

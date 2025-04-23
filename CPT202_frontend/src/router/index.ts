@@ -14,6 +14,7 @@ import MusicPage from '@/pages/musicPage.vue'
 import SearchedMusicPage from '@/pages/searchedMusicPage.vue'
 import MusicDetailPage from '@/pages/MusicDetailPage.vue'
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -101,17 +102,6 @@ const router = createRouter({
       path: '/search',
       name: '搜索结果',
       component: SearchedMusicPage,
-      meta: {
-        access: ACCESS_ENUM.NOT_LOGIN,
-      },
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
       },

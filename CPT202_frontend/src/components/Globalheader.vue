@@ -1,77 +1,207 @@
 <template>
-  <div id="globalHeader">
-    <a-row :wrap="false" align="middle">
-      <a-col flex="250px">
-        <router-link to="/">
-          <div class="title-bar">
-            <img src="../assets/logo.png" alt="logo" class="logo" />
-            <div class="title">MelodyHub</div>
+  <div class="navbar-wrapper fixed left-0 right-0 z-50 w-full" :style="{ top: visible ? '10px' : '0' }">
+    <div class="w-full">
+      <div class="max-w-6xl mx-auto">
+        <!-- 桌面导航 -->
+        <div 
+          class="relative z-[60] mx-auto hidden w-full flex-row items-center justify-between self-start rounded-full px-3 py-1 lg:flex" 
+          :class="[visible ? 'bg-white/80 shadow-lg' : 'bg-transparent']"
+          :style="{
+            backdropFilter: visible ? 'blur(10px)' : 'none',
+            boxShadow: visible ? '0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset' : 'none',
+            transition: 'all 0.3s',
+            transform: visible ? 'translateY(5px)' : 'translateY(0)'
+          }"
+        >
+          <!-- Logo -->
+          <router-link to="/" class="relative z-20 mr-3 flex items-center space-x-1 px-1 py-1 text-sm font-normal text-black">
+            <img src="../assets/logo.png" alt="logo" width="40" height="40" />
+            <span class="font-medium text-black text-base">MelodyHub</span>
+          </router-link>
+          
+          <!-- 导航项 -->
+          <div class="flex-1 flex-row items-center justify-center space-x-1 text-sm font-medium text-zinc-600 transition duration-200 lg:flex lg:space-x-1">
+            <router-link
+              v-for="(item, idx) in filteredItems"
+              :key="idx"
+              :to="item.key"
+              class="relative px-3 py-1 text-neutral-600"
+              @mouseenter="hoveredItem = idx" 
+              @mouseleave="hoveredItem = null"
+            >
+              <div v-if="hoveredItem === idx" class="absolute inset-0 h-full w-full rounded-full bg-gray-100"></div>
+              <span class="relative z-20">{{ t(item.label) }}</span>
+            </router-link>
           </div>
-        </router-link>
-      </a-col>
-      <a-col flex="auto">
-        <a-menu
-          v-model:selectedKeys="current"
-          mode="horizontal"
-          :items="filteredItems"
-          @click="doMenuClick"
-        />
-      </a-col>
-      <a-col>
-        <div class="right-section">
-          <a-input-search
-            v-model:value="searchValue"
-            placeholder="input search text"
-            style="width: 240px; margin-right: 16px"
-            enter-button
-            @search="onSearch"
-          />
-          <a-button type="primary" class="upload-btn" @click="showUploadModal">
-            <upload-outlined></upload-outlined>
-            upload
-          </a-button>
-          <div class="user-login-status">
-            <div v-if="loginUserStore.loginUser.id" class="user-info">
-              <a-dropdown>
-                <a-space>
-                  <a-avatar
-                    :size="36"
-                    :src="loginUserStore.loginUser.userAvatar"
-                    class="user-avatar"
-                  />
-                  <span class="user-name">{{ loginUserStore.loginUser.userName ?? '无名' }}</span>
-                </a-space>
+          
+          <!-- 右侧功能区 -->
+          <div class="relative z-20 flex flex-row items-center">
+            <!-- 搜索框 -->
+            <a-input-search
+              v-model:value="searchValue"
+              :placeholder="t('message.inputSearchText')"
+              style="width: 200px; margin-right: 12px"
+              enter-button
+              @search="onSearch"
+            />
+            
+            <!-- 上传按钮 -->
+            <a-button type="primary" class="upload-btn" @click="showUploadModal">
+              <upload-outlined></upload-outlined>
+              {{ t('message.upload') }}
+            </a-button>
+            
+            <!-- 用户信息/登录按钮 -->
+            <div class="user-login-status ml-3">
+              <div v-if="loginUserStore.loginUser.id" class="user-info">
+                <a-dropdown>
+                  <a-space>
+                    <a-avatar
+                      :size="32"
+                      :src="loginUserStore.loginUser.userAvatar"
+                      class="user-avatar"
+                    />
+                    <span class="user-name">{{ loginUserStore.loginUser.userName ?? t('message.noName') }}</span>
+                  </a-space>
 
-                <template #overlay>
-                  <a-menu>
-                    <a-menu-item @click="goToUserEdit">
-                      <UserOutlined />
-                      Personal Information
-                    </a-menu-item>
-                    <a-menu-item @click="doLogout">
-                      <LogoutOutlined />
-                      Logout
-                    </a-menu-item>
-                  </a-menu>
-                </template>
-              </a-dropdown>
-            </div>
-            <div v-else>
-              <a-button type="primary" href="/user/login"> Login </a-button>
+                  <template #overlay>
+                    <a-menu>
+                      <a-menu-item @click="goToUserEdit">
+                        <UserOutlined />
+                        {{ t('message.personalInfo') }}
+                      </a-menu-item>
+                      <a-menu-item @click="doLogout">
+                        <LogoutOutlined />
+                        {{ t('message.logout') }}
+                      </a-menu-item>
+                    </a-menu>
+                  </template>
+                </a-dropdown>
+              </div>
+              <div v-else>
+                <a-button type="primary" href="/user/login" class="px-3 py-1 rounded-md text-white text-sm font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center">
+                  {{ t('message.login') }}
+                </a-button>
+              </div>
             </div>
           </div>
         </div>
-      </a-col>
-    </a-row>
+        
+        <!-- 移动导航 -->
+        <div 
+          class="relative z-50 mx-auto flex w-full flex-col items-center justify-between px-0 py-1 lg:hidden"
+          :class="[visible ? 'bg-white/80 shadow-lg' : 'bg-transparent']"
+          :style="{
+            backdropFilter: visible ? 'blur(10px)' : 'none',
+            boxShadow: visible ? '0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset' : 'none',
+            paddingRight: visible ? '10px' : '0px',
+            paddingLeft: visible ? '10px' : '0px',
+            transition: 'all 0.3s',
+            transform: visible ? 'translateY(5px)' : 'translateY(0)'
+          }"
+        >
+          <!-- 移动导航头部 -->
+          <div class="flex w-full flex-row items-center justify-between px-3">
+            <router-link to="/" class="relative z-20 mr-3 flex items-center space-x-1 px-1 py-1 text-sm font-normal text-black">
+              <img src="../assets/logo.png" alt="logo" width="36" height="36" />
+              <span class="font-medium text-black text-base">MelodyHub</span>
+            </router-link>
+            
+            <!-- 搜索框 - 移动视图 -->
+            <a-input-search
+              v-model:value="searchValue"
+              :placeholder="t('message.search')"
+              style="width: 120px; margin-right: 6px"
+              enter-button
+              @search="onSearch"
+            />
+            
+            <!-- 移动导航切换按钮 -->
+            <div @click="isMenuOpen = !isMenuOpen" class="cursor-pointer">
+              <svg v-if="isMenuOpen" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+              </svg>
+            </div>
+          </div>
+          
+          <!-- 移动导航菜单 -->
+          <transition name="menu">
+            <div v-if="isMenuOpen" class="absolute inset-x-0 top-14 z-50 flex w-full flex-col items-start justify-start gap-3 rounded-lg bg-white px-3 py-6 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]">
+              <router-link 
+                v-for="(item, idx) in filteredItems" 
+                :key="idx" 
+                :to="item.key" 
+                class="text-black hover:text-gray-500 transition duration-200 w-full p-2"
+                @click="isMenuOpen = false"
+              >
+                {{ t(item.label) }}
+              </router-link>
+              
+              <div class="flex w-full">
+                <!-- 上传按钮 - 移动视图 -->
+                <a-button type="primary" class="upload-btn my-2 mr-2" @click="showUploadModal">
+                  <upload-outlined></upload-outlined>
+                  {{ t('message.upload') }}
+                </a-button>
+                
+                <!-- 用户信息/登录按钮 - 移动视图 -->
+                <div class="user-login-status my-2">
+                  <div v-if="loginUserStore.loginUser.id" class="user-info">
+                    <a-dropdown>
+                      <a-space>
+                        <a-avatar
+                          :size="32"
+                          :src="loginUserStore.loginUser.userAvatar"
+                          class="user-avatar"
+                        />
+                        <span class="user-name">{{ loginUserStore.loginUser.userName ?? t('message.noName') }}</span>
+                      </a-space>
+
+                      <template #overlay>
+                        <a-menu>
+                          <a-menu-item @click="goToUserEdit">
+                            <UserOutlined />
+                            {{ t('message.personalInfo') }}
+                          </a-menu-item>
+                          <a-menu-item @click="doLogout">
+                            <LogoutOutlined />
+                            {{ t('message.logout') }}
+                          </a-menu-item>
+                        </a-menu>
+                      </template>
+                    </a-dropdown>
+                  </div>
+                  <div v-else>
+                    <a-button type="primary" href="/user/login">
+                      {{ t('message.login') }}
+                    </a-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 为了防止内容被固定导航栏遮挡 -->
+    <div class="h-14"></div>
+    
     <!-- 上传模态框 -->
-    <a-modal v-model:visible="uploadModalVisible" title="上传音乐" @cancel="handleCancel">
+    <a-modal v-model:visible="uploadModalVisible" :title="t('message.uploadMusic')" @cancel="handleCancel">
       <music-file-upload @upload-success="handleUploadSuccess"></music-file-upload>
     </a-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { h, ref, computed } from 'vue'
+import { h, ref, computed, onMounted, onUnmounted } from 'vue'
 import {
   HomeOutlined,
   LogoutOutlined,
@@ -87,6 +217,9 @@ import { userLogoutUsingPost } from '@/api/userController.ts'
 import checkAccess from '@/access/checkAccess'
 import MusicFileUpload from '@/components/MusicFileUpload.vue'
 import type { VNode } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // Define a custom type for menu items including meta
 interface CustomMenuItem {
@@ -108,24 +241,24 @@ const menus = ref<CustomMenuItem[]>([
   {
     key: '/',
     icon: () => h(HomeOutlined),
-    label: '主页',
-    title: '主页',
+    label: 'message.homePage',
+    title: 'message.homePage',
     meta: {
       access: 'notLogin',
     },
   },
   {
     key: '/admin/userManage',
-    label: '用户管理',
-    title: 'about',
+    label: 'message.userManagement',
+    title: 'message.userManagement',
     meta: {
       access: 'admin',
     },
   },
   {
     key: '/admin/resourceReview',
-    label: '资源审核',
-    title: 'Resource Review',
+    label: 'message.resourceReview',
+    title: 'message.resourceReview',
     meta: {
       access: 'admin',
     },
@@ -133,18 +266,10 @@ const menus = ref<CustomMenuItem[]>([
   {
     key: '/music',
     icon: () => h(CustomerServiceOutlined),
-    label: 'Listening Music',
-    title: 'Listening Music',
+    label: 'message.listeningMusic',
+    title: 'message.listeningMusic',
     meta: {
       access: 'user',
-    },
-  },
-  {
-    key: '/add_musicFile',
-    label: 'Upload Music',
-    title: 'Upload Music',
-    meta: {
-      access: 'notLogin',
     },
   },
 ])
@@ -181,14 +306,14 @@ const doLogout = async () => {
   const res = await userLogoutUsingPost()
   if (res.data.code === 0) {
     loginUserStore.setLoginUser({
-      userName: '未登录',
+      userName: t('message.noName'),
     })
-    message.success('退出登录成功')
+    message.success(t('message.logoutSuccess'))
     await router.push({
       path: '/user/login',
     })
   } else {
-    message.error('退出登录失败' + res.data.message)
+    message.error(t('message.logoutFailed') + res.data.message)
   }
 }
 
@@ -202,7 +327,7 @@ const handleCancel = () => {
   uploadModalVisible.value = false
 }
 const handleUploadSuccess = () => {
-  message.success('音乐上传成功')
+  message.success(t('message.uploadSuccess'))
   uploadModalVisible.value = false
 }
 
@@ -221,29 +346,44 @@ const onSearch = (value: string) => {
     })
   }
 }
+
+// 新增导航栏相关状态
+const visible = ref(false)
+const isMenuOpen = ref(false)
+const hoveredItem = ref<number | null>(null)
+
+// 滚动事件处理
+const handleScroll = () => {
+  if (window.scrollY > 100) {
+    visible.value = true
+  } else {
+    visible.value = false
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style scoped>
-#globalHeader .title-bar {
-  display: flex;
-  align-items: center;
+.navbar-wrapper {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.title {
-  color: black;
-  font-size: 18px;
-  margin-left: 16px;
+.menu-enter-active,
+.menu-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.logo {
-  height: 48px;
-}
-
-.right-section {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding-right: 28px;
+.menu-enter-from,
+.menu-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .upload-btn {
@@ -266,38 +406,16 @@ const onSearch = (value: string) => {
 }
 
 .user-avatar {
-  margin-right: 16px; /* 增加头像与用户名之间的间距 */
+  margin-right: 8px;
 }
 
 .user-name {
-  font-size: 16px; /* 增加字体大小 */
-  font-weight: 500; /* 增加字体粗细 */
+  font-size: 14px;
+  font-weight: 500;
   color: rgba(0, 0, 0, 0.85);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 90px; /* 增加最大宽度 */
-}
-
-.custom-search-input {
-  width: 240px;
-  height: 40px;
-  margin-right: 16px;
-  margin-top: 8px;
-  border-radius: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.custom-search-input :deep(.ant-btn) {
-  border-radius: 0 24px 24px 0;
-  background-color: #1890ff;
-}
-
-.custom-search-input :deep(.ant-input) {
-  border-radius: 24px 0 0 24px;
-}
-
-.custom-search-input:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 80px;
 }
 </style>
