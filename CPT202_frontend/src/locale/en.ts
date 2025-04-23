@@ -28,6 +28,51 @@ const en={
     inputSearchText: 'Input search text',
     logoutSuccess: 'Logout successful',
     logoutFailed: 'Logout failed',
+    // 添加到en.ts文件中的message对象内
+    melodyHubTitle: 'MelodyHub is not just another music platform',
+    melodyHubSubtitle: 'A comprehensive music management system that lets you upload, organize, and enjoy your favorite tracks',
+
+    // 功能特点
+    feature1Title: 'Easy Upload',
+    feature1Description: 'Upload your music with just a few clicks. Supports various audio formats for a seamless experience.',
+    feature2Title: 'Personalized Playlists',
+    feature2Description: 'Create custom playlists and organize your music library exactly how you want it.',
+    feature3Title: 'High Quality Audio',
+    feature3Description: 'Enjoy crystal clear sound quality with our advanced audio processing technology.',
+    feature4Title: 'Listen Anywhere',
+    feature4Description: 'Access your music library from any device - desktop, tablet, or mobile phone.',
+    feature5Title: 'Share Your Music',
+    feature5Description: 'Share your favorite tracks and playlists with friends or discover music from other users.',
+    feature6Title: 'Regular Updates',
+    feature6Description: 'We constantly improve our platform with new features and enhanced user experience.',
+    // 艺术家信息
+    taylor_name: "Taylor Swift",
+    taylor_genre: "Pop",
+    taylor_quote: "Taylor Swift is an American singer-songwriter known for her storytelling and genre versatility. She rose to fame with her 2006 debut album and has since released numerous chart-topping hits like \"Love Story,\" \"Shake It Off,\" and \"Cardigan.\" Her music blends personal experiences with universal themes, making her one of the best-selling artists worldwide.",
+
+    jay_name: "Jay Chou",
+    jay_genre: "Pop, R&B, Hip-Hop",
+    jay_quote: "Jay Chou is a renowned Taiwanese singer, songwriter, and music producer, known for his unique musical style and innovative lyrics. His representative works include \"Blue and White Porcelain,\" \"Rice Field,\" and \"Simple Love,\" blending pop, R&B, hip-hop, and Chinese elements. Jay Chou's music has had a profound influence on the Chinese-speaking world, becoming a classic for an entire generation.",
+
+    michael_name: "Michael Jackson", 
+    michael_genre: "Pop, Rock, R&B, Funk, Soul",
+    michael_quote: "Michael Jackson was an American singer, songwriter, and dancer, often referred to as the \"King of Pop.\" His iconic works include \"Billie Jean,\" \"Thriller,\" and \"Beat It,\" which revolutionized pop music and music videos. Jackson's influence on global music, dance, and culture remains unparalleled, making him one of the best-selling music artists of all time.",
+
+    justin_name: "Justin Bieber",
+    justin_genre: "Pop, with influences of R&B, dancehall, and electronic music",
+    justin_quote: "Justin Bieber is a Canadian singer, songwriter, and pop sensation who rose to fame at a young age with his breakout hit \"Baby.\" His notable works include \"Sorry,\" \"Love Yourself,\" and \"What Do You Mean?\" Bieber's music spans pop, R&B, and dancehall influences, and he has become one of the best-selling music artists worldwide.",
+
+    oasis_name: "Oasis",
+    oasis_genre: "Rock, Britpop",
+    oasis_quote: "Oasis was a British rock band known for their anthemic sound and captivating melodies, becoming one of the most influential bands of the 1990s. Their iconic works include \"Wonderwall,\" \"Don't Look Back in Anger,\" and \"Live Forever,\" which helped define the Britpop genre. Oasis's music blends classic rock influences with a raw, rebellious spirit, solidifying their legacy in rock history.",
+
+    // 页面标题
+    artists_title: "Featured Artists",
+    artists_subtitle: "Explore popular artists on MelodyHub",
+
+    // 添加到message对象中
+    musicBeWithYou: "May the music be with you",
+    browseMusic: "Browse Music",
 
 
 
@@ -39,6 +84,7 @@ const en={
     enterAccount: 'Please enter account',
     enterPassword: 'Please enter password',
     loginButton: 'Login',
+    mainTitle: 'MelodyHub Feature',
     noAccount: 'Don\'t have an account?',
 
     // Add register page text
@@ -61,7 +107,65 @@ const en={
     passwordMismatch: 'The two passwords do not match',
     invalidEmail: 'Please enter a valid email address',
     codeSent: 'Verification code has been sent, please check your email',
-    sendCodeFailed: 'Failed to send verification code, '
+    sendCodeFailed: 'Failed to send verification code, ',
+
+    // 音乐类型提示
+    searchForArtists: 'Search for artists...',
+    searchForSongs: 'Search for songs...',
+    discoverNewMusic: 'Discover new music...',
+    exploreGenres: 'Explore music genres...',
+
+    // 音乐类型
+    genrePop: 'Pop Music',
+    genreRock: 'Rock',
+    genreClassical: 'Classical',
+    genreJazz: 'Jazz',
+    genreHipHop: 'Hip Hop',
+    genreRnB: 'R&B',
+    genreCountry: 'Country',
+    genreElectronic: 'Electronic',
+    genreDance: 'Dance',
+    genreMetal: 'Metal',
+    genreFolk: 'Folk',
+    genreBlues: 'Blues',
+    genreReggae: 'Reggae',
+    genreSoul: 'Soul',
+    genreFunk: 'Funk',
+    genreIndie: 'Indie',
+    genrePunk: 'Punk',
+    genreAlternative: 'Alternative',
+    genreEDM: 'EDM',
+    genreAmbient: 'Ambient',
+    genreLatin: 'Latin',
+    genreKpop: 'K-pop',
+    genreJpop: 'J-pop',
+    genreCpop: 'C-pop',
+    genreOpera: 'Opera',
+    genreDisco: 'Disco',
+    genreGospel: 'Gospel',
+    genreRap: 'Rap',
+    genreTrap: 'Trap',
+    genreTechno: 'Techno',
+    genreJazz_Fusion: 'Jazz Fusion',
+    genreHardRock: 'Hard Rock',
+    genreHeavyMetal: 'Heavy Metal',
+    genreDrumAndBass: 'Drum and Bass',
+    genreHouse: 'House',
+    genreTrance: 'Trance',
+    genreDubstep: 'Dubstep',
+    genreAcoustic: 'Acoustic',
+    genreExperimental: 'Experimental',
+    genreWorldMusic: 'World Music',
+    genreSymphonic: 'Symphonic',
+    genreChillout: 'Chillout',
+    genreLofi: 'Lo-fi',
+    genreBigBand: 'Big Band',
+    genreOrchestral: 'Orchestral',
+    genreNewAge: 'New Age',
+    genreGrunge: 'Grunge',
+    genreBluegrass: 'Bluegrass',
+    genreBaroque: 'Baroque',
+    genreAcappella: 'A cappella',
   }
 }
 export default en

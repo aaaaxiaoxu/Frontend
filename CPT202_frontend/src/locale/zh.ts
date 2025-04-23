@@ -38,7 +38,54 @@ const zh={
     inputSearchText: '输入搜索内容',
     logoutSuccess: '退出登录成功',
     logoutFailed: '退出登录失败',
-    
+    // 添加到zh.ts文件中的message对象内
+    melodyHubTitle: 'MelodyHub不只是另一个音乐平台',
+    melodyHubSubtitle: '一个全面的音乐管理系统，让您上传、组织和享受您喜爱的音乐',
+
+    // 功能特点
+    feature1Title: '轻松上传',
+    feature1Description: '只需点击几下即可上传您的音乐。支持各种音频格式，体验无缝。',
+    feature2Title: '个性化播放列表',
+    feature2Description: '创建自定义播放列表，按照您想要的方式组织音乐库。',
+    feature3Title: '高品质音频',
+    feature3Description: '通过我们的先进音频处理技术，享受清晰的音质。',
+    feature4Title: '随时随地收听',
+    feature4Description: '从任何设备访问您的音乐库 - 桌面电脑、平板电脑或手机。',
+    feature5Title: '分享您的音乐',
+    feature5Description: '与朋友分享您喜爱的曲目和播放列表，或发现其他用户的音乐。',
+    feature6Title: '定期更新',
+    feature6Description: '我们不断完善平台，提供新功能和增强用户体验。',
+    // 艺术家信息
+    taylor_name: "泰勒·斯威夫特",
+    taylor_genre: "流行音乐",
+    taylor_quote: "泰勒·斯威夫特是一位美国歌手兼词曲作家，以其叙事能力和跨流派的多样性而闻名。她凭借2006年的首张专辑一举成名，此后发行了众多冠军单曲，如《爱的故事》、《甩掉》和《羊毛衫》。她的音乐将个人经历与普遍主题相结合，使她成为全球畅销艺术家之一。",
+
+    jay_name: "周杰伦",
+    jay_genre: "流行乐、节奏蓝调、嘻哈",
+    jay_quote: "周杰伦是一位著名的台湾歌手、词曲作家和音乐制作人，以其独特的音乐风格和创新的歌词而闻名。他的代表作品包括《青花瓷》、《稻香》和《简单爱》，融合了流行、R&B、嘻哈和中国元素。周杰伦的音乐对华语世界产生了深远的影响，成为整整一代人的经典。",
+
+    michael_name: "迈克尔·杰克逊",
+    michael_genre: "流行乐、摇滚乐、节奏蓝调、放克、灵魂乐",
+    michael_quote: "迈克尔·杰克逊是美国歌手、词曲作家和舞者，常被称为\"流行音乐之王\"。他的标志性作品包括《比利·吉恩》、《惊悚》和《打败它》，这些作品彻底改变了流行音乐和音乐视频。杰克逊对全球音乐、舞蹈和文化的影响无与伦比，使他成为有史以来最畅销的音乐艺术家之一。",
+
+    justin_name: "贾斯汀·比伯",
+    justin_genre: "流行乐，带有节奏蓝调、舞厅和电子音乐的影响",
+    justin_quote: "贾斯汀·比伯是一位加拿大歌手、词曲作家和流行音乐明星，凭借热门单曲《Baby》在年轻时就成名。他的著名作品包括《Sorry》、《爱自己》和《你是什么意思？》。比伯的音乐横跨流行乐、R&B和舞厅风格，他已成为全球最畅销的音乐艺术家之一。",
+
+    oasis_name: "绿洲乐队",
+    oasis_genre: "摇滚乐、英伦摇滚",
+    oasis_quote: "绿洲乐队是一支以其震撼人心的声音和迷人旋律而闻名的英国摇滚乐队，成为90年代最具影响力的乐队之一。他们的标志性作品包括《奇迹墙》、《不要回头看愤怒》和《永远活着》，这些作品帮助定义了英伦摇滚流派。绿洲的音乐融合了经典摇滚元素和原始叛逆精神，巩固了他们在摇滚历史上的地位。",
+
+    // 页面标题
+    artists_title: "精选艺术家",
+    artists_subtitle: "探索MelodyHub上的热门艺术家",
+
+
+
+    // 添加到message对象中
+    musicBeWithYou: "愿音乐与你同在",
+    browseMusic: "浏览音乐",
+
 
     // 新增注册页面文本
     createAccount: '创建您的账户',
@@ -60,7 +107,65 @@ const zh={
     passwordMismatch: '两次密码不一致',
     invalidEmail: '请输入有效的邮箱地址',
     codeSent: '验证码已发送，请查收邮件',
-    sendCodeFailed: '发送验证码失败，'
+    sendCodeFailed: '发送验证码失败，',
+
+    // 音乐类型提示
+    searchForArtists: '搜索艺术家...',
+    searchForSongs: '搜索歌曲...',
+    discoverNewMusic: '发现新音乐...',
+    exploreGenres: '探索音乐风格...',
+
+    // 音乐类型
+    genrePop: '流行音乐',
+    genreRock: '摇滚音乐',
+    genreClassical: '古典音乐',
+    genreJazz: '爵士乐',
+    genreHipHop: '嘻哈音乐',
+    genreRnB: '节奏布鲁斯',
+    genreCountry: '乡村音乐',
+    genreElectronic: '电子音乐',
+    genreDance: '舞曲',
+    genreMetal: '金属音乐',
+    genreFolk: '民谣',
+    genreBlues: '蓝调',
+    genreReggae: '雷鬼音乐',
+    genreSoul: '灵魂乐',
+    genreFunk: '放克音乐',
+    genreIndie: '独立音乐',
+    genrePunk: '朋克音乐',
+    genreAlternative: '另类音乐',
+    genreEDM: '电子舞曲',
+    genreAmbient: '氛围音乐',
+    genreLatin: '拉丁音乐',
+    genreKpop: '韩国流行音乐',
+    genreJpop: '日本流行音乐',
+    genreCpop: '中国流行音乐',
+    genreOpera: '歌剧',
+    genreDisco: '迪斯科',
+    genreGospel: '福音音乐',
+    genreRap: '说唱',
+    genreTrap: '陷阱音乐',
+    genreTechno: '技术舞曲',
+    genreJazz_Fusion: '爵士融合',
+    genreHardRock: '硬摇滚',
+    genreHeavyMetal: '重金属',
+    genreDrumAndBass: '鼓打贝斯',
+    genreHouse: '浩室音乐',
+    genreTrance: '迷幻音乐',
+    genreDubstep: '回响贝斯',
+    genreAcoustic: '原声音乐',
+    genreExperimental: '实验音乐',
+    genreWorldMusic: '世界音乐',
+    genreSymphonic: '交响乐',
+    genreChillout: '冷场音乐',
+    genreLofi: '低保真音乐',
+    genreBigBand: '大乐队',
+    genreOrchestral: '管弦乐',
+    genreNewAge: '新世纪音乐',
+    genreGrunge: '垃圾摇滚',
+    genreBluegrass: '蓝草音乐',
+    genreBaroque: '巴洛克音乐',
+    genreAcappella: '无伴奏合唱',
   }
 }
 export default zh

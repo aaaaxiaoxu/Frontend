@@ -34,13 +34,13 @@
               }"
               class="absolute inset-0 origin-bottom"
             >
-              <NuxtImg
+              <img
                 :src="testimonial.image"
                 :alt="testimonial.name"
                 width="500"
                 height="500"
                 :draggable="false"
-                class="size-full rounded-3xl object-cover object-center"
+                class="w-full h-full rounded-3xl object-cover object-center"
               />
             </Motion>
           </AnimatePresence>
@@ -128,6 +128,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { Motion } from 'motion-v';
 
 interface Testimonial {

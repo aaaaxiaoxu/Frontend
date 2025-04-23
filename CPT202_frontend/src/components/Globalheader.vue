@@ -38,10 +38,11 @@
           <div class="relative z-20 flex flex-row items-center">
             <!-- 搜索框 -->
             <div class="flex items-center mr-3">
-              <IInput
+              <VanishingInput
                 v-model="searchValue"
-                :placeholder="t('message.inputSearchText')"
-                class="w-[200px]"
+                :placeholders="searchPlaceholders"
+                @submit="onSearch"
+                class="w-[280px] h-[46px] search-input-wrapper"
               />
             </div>
 
@@ -108,15 +109,13 @@
             </router-link>
 
             <!-- 搜索框 - 移动视图 -->
-            <div class="flex items-center">
-              <IInput
+            <div class="flex items-center flex-1 max-w-[180px] mr-2">
+              <VanishingInput
                 v-model="searchValue"
-                :placeholder="t('message.search')"
-                class="w-[120px]"
+                :placeholders="searchPlaceholders"
+                @submit="onSearch"
+                class="w-full h-[42px] search-input-wrapper"
               />
-              <GradientButton bgColor="#fff" class="ml-2 text-black h-8 min-h-8" @click="onSearch(searchValue)">
-                <search-outlined />
-              </GradientButton>
             </div>
 
             <!-- 移动导航切换按钮 -->
@@ -211,6 +210,7 @@ import {
   UserOutlined,
   UploadOutlined,
   CustomerServiceOutlined,
+  SearchOutlined,
 } from '@ant-design/icons-vue'
 import type { MenuProps } from 'ant-design-vue'
 import { message, InputSearch } from 'ant-design-vue'
@@ -222,7 +222,7 @@ import MusicFileUpload from '@/components/MusicFileUpload.vue'
 import type { VNode } from 'vue'
 import { useI18n } from 'vue-i18n'
 import GradientButton from '@/components/ui/gradient-button/GradientButton.vue'
-import { IInput } from '@/components/ui/input'
+import VanishingInput from '@/components/ui/vanishing-input/VanishingInput.vue'
 
 const { t } = useI18n()
 
@@ -343,8 +343,23 @@ const showUploadModal = () => {
 // Add search functionality
 const searchValue = ref<string>('')
 
+// 添加搜索提示词数组，使用音乐类别
+const searchPlaceholders = [
+  t('message.genrePop'),
+  t('message.genreRock'),
+  t('message.genreClassical'),
+  t('message.genreJazz'),
+  t('message.genreHipHop'),
+  t('message.genreRnB'),
+  t('message.genreCountry'),
+  t('message.genreElectronic'),
+  t('message.genreKpop'),
+  t('message.genreJpop'),
+  t('message.genreCpop')
+]
+
 const onSearch = (value: string) => {
-  if (value.trim()) {
+  if (value && value.trim()) {
     router.push({
       path: '/search',
       query: { q: value.trim() },
@@ -422,5 +437,19 @@ onUnmounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 80px;
+}
+
+.search-input-wrapper {
+  position: relative;
+
+}
+
+/* 调整搜索框内部元素位置 */
+:deep(.search-input-wrapper p) {
+  padding-top: 30px; /* 提示词向下移动 */
+}
+
+:deep(.search-input-wrapper button) {
+  margin-top: 8px; /* 按钮向下移动 */
 }
 </style>
