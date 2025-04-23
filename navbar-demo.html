@@ -127,6 +127,7 @@
           </div>
         </div>
       </div>
+
     </div>
     
     <!-- 页面内容 -->
@@ -140,9 +141,17 @@
         <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis et ipsum bibendum ultrices. Morbi vitae pulvinar velit. Sed aliquam dictum sapien, id sagittis augue malesuada eu.</p>
       </div>
     </div>
+    <TypingAnimation 
+    text="这是一段打字机效果文本" 
+    :duration="100" 
+    :delay="500" 
+    startOnView
+    class="custom-class"
+     />
   </div>
 
   <script>
+    import TypingAnimation from '@/components/TypingAnimation.vue';
     const { createApp, ref, onMounted, onUnmounted } = Vue;
     
     createApp({

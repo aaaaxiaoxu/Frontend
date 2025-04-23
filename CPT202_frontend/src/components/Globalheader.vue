@@ -3,8 +3,8 @@
     <div class="w-full">
       <div class="max-w-6xl mx-auto">
         <!-- 桌面导航 -->
-        <div 
-          class="relative z-[60] mx-auto hidden w-full flex-row items-center justify-between self-start rounded-full px-3 py-1 lg:flex" 
+        <div
+          class="relative z-[60] mx-auto hidden w-full flex-row items-center justify-between self-start rounded-full px-3 py-1 lg:flex"
           :class="[visible ? 'bg-white/80 shadow-lg' : 'bg-transparent']"
           :style="{
             backdropFilter: visible ? 'blur(10px)' : 'none',
@@ -18,7 +18,7 @@
             <img src="../assets/logo.png" alt="logo" width="40" height="40" />
             <span class="font-medium text-black text-base">MelodyHub</span>
           </router-link>
-          
+
           <!-- 导航项 -->
           <div class="flex-1 flex-row items-center justify-center space-x-1 text-sm font-medium text-zinc-600 transition duration-200 lg:flex lg:space-x-1">
             <router-link
@@ -26,31 +26,31 @@
               :key="idx"
               :to="item.key"
               class="relative px-3 py-1 text-neutral-600"
-              @mouseenter="hoveredItem = idx" 
+              @mouseenter="hoveredItem = idx"
               @mouseleave="hoveredItem = null"
             >
               <div v-if="hoveredItem === idx" class="absolute inset-0 h-full w-full rounded-full bg-gray-100"></div>
               <span class="relative z-20">{{ t(item.label) }}</span>
             </router-link>
           </div>
-          
+
           <!-- 右侧功能区 -->
           <div class="relative z-20 flex flex-row items-center">
             <!-- 搜索框 -->
-            <a-input-search
-              v-model:value="searchValue"
-              :placeholder="t('message.inputSearchText')"
-              style="width: 200px; margin-right: 12px"
-              enter-button
-              @search="onSearch"
-            />
-            
+            <div class="flex items-center mr-3">
+              <IInput
+                v-model="searchValue"
+                :placeholder="t('message.inputSearchText')"
+                class="w-[200px]"
+              />
+            </div>
+
             <!-- 上传按钮 -->
-            <a-button type="primary" class="upload-btn" @click="showUploadModal">
+            <GradientButton bgColor="#fff" class="upload-btn text-black" @click="showUploadModal">
               <upload-outlined></upload-outlined>
               {{ t('message.upload') }}
-            </a-button>
-            
+            </GradientButton>
+
             <!-- 用户信息/登录按钮 -->
             <div class="user-login-status ml-3">
               <div v-if="loginUserStore.loginUser.id" class="user-info">
@@ -79,16 +79,16 @@
                 </a-dropdown>
               </div>
               <div v-else>
-                <a-button type="primary" href="/user/login" class="px-3 py-1 rounded-md text-white text-sm font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center">
+                <GradientButton href="/user/login" bg-color="#fff" class="upload-btn text-black" @click="router.push('/user/login')">
                   {{ t('message.login') }}
-                </a-button>
+                </GradientButton>
               </div>
             </div>
           </div>
         </div>
-        
+
         <!-- 移动导航 -->
-        <div 
+        <div
           class="relative z-50 mx-auto flex w-full flex-col items-center justify-between px-0 py-1 lg:hidden"
           :class="[visible ? 'bg-white/80 shadow-lg' : 'bg-transparent']"
           :style="{
@@ -106,16 +106,19 @@
               <img src="../assets/logo.png" alt="logo" width="36" height="36" />
               <span class="font-medium text-black text-base">MelodyHub</span>
             </router-link>
-            
+
             <!-- 搜索框 - 移动视图 -->
-            <a-input-search
-              v-model:value="searchValue"
-              :placeholder="t('message.search')"
-              style="width: 120px; margin-right: 6px"
-              enter-button
-              @search="onSearch"
-            />
-            
+            <div class="flex items-center">
+              <IInput
+                v-model="searchValue"
+                :placeholder="t('message.search')"
+                class="w-[120px]"
+              />
+              <GradientButton bgColor="#fff" class="ml-2 text-black h-8 min-h-8" @click="onSearch(searchValue)">
+                <search-outlined />
+              </GradientButton>
+            </div>
+
             <!-- 移动导航切换按钮 -->
             <div @click="isMenuOpen = !isMenuOpen" class="cursor-pointer">
               <svg v-if="isMenuOpen" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
@@ -129,27 +132,27 @@
               </svg>
             </div>
           </div>
-          
+
           <!-- 移动导航菜单 -->
           <transition name="menu">
             <div v-if="isMenuOpen" class="absolute inset-x-0 top-14 z-50 flex w-full flex-col items-start justify-start gap-3 rounded-lg bg-white px-3 py-6 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]">
-              <router-link 
-                v-for="(item, idx) in filteredItems" 
-                :key="idx" 
-                :to="item.key" 
+              <router-link
+                v-for="(item, idx) in filteredItems"
+                :key="idx"
+                :to="item.key"
                 class="text-black hover:text-gray-500 transition duration-200 w-full p-2"
                 @click="isMenuOpen = false"
               >
                 {{ t(item.label) }}
               </router-link>
-              
+
               <div class="flex w-full">
                 <!-- 上传按钮 - 移动视图 -->
-                <a-button type="primary" class="upload-btn my-2 mr-2" @click="showUploadModal">
+                <GradientButton bgColor="#fff" class="upload-btn my-2 mr-2 text-black" @click="showUploadModal">
                   <upload-outlined></upload-outlined>
                   {{ t('message.upload') }}
-                </a-button>
-                
+                </GradientButton>
+
                 <!-- 用户信息/登录按钮 - 移动视图 -->
                 <div class="user-login-status my-2">
                   <div v-if="loginUserStore.loginUser.id" class="user-info">
@@ -178,21 +181,21 @@
                     </a-dropdown>
                   </div>
                   <div v-else>
-                    <a-button type="primary" href="/user/login">
+                    <GradientButton bgColor="#fff" class="text-black" href="/user/login" @click="router.push('/user/login')">
                       {{ t('message.login') }}
-                    </a-button>
+                    </GradientButton>
                   </div>
-                </div>
               </div>
+            </div>
             </div>
           </transition>
         </div>
       </div>
     </div>
-    
+
     <!-- 为了防止内容被固定导航栏遮挡 -->
     <div class="h-14"></div>
-    
+
     <!-- 上传模态框 -->
     <a-modal v-model:visible="uploadModalVisible" :title="t('message.uploadMusic')" @cancel="handleCancel">
       <music-file-upload @upload-success="handleUploadSuccess"></music-file-upload>
@@ -218,6 +221,8 @@ import checkAccess from '@/access/checkAccess'
 import MusicFileUpload from '@/components/MusicFileUpload.vue'
 import type { VNode } from 'vue'
 import { useI18n } from 'vue-i18n'
+import GradientButton from '@/components/ui/gradient-button/GradientButton.vue'
+import { IInput } from '@/components/ui/input'
 
 const { t } = useI18n()
 
