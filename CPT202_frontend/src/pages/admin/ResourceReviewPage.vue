@@ -1,13 +1,13 @@
 <template>
   <div id="ResourceReviewPage">
     <a-tabs v-model:activeKey="activeTab">
-      <a-tab-pane key="pending" tab="待审核">
+      <a-tab-pane key="pending" :tab="t('message.pending')">
         <resource-review-table :status="0" @refresh="fetchPendingData" ref="pendingTableRef" />
       </a-tab-pane>
-      <a-tab-pane key="approved" tab="已通过">
+      <a-tab-pane key="approved" :tab="t('message.approved')">
         <resource-review-table :status="1" @refresh="fetchApprovedData" ref="approvedTableRef" />
       </a-tab-pane>
-      <a-tab-pane key="rejected" tab="已拒绝">
+      <a-tab-pane key="rejected" :tab="t('message.rejected')">
         <resource-review-table :status="2" @refresh="fetchRejectedData" ref="rejectedTableRef" />
       </a-tab-pane>
     </a-tabs>
@@ -17,6 +17,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ResourceReviewTable from '@/components/admin/ResourceReviewTable.vue'
+import { useI18n } from 'vue-i18n'
+import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
+
+// i18n
+const { t } = useI18n()
 
 const activeTab = ref('pending')
 const pendingTableRef = ref()

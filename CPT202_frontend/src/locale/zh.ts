@@ -13,6 +13,22 @@ const zh={
     getStarted: '开始使用',
     changeLanguage:'切换语言',
     homepage: '主页',
+    // 添加以下新内容
+    musicFile: '音乐文件',
+    selectMusicFile: '选择音乐文件',
+    coverImage: '封面图片',
+    uploadCover: '上传封面',
+    startUpload: '开始上传',
+    pleaseSelectMusic: '请选择音乐文件',
+
+    editMusicInfo: '编辑音乐信息',
+    uploading: '上传中...',
+    pleaseUploadAudioFile: '请上传音频文件!',
+
+    uploadSuccess: '上传成功!',
+    uploadFailed: '上传失败',
+    uploadError: '上传出错',
+    failedToGetTagsAndCategories: '获取标签和类别失败',
 
     // 新增登录页面文本
     welcomeToMelodyHub: '欢迎使用 MelodyHub',
@@ -80,12 +96,9 @@ const zh={
     artists_title: "精选艺术家",
     artists_subtitle: "探索MelodyHub上的热门艺术家",
 
-
-
     // 添加到message对象中
     musicBeWithYou: "愿音乐与你同在",
     browseMusic: "浏览音乐",
-
 
     // 新增注册页面文本
     createAccount: '创建您的账户',
@@ -166,6 +179,106 @@ const zh={
     genreBluegrass: '蓝草音乐',
     genreBaroque: '巴洛克音乐',
     genreAcappella: '无伴奏合唱',
+    
+    // 新增用户管理页面
+    userAccount: '用户账号',
+    enterUsername: '请输入用户名',
+    userAvatar: '用户头像',
+    enterAvatarUrl: '请输入头像URL',
+    userProfile: '用户简介',
+    userRole: '用户角色',
+    createdAt: '创建时间',
+    action: '操作',
+    total: '总计',
+    deleteFailed: '删除失败',
+    fetchDataFailed: '获取数据失败',
+    userUpdatedSuccess: '用户更新成功',
+    navbarUpdated: '导航栏已更新最新用户信息',
+    updateFailed: '更新失败',
+    sureToCancel: '确定取消吗？',
+    edit: '编辑',
+    delete: '删除',
+    mainTitle: 'MelodyHub特点',
+
+    // 资源审核页标签
+    pending: '待审核',
+    approved: '已通过', 
+    rejected: '已拒绝',
+    noCover: '无封面',
+    approve: '通过',
+    reject: '拒绝',
+    details: '详情',
+    rejectReason: '拒绝理由',
+    enterRejectReason: '请输入拒绝理由',
+    resourceDetails: '资源详情',
+    resourceName: '资源名称',
+    artist: '艺术家',
+    album: '专辑',
+    category: '分类',
+    fileFormat: '文件格式',
+    fileSize: '文件大小',
+    duration: '时长',
+    uploadTime: '上传时间',
+    uploader: '上传用户',
+    introduction: '简介',
+    reviewStatus: '审核状态',
+    reviewTime: '审核时间',
+    reviewNote: '审核备注',
+    play: '播放',
+    audioPlayer: '音频播放',
+    browserNotSupport: '您的浏览器不支持音频播放',
+    unknown: '未知',
+    unknownUser: '未知用户',
+    uncategorized: '未分类',
+    noIntroduction: '无简介',
+    cover: '封面',
+    format: '格式',
+    reviewApproved: '审核通过',
+    resourceApproved: '资源审核通过',
+    operationFailed: '操作失败',
+    reviewFailed: '审核失败',
+    pleaseEnterRejectReason: '请输入拒绝理由',
+    resourceRejected: '已拒绝该资源',
+    rejectFailed: '拒绝失败',
+    fetchDataError: '获取数据出错',
+
+    // MusicCard 组件相关
+    loading: '加载中...',
+    unknownArtist: '未知艺术家',
+    noTags: '无标签',
+    playing: '播放中',
+    noDataAvailable: '没有可用数据',
+    getUserInfoFailed: '获取用户信息失败',
+    getUserInfoError: '获取用户信息出错',
+    getDetailFailed: '获取详情失败',
+    loadDetailFailed: '加载详情失败',
+    getDetailError: '获取详情出错',
+    error: '错误',
+    noPlayableMusic: '没有可播放的音乐数据',
+    musicUrlNotExist: '音乐URL不存在，无法播放',
+    nowPlaying: '正在播放',
+    playFailed: '播放失败，请重试',
+    parseTagsFailed: '解析标签失败',
+
+    // MusicPage 组件相关
+    uploaded: '已上传',
+    popularCategory: '热门分类',
+    customCategory: '自定义分类',
+    unknownCategory: '未知分类',
+    failedToLoadMusic: '加载音乐失败',
+    unknownError: '未知错误',
+    errorFetchingMusicData: '获取音乐数据出错',
+    navigatingToDetail: '跳转到详情页，音乐ID',
+    invalidMusicId: '无效的音乐ID',
+
+    // 添加分类组名称
+    internationalPop: '国际流行',
+    electronicMusic: '电子音乐',
+    rockAndAlternative: '摇滚与另类',
+    urbanAndHipHop: '城市与嘻哈',
+    classicalAndTraditional: '古典与传统',
+    otherStyles: '其他风格',
+    clickToUpload: '点击上传'
   }
 }
 export default zh

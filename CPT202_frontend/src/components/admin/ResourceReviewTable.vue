@@ -17,7 +17,7 @@
         <!-- 封面图片列 -->
         <template v-if="column.dataIndex === 'coverUrl'">
           <a-image v-if="record.coverUrl" :src="record.coverUrl" :width="60" :preview="false" />
-          <span v-else>无封面</span>
+          <span v-else>{{ t('message.noCover') }}</span>
         </template>
 
         <!-- 资源类型列 -->
@@ -35,25 +35,22 @@
         <!-- 操作列 -->
         <template v-if="column.dataIndex === 'action'">
           <div class="action-buttons">
-            <a-button
+            <InteractiveHoverButton
               v-if="record.reviewStatus === 0"
-              type="primary"
-              size="small"
+              :text="t('message.approve')"
               @click="approveResource(record)"
-            >
-              通过
-            </a-button>
-            <a-button
+              class="mr-2"
+            />
+            <InteractiveHoverButton
               v-if="record.reviewStatus === 0"
-              type="primary"
-              danger
-              size="small"
-              style="margin-left: 8px"
+              :text="t('message.reject')"
               @click="showRejectModal(record)"
-            >
-              拒绝
-            </a-button>
-            <a-button type="link" size="small" @click="showDetailsModal(record)"> 详情 </a-button>
+              class="mr-2"
+            />
+            <InteractiveHoverButton 
+              :text="t('message.details')" 
+              @click="showDetailsModal(record)" 
+            />
           </div>
         </template>
       </template>
@@ -62,15 +59,15 @@
     <!-- 拒绝理由弹窗 -->
     <a-modal
       v-model:visible="rejectModalVisible"
-      title="拒绝理由"
+      :title="t('message.rejectReason')"
       @ok="handleRejectOk"
       :confirmLoading="confirmLoading"
     >
       <a-form :model="rejectForm">
-        <a-form-item label="拒绝理由" name="reviewMessage">
+        <a-form-item :label="t('message.rejectReason')" name="reviewMessage">
           <a-textarea
             v-model:value="rejectForm.reviewMessage"
-            placeholder="请输入拒绝理由"
+            :placeholder="t('message.enterRejectReason')"
             :rows="4"
           />
         </a-form-item>
@@ -78,82 +75,78 @@
     </a-modal>
 
     <!-- 资源详情弹窗 -->
-    <a-modal v-model:visible="detailsModalVisible" title="资源详情" width="700px" :footer="null">
+    <a-modal v-model:visible="detailsModalVisible" :title="t('message.resourceDetails')" width="700px" :footer="null">
       <div v-if="currentResource" class="resource-details">
         <div class="resource-cover">
           <a-image v-if="currentResource.coverUrl" :src="currentResource.coverUrl" :width="200" />
-          <div v-else class="no-cover">无封面</div>
+          <div v-else class="no-cover">{{ t('message.noCover') }}</div>
         </div>
         <div class="resource-info">
           <a-descriptions :column="1" bordered>
-            <a-descriptions-item label="资源名称">{{ currentResource.name }}</a-descriptions-item>
-            <a-descriptions-item label="艺术家">{{
-              currentResource.artist || '未知'
+            <a-descriptions-item :label="t('message.resourceName')">{{ currentResource.name }}</a-descriptions-item>
+            <a-descriptions-item :label="t('message.artist')">{{
+              currentResource.artist || t('message.unknown')
             }}</a-descriptions-item>
-            <a-descriptions-item label="专辑">{{
-              currentResource.album || '未知'
+            <a-descriptions-item :label="t('message.album')">{{
+              currentResource.album || t('message.unknown')
             }}</a-descriptions-item>
-            <a-descriptions-item label="分类">{{
-              currentResource.category || '未分类'
+            <a-descriptions-item :label="t('message.category')">{{
+              currentResource.category || t('message.uncategorized')
             }}</a-descriptions-item>
-            <a-descriptions-item label="文件格式">{{
+            <a-descriptions-item :label="t('message.fileFormat')">{{
               currentResource.fileFormat
             }}</a-descriptions-item>
-            <a-descriptions-item label="文件大小">{{
+            <a-descriptions-item :label="t('message.fileSize')">{{
               formatFileSize(currentResource.fileSize)
             }}</a-descriptions-item>
-            <a-descriptions-item label="时长">{{
+            <a-descriptions-item :label="t('message.duration')">{{
               formatDuration(currentResource.duration)
             }}</a-descriptions-item>
-            <a-descriptions-item label="上传时间">{{
+            <a-descriptions-item :label="t('message.uploadTime')">{{
               formatTime(currentResource.createTime)
             }}</a-descriptions-item>
-            <a-descriptions-item label="上传用户">{{
-              currentResource.user?.userName || '未知用户'
+            <a-descriptions-item :label="t('message.uploader')">{{
+              currentResource.user?.userName || t('message.unknownUser')
             }}</a-descriptions-item>
-            <a-descriptions-item label="简介">{{
-              currentResource.introduction || '无简介'
+            <a-descriptions-item :label="t('message.introduction')">{{
+              currentResource.introduction || t('message.noIntroduction')
             }}</a-descriptions-item>
-            <a-descriptions-item label="审核状态">
+            <a-descriptions-item :label="t('message.reviewStatus')">
               <a-tag :color="getStatusColor(currentResource.reviewStatus)">
                 {{ getStatusText(currentResource.reviewStatus) }}
               </a-tag>
             </a-descriptions-item>
-            <a-descriptions-item v-if="currentResource.reviewTime" label="审核时间">
+            <a-descriptions-item v-if="currentResource.reviewTime" :label="t('message.reviewTime')">
               {{ formatTime(currentResource.reviewTime) }}
             </a-descriptions-item>
-            <a-descriptions-item v-if="currentResource.reviewMessage" label="审核备注">
+            <a-descriptions-item v-if="currentResource.reviewMessage" :label="t('message.reviewNote')">
               {{ currentResource.reviewMessage }}
             </a-descriptions-item>
           </a-descriptions>
         </div>
         <div class="resource-actions">
-          <a-button type="primary" @click="playMusic(currentResource)">播放</a-button>
-          <a-button
+          <InteractiveHoverButton :text="t('message.play')" @click="playMusic(currentResource)" class="mr-2" />
+          <InteractiveHoverButton
             v-if="currentResource.reviewStatus === 0"
-            type="primary"
-            style="margin-left: 8px"
+            :text="t('message.approve')"
             @click="approveResource(currentResource)"
-            >通过</a-button
-          >
-          <a-button
+            class="mr-2"
+          />
+          <InteractiveHoverButton
             v-if="currentResource.reviewStatus === 0"
-            type="primary"
-            danger
-            style="margin-left: 8px"
+            :text="t('message.reject')"
             @click="showRejectModal(currentResource)"
-            >拒绝</a-button
-          >
+          />
         </div>
       </div>
     </a-modal>
 
     <!-- 音频播放器弹窗 -->
-    <a-modal v-model:visible="audioPlayerVisible" title="音频播放" :footer="null" width="500px">
+    <a-modal v-model:visible="audioPlayerVisible" :title="t('message.audioPlayer')" :footer="null" width="500px">
       <div v-if="currentPlayingUrl" class="audio-player-container">
         <audio controls autoplay style="width: 100%">
           <source :src="currentPlayingUrl" :type="`audio/${currentPlayingFormat}`" />
-          您的浏览器不支持音频播放
+          {{ t('message.browserNotSupport') }}
         </audio>
       </div>
     </a-modal>
@@ -170,6 +163,11 @@ import {
   reviewMusicFileUsingPost,
 } from '@/api/musicFileController'
 import dayjs from 'dayjs'
+import { useI18n } from 'vue-i18n'
+import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
+
+// i18n
+const { t } = useI18n()
 
 // 定义组件属性
 const props = defineProps({
@@ -190,58 +188,58 @@ const pagination = reactive({
   pageSize: 10,
   total: 0,
   showSizeChanger: true,
-  showTotal: (total: number) => `共 ${total} 条`,
+  showTotal: (total: number) => `${t('message.total')}: ${total}`,
 })
 
 // 表格列定义
-const columns = [
+const columns = computed(() => [
   {
     title: 'ID',
     dataIndex: 'id',
     width: 80,
   },
   {
-    title: '资源名称',
+    title: t('message.resourceName'),
     dataIndex: 'name',
     width: 180,
   },
   {
-    title: '封面',
+    title: t('message.cover'),
     dataIndex: 'coverUrl',
     width: 100,
   },
   {
-    title: '艺术家',
+    title: t('message.artist'),
     dataIndex: 'artist',
     width: 120,
   },
   {
-    title: '分类',
+    title: t('message.category'),
     dataIndex: 'category',
     width: 100,
   },
   {
-    title: '格式',
+    title: t('message.format'),
     dataIndex: 'fileFormat',
     width: 80,
   },
   {
-    title: '上传时间',
+    title: t('message.uploadTime'),
     dataIndex: 'createTime',
     width: 170,
     customRender: ({ text }) => formatTime(text),
   },
   {
-    title: '审核状态',
+    title: t('message.reviewStatus'),
     dataIndex: 'reviewStatus',
     width: 100,
   },
   {
-    title: '操作',
+    title: t('message.action'),
     dataIndex: 'action',
     width: 180,
   },
-]
+])
 
 // 拒绝弹窗状态
 const rejectModalVisible = ref(false)
@@ -290,11 +288,11 @@ const fetchData = async () => {
       dataList.value = response.data.data.records || []
       pagination.total = response.data.data.total || 0
     } else {
-      message.error('获取数据失败：' + response.data.message)
+      message.error(t('message.fetchDataFailed') + ': ' + response.data.message)
     }
   } catch (error) {
-    console.error('获取数据出错：', error)
-    message.error('获取数据出错')
+    console.error(t('message.fetchDataError') + ':', error)
+    message.error(t('message.fetchDataError'))
   } finally {
     loading.value = false
   }
@@ -311,13 +309,13 @@ const handleTableChange = (pag) => {
 const getStatusText = (status) => {
   switch (status) {
     case 0:
-      return '待审核'
+      return t('message.pending')
     case 1:
-      return '已通过'
+      return t('message.approved')
     case 2:
-      return '已拒绝'
+      return t('message.rejected')
     default:
-      return '未知'
+      return t('message.unknown')
   }
 }
 
@@ -340,19 +338,19 @@ const approveResource = async (record) => {
     const response = await reviewMusicFileUsingPost({
       id: record.id,
       reviewStatus: 1,
-      reviewMessage: '审核通过',
+      reviewMessage: t('message.reviewApproved'),
     })
 
     if (response.data.code === 0) {
-      message.success('资源审核通过')
+      message.success(t('message.resourceApproved'))
       fetchData()
       emit('refresh')
     } else {
-      message.error('操作失败：' + response.data.message)
+      message.error(t('message.operationFailed') + ': ' + response.data.message)
     }
   } catch (error) {
-    console.error('审核失败：', error)
-    message.error('审核失败')
+    console.error(t('message.reviewFailed') + ':', error)
+    message.error(t('message.reviewFailed'))
   }
 }
 
@@ -364,7 +362,7 @@ const showRejectModal = (record) => {
 
 const handleRejectOk = async () => {
   if (!rejectForm.reviewMessage.trim()) {
-    message.warning('请输入拒绝理由')
+    message.warning(t('message.pleaseEnterRejectReason'))
     return
   }
 
@@ -377,16 +375,16 @@ const handleRejectOk = async () => {
     })
 
     if (response.data.code === 0) {
-      message.success('已拒绝该资源')
+      message.success(t('message.resourceRejected'))
       rejectModalVisible.value = false
       fetchData()
       emit('refresh')
     } else {
-      message.error('操作失败：' + response.data.message)
+      message.error(t('message.operationFailed') + ': ' + response.data.message)
     }
   } catch (error) {
-    console.error('拒绝失败：', error)
-    message.error('拒绝失败')
+    console.error(t('message.rejectFailed') + ':', error)
+    message.error(t('message.rejectFailed'))
   } finally {
     confirmLoading.value = false
   }
@@ -407,19 +405,19 @@ const playMusic = (record) => {
 
 // 格式化函数
 const formatTime = (time) => {
-  if (!time) return '未知'
+  if (!time) return t('message.unknown')
   return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
 }
 
 const formatFileSize = (size) => {
-  if (!size) return '未知'
+  if (!size) return t('message.unknown')
   if (size < 1024) return size + ' B'
   if (size < 1024 * 1024) return (size / 1024).toFixed(2) + ' KB'
   return (size / (1024 * 1024)).toFixed(2) + ' MB'
 }
 
 const formatDuration = (seconds) => {
-  if (!seconds) return '未知'
+  if (!seconds) return t('message.unknown')
   const minutes = Math.floor(seconds / 60)
   const remainingSeconds = seconds % 60
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
@@ -477,5 +475,9 @@ defineExpose({
   display: flex;
   justify-content: center;
   padding: 10px;
+}
+
+.mr-2 {
+  margin-right: 8px;
 }
 </style>

@@ -1,49 +1,32 @@
 <template>
   <div class="upload-container">
     <div class="upload-item">
-      <div class="upload-label">音乐文件</div>
+      <div class="upload-label">{{ t('message.musicFile') }}</div>
       <a-upload
         v-model:file-list="musicFileList"
         name="file"
         :beforeUpload="beforeMusicUpload"
         :maxCount="1"
       >
-        <a-button>
-          <upload-outlined></upload-outlined>
-          选择音乐文件
-        </a-button>
+        <InteractiveHoverButton :text="t('message.selectMusicFile')">
+          <template #prefix>
+            <upload-outlined></upload-outlined>
+          </template>
+        </InteractiveHoverButton>
       </a-upload>
     </div>
 
     <div class="upload-item">
-      <div class="upload-label">封面图片</div>
-      <a-upload
-        v-model:file-list="coverFileList"
-        name="coverFile"
-        :beforeUpload="beforeCoverUpload"
-        :maxCount="1"
-        list-type="picture-card"
-      >
-        <div v-if="!coverFileList.length">
-          <plus-outlined />
-          <div style="margin-top: 8px">上传封面</div>
-        </div>
-      </a-upload>
+      <div class="upload-label">{{ t('message.coverImage') }}</div>
+      <FileUpload @onChange="handleCoverChange" class="cover-upload" />
     </div>
 
-    <a-form :model="formState" class="form-container">
-      <a-form-item label="ID" name="id">
-        <a-input v-model:value="formState.id" placeholder="请输入ID(可选)" />
-      </a-form-item>
-      <a-form-item label="艺术家" name="artist">
-        <a-input v-model:value="formState.artist" placeholder="请输入艺术家" />
-      </a-form-item>
-    </a-form>
-
     <div class="upload-actions">
-      <a-button type="primary" :loading="uploading" @click="handleUpload">
-        {{ uploading ? '上传中...' : '开始上传' }}
-      </a-button>
+      <InteractiveHoverButton 
+        :text="uploading ? t('message.uploading') : t('message.startUpload')" 
+        :class="'primary-button'" 
+        @click="handleUpload"
+      />
     </div>
 
     <!-- 编辑弹窗 -->
@@ -57,57 +40,54 @@
 
 <script lang="ts">
 import { message } from 'ant-design-vue'
-import { UploadOutlined, PlusOutlined } from '@ant-design/icons-vue'
-import { defineComponent, ref, reactive } from 'vue'
+import { UploadOutlined } from '@ant-design/icons-vue'
+import { defineComponent, ref } from 'vue'
 import { uploadMusicFileUsingPost } from '@/api/musicFileController.ts'
 import MusicEditModal from './MusicEditModal.vue'
+import FileUpload from './ui/file-upload/FileUpload.vue'
+import InteractiveHoverButton from './ui/interactive-hover-button/InteractiveHoverButton.vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
     UploadOutlined,
-    PlusOutlined,
     MusicEditModal,
+    FileUpload,
+    InteractiveHoverButton
   },
   emits: ['upload-success'],
   setup(props, { emit }) {
+    const { t } = useI18n()
+    
     const musicFileList = ref([])
-    const coverFileList = ref([])
+    const coverFile = ref(null)
     const uploading = ref(false)
     const editModalVisible = ref(false)
     const uploadedMusic = ref(null)
-
-    const formState = reactive({
-      id: '',
-      artist: '',
-    })
 
     // 预处理音乐文件上传
     const beforeMusicUpload = (file) => {
       // 检查文件类型
       const isAudio = file.type.startsWith('audio/')
       if (!isAudio) {
-        message.error('请上传音频文件!')
+        message.error(t('message.pleaseUploadAudioFile'))
       }
       return false // 阻止自动上传
     }
 
-    // 预处理封面图片上传
-    const beforeCoverUpload = (file) => {
-      // 检查文件类型
-      const isImage = file.type.startsWith('image/')
-      if (!isImage) {
-        message.error('请上传图片文件!')
+    // 处理封面图片变更
+    const handleCoverChange = (files) => {
+      if (files && files.length > 0) {
+        coverFile.value = files[files.length - 1]
       }
-      return false // 阻止自动上传
     }
 
     // 处理文件上传
     const handleUpload = async () => {
       const musicFile = musicFileList.value[0]?.originFileObj
-      const coverFile = coverFileList.value[0]?.originFileObj
 
       if (!musicFile) {
-        message.error('请选择音乐文件!')
+        message.error(t('message.pleaseSelectMusic'))
         return
       }
 
@@ -116,16 +96,13 @@ export default defineComponent({
       try {
         const result = await uploadMusicFileUsingPost(
           {}, // params
-          {
-            id: formState.id || undefined,
-            artist: formState.artist || undefined,
-          }, // body
-          coverFile, // coverFile
+          {}, // body - 已移除ID和艺术家字段
+          coverFile.value, // coverFile
           musicFile, // file
         )
 
         if (result.data.code === 0) {
-          message.success('上传成功!')
+          message.success(t('message.uploadSuccess'))
 
           // 保存上传的音乐信息，并打开编辑弹窗
           uploadedMusic.value = result.data.data
@@ -133,14 +110,12 @@ export default defineComponent({
 
           // 清空表单
           musicFileList.value = []
-          coverFileList.value = []
-          formState.id = ''
-          formState.artist = ''
+          coverFile.value = null
         } else {
-          message.error('上传失败: ' + result.data.message)
+          message.error(t('message.uploadFailed') + ': ' + result.data.message)
         }
       } catch (error) {
-        message.error('上传出错: ' + error.message)
+        message.error(t('message.uploadError') + ': ' + error.message)
       } finally {
         uploading.value = false
       }
@@ -152,17 +127,59 @@ export default defineComponent({
     }
 
     return {
+      t,
       musicFileList,
-      coverFileList,
-      formState,
       uploading,
       editModalVisible,
       uploadedMusic,
       beforeMusicUpload,
-      beforeCoverUpload,
+      handleCoverChange,
       handleUpload,
       handleEditSuccess,
     }
   },
 })
 </script>
+
+<style scoped>
+.upload-container {
+  padding: 16px 0;
+}
+
+.upload-item {
+  margin-bottom: 24px;
+}
+
+.upload-label {
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.cover-upload {
+  width: 100%;
+  max-height: 160px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.cover-upload:hover {
+  border-color: #1890ff;
+}
+
+.upload-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.primary-button {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+}
+
+.primary-button:hover {
+  background-color: #40a9ff;
+}
+</style>

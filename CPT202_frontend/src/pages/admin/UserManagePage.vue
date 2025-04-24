@@ -2,22 +2,27 @@
   <div id="UserManagePage">
     <!-- Search -->
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
-      <a-form-item label="Account">
+      <a-form-item :label="t('message.accountLabel')">
         <a-input
           v-model:value="searchParams.userAccount"
-          placeholder="Please input account"
+          :placeholder="t('message.enterAccount')"
           allow-clear
         />
       </a-form-item>
-      <a-form-item label="Username">
+      <a-form-item :label="t('message.username')">
         <a-input
           v-model:value="searchParams.userName"
-          placeholder="Please input username"
+          :placeholder="t('message.enterUsername')"
           allow-clear
         />
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit">Search</a-button>
+        <InteractiveHoverButton 
+          :text="t('message.search')" 
+          @click="doSearch" 
+          type="submit" 
+          html-type="submit"
+        />
       </a-form-item>
     </a-form>
     <div style="margin-bottom: 16px" />
@@ -35,7 +40,7 @@
             <a-input
               v-if="editableData[record.id]"
               v-model:value="editableData[record.id].userAvatar"
-              placeholder="Enter avatar URL"
+              :placeholder="t('message.enterAvatarUrl')"
               style="margin: -5px 0; width: 200px"
             />
             <template v-else>
@@ -97,16 +102,14 @@
         <template v-else-if="column.key === 'action'">
           <div class="editable-row-operations">
             <span v-if="editableData[record.id]">
-              <a-typography-link @click="save(record.id)">Save</a-typography-link>
-              <a-popconfirm title="Sure to cancel?" @confirm="cancel(record.id)">
-                <a>Cancel</a>
+              <InteractiveHoverButton :text="t('message.submit')" @click="save(record.id)" class="mr-2" />
+              <a-popconfirm :title="t('message.sureToCancel')" @confirm="cancel(record.id)">
+                <InteractiveHoverButton :text="t('message.cancel')" />
               </a-popconfirm>
             </span>
             <span v-else>
-              <a @click="edit(record.id)">Edit</a>
-              <a-button danger style="margin-left: 8px" @click="doDelete(record.id)"
-                >Delete</a-button
-              >
+              <InteractiveHoverButton :text="t('message.edit')" @click="edit(record.id)" class="mr-2" />
+              <InteractiveHoverButton :text="t('message.delete')" @click="doDelete(record.id)" />
             </span>
           </div>
         </template>
@@ -128,44 +131,49 @@ import dayjs from 'dayjs'
 import { cloneDeep } from 'lodash-es'
 import type { UnwrapRef } from 'vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
+import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
+import { useI18n } from 'vue-i18n'
+
+// i18n
+const { t } = useI18n()
 
 // Get login user store
 const loginUserStore = useLoginUserStore()
 
-const columns = [
+const columns = computed(() => [
   {
     title: 'id',
     dataIndex: 'id',
   },
   {
-    title: 'UserAccount',
+    title: t('message.userAccount'),
     dataIndex: 'userAccount',
   },
   {
-    title: 'UserName',
+    title: t('message.username'),
     dataIndex: 'userName',
   },
   {
-    title: 'UserAvatar',
+    title: t('message.userAvatar'),
     dataIndex: 'userAvatar',
   },
   {
-    title: 'UserProfile',
+    title: t('message.userProfile'),
     dataIndex: 'userProfile',
   },
   {
-    title: 'UserRole',
+    title: t('message.userRole'),
     dataIndex: 'userRole',
   },
   {
-    title: 'CreatedAt',
+    title: t('message.createdAt'),
     dataIndex: 'createTime',
   },
   {
-    title: 'Action',
+    title: t('message.action'),
     key: 'action',
   },
-]
+])
 
 // Define data
 const datalist = ref<API.UserVO>([])
@@ -183,7 +191,7 @@ const pagination = computed(() => {
     pagesize: searchParams.pageSize,
     total: total.value,
     showSizeChanger: true,
-    showTotal: (total) => `Total: ${total}`,
+    showTotal: (total) => `${t('message.total')}: ${total}`,
   }
 })
 
@@ -209,7 +217,7 @@ const doDelete = async (id: string) => {
     message.success(res.data.message)
     fetchData()
   } else {
-    message.error('Delete failed')
+    message.error(t('message.deleteFailed'))
   }
 }
 
@@ -222,7 +230,7 @@ const fetchData = async () => {
     datalist.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
   } else {
-    message.error('Failed to fetch data: ' + res.data.message)
+    message.error(t('message.fetchDataFailed') + ': ' + res.data.message)
   }
 }
 
@@ -248,7 +256,7 @@ const save = async (id: string) => {
   try {
     const res = await updateUserUsingPost(editableData[id])
     if (res.data.code === 0) {
-      message.success('User updated successfully')
+      message.success(t('message.userUpdatedSuccess'))
 
       // Update local data
       const index = datalist.value.findIndex((item) => id === item.id)
@@ -260,16 +268,16 @@ const save = async (id: string) => {
       if (loginUserStore.loginUser.id === id) {
         // Fetch the latest login user information
         await loginUserStore.fetchLoginUser()
-        message.success('Navigation bar updated with latest user info')
+        message.success(t('message.navbarUpdated'))
       }
 
       // Remove edit status
       delete editableData[id]
     } else {
-      message.error('Update failed: ' + res.data.message)
+      message.error(t('message.updateFailed') + ': ' + res.data.message)
     }
   } catch (error) {
-    message.error('Update failed: ' + error)
+    message.error(t('message.updateFailed') + ': ' + error)
   }
 }
 

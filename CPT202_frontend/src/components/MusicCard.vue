@@ -1,6 +1,6 @@
 <template>
   <div class="music-card-component">
-    <div v-if="loading" class="loading-container">Loading...</div>
+    <div v-if="loading" class="loading-container">{{ t('message.loading') }}</div>
     <div v-else-if="detail" class="music-card">
       <!-- 音乐封面图部分 - 缩小比例 -->
       <div class="cover-container">
@@ -15,10 +15,10 @@
       <!-- 信息部分 -->
       <div class="music-info">
         <h3 class="music-title">{{ detail.name }}</h3>
-        <p class="music-artist">{{ detail.artist || '未知艺术家' }}</p>
+        <p class="music-artist">{{ detail.artist || t('message.unknownArtist') }}</p>
         <!-- 显示标签 -->
         <div class="tags-container">
-          <span v-if="!parsedTags.length" class="no-tags">无标签</span>
+          <span v-if="!parsedTags.length" class="no-tags">{{ t('message.noTags') }}</span>
           <span v-else v-for="tag in parsedTags" :key="tag" class="tag-item">{{ tag }}</span>
         </div>
       </div>
@@ -30,26 +30,20 @@
           <div class="avatar">
             <img :src="userInfo.userAvatar || 'https://via.placeholder.com/40'" alt="User" />
           </div>
-          <div class="uploader-name">{{ userInfo.userName || '无名' }}</div>
+          <div class="uploader-name">{{ userInfo.userName || t('message.noName') }}</div>
         </div>
 
         <!-- 播放按钮 -->
         <div class="play-button-container">
-          <a-button
-            @click="handlePlay"
-            type="primary"
+          <InteractiveHoverButton 
+            @click="handlePlay" 
+            :text="isCurrentlyPlaying ? t('message.playing') : t('message.play')"
             :class="{ 'playing-button': isCurrentlyPlaying }"
-          >
-            <template #icon>
-              <play-circle-outlined v-if="!isCurrentlyPlaying" />
-              <pause-circle-outlined v-else />
-            </template>
-            {{ isCurrentlyPlaying ? '播放中' : '播放' }}
-          </a-button>
+          />
         </div>
       </div>
     </div>
-    <div v-else class="error-container">No data available</div>
+    <div v-else class="error-container">{{ t('message.noDataAvailable') }}</div>
   </div>
 </template>
 
@@ -61,6 +55,11 @@ import { getMusicFileByIdUsingGet } from '@/api/musicFileController'
 import { getUserByIdUsingGet } from '@/api/userController'
 import { currentMusic, playMusic, isPlaying } from '@/utils/audioPlayerStore'
 import bus from '@/utils/eventBus'
+import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
+import { useI18n } from 'vue-i18n'
+
+// i18n
+const { t } = useI18n()
 
 interface MusicDetail {
   id: number | string
@@ -82,7 +81,7 @@ interface UserInfo {
 const props = defineProps<{ id: number }>()
 const detail = ref<MusicDetail | null>(null)
 const userInfo = ref<UserInfo>({
-  userName: '无名',
+  userName: t('message.noName'),
   userAvatar: 'https://via.placeholder.com/40',
 })
 const loading = ref(true)
@@ -118,24 +117,24 @@ const fetchUserInfo = async (userId: number) => {
     if (res.data.code === 0 && res.data.data) {
       userInfo.value = {
         userId: userId,
-        userName: res.data.data.userName || '无名',
+        userName: res.data.data.userName || t('message.noName'),
         userAvatar: res.data.data.userAvatar || 'https://via.placeholder.com/40',
       }
     } else {
-      console.error('获取用户信息失败:', res.data.message)
+      console.error(t('message.getUserInfoFailed') + ':', res.data.message)
       // 使用默认值
       userInfo.value = {
         userId: userId,
-        userName: '无名',
+        userName: t('message.noName'),
         userAvatar: 'https://via.placeholder.com/40',
       }
     }
   } catch (err: any) {
-    console.error('获取用户信息出错:', err)
+    console.error(t('message.getUserInfoError') + ':', err)
     // 使用默认值
     userInfo.value = {
       userId: userId,
-      userName: '无名',
+      userName: t('message.noName'),
       userAvatar: 'https://via.placeholder.com/40',
     }
   }
@@ -154,7 +153,7 @@ const fetchDetail = async () => {
       } else {
         // 没有userId，使用默认值
         userInfo.value = {
-          userName: '无名',
+          userName: t('message.noName'),
           userAvatar: 'https://via.placeholder.com/40',
         }
       }
@@ -162,12 +161,12 @@ const fetchDetail = async () => {
       // 解析标签
       detail.value.tags = parseTags(detail.value.tags)
     } else {
-      console.error('获取详情失败:', res.data.message)
-      message.error(res.data.message || '加载详情失败')
+      console.error(t('message.getDetailFailed') + ':', res.data.message)
+      message.error(res.data.message || t('message.loadDetailFailed'))
     }
   } catch (err: any) {
-    console.error('获取详情出错:', err)
-    message.error('错误: ' + err.message)
+    console.error(t('message.getDetailError') + ':', err)
+    message.error(t('message.error') + ': ' + err.message)
   } finally {
     loading.value = false
   }
@@ -178,12 +177,12 @@ onMounted(fetchDetail)
 // 处理播放事件
 const handlePlay = () => {
   if (!detail.value) {
-    message.error('没有可播放的音乐数据')
+    message.error(t('message.noPlayableMusic'))
     return
   }
 
   if (!detail.value.url) {
-    message.error('音乐URL不存在，无法播放')
+    message.error(t('message.musicUrlNotExist'))
     return
   }
 
@@ -197,9 +196,9 @@ const handlePlay = () => {
   })
 
   if (success) {
-    message.success(`正在播放: ${detail.value.name}`)
+    message.success(`${t('message.nowPlaying')}: ${detail.value.name}`)
   } else {
-    message.error('播放失败，请重试')
+    message.error(t('message.playFailed'))
   }
 }
 
@@ -217,7 +216,7 @@ const parseTags = (tagsData) => {
     try {
       return JSON.parse(tagsData)
     } catch (e) {
-      console.error('解析标签失败:', e)
+      console.error(t('message.parseTagsFailed') + ':', e)
       return []
     }
   }

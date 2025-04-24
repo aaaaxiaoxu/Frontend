@@ -51,6 +51,7 @@ import {
   updateMusicFileUsingPost,
   listMusicFileTagCategoryUsingGet,
 } from '@/api/musicFileController.ts'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   props: {
@@ -65,9 +66,29 @@ export default defineComponent({
   },
   emits: ['update:visible', 'success'],
   setup(props, { emit }) {
+    const { t } = useI18n()
     const confirmLoading = ref(false)
     const tags = ref<string[]>([])
     const categories = ref<string[]>([])
+
+    // 从语言包获取音乐类型
+    const getMusicGenres = () => {
+      const genreKeys = [
+        'genrePop', 'genreRock', 'genreClassical', 'genreJazz', 'genreHipHop', 
+        'genreRnB', 'genreCountry', 'genreElectronic', 'genreDance', 'genreMetal', 
+        'genreFolk', 'genreBlues', 'genreReggae', 'genreSoul', 'genreFunk', 
+        'genreIndie', 'genrePunk', 'genreAlternative', 'genreEDM', 'genreAmbient', 
+        'genreLatin', 'genreKpop', 'genreJpop', 'genreCpop', 'genreOpera', 
+        'genreDisco', 'genreGospel', 'genreRap', 'genreTrap', 'genreTechno', 
+        'genreJazz_Fusion', 'genreHardRock', 'genreHeavyMetal', 'genreDrumAndBass', 
+        'genreHouse', 'genreTrance', 'genreDubstep', 'genreAcoustic', 'genreExperimental', 
+        'genreWorldMusic', 'genreSymphonic', 'genreChillout', 'genreLofi', 'genreBigBand', 
+        'genreOrchestral', 'genreNewAge', 'genreGrunge', 'genreBluegrass', 'genreBaroque', 
+        'genreAcappella'
+      ]
+      
+      return genreKeys.map(key => t(key))
+    }
 
     const formState = reactive({
       id: '',
@@ -100,7 +121,10 @@ export default defineComponent({
         const res = await listMusicFileTagCategoryUsingGet()
         if (res.data.code === 0 && res.data.data) {
           tags.value = res.data.data.tagList || []
-          categories.value = res.data.data.categoryList || []
+          // 合并API返回的类别和音乐类型
+          const apiCategories = res.data.data.categoryList || []
+          const genreCategories = getMusicGenres()
+          categories.value = [...new Set([...apiCategories, ...genreCategories])]
         }
       } catch (error) {
         message.error('获取标签和类别失败')

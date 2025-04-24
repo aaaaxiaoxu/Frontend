@@ -196,8 +196,20 @@
     <div class="h-14"></div>
 
     <!-- 上传模态框 -->
-    <a-modal v-model:visible="uploadModalVisible" :title="t('message.uploadMusic')" @cancel="handleCancel">
+    <a-modal 
+      v-model:visible="uploadModalVisible" 
+      :title="t('message.uploadMusic')" 
+      @cancel="handleCancel"
+      :footer="null"
+    >
       <music-file-upload @upload-success="handleUploadSuccess"></music-file-upload>
+      <div class="modal-custom-footer">
+        <InteractiveHoverButton 
+          :text="t('message.cancel')" 
+          @click="handleCancel"
+          class="cancel-button"
+        />
+      </div>
     </a-modal>
   </div>
 </template>
@@ -223,6 +235,7 @@ import type { VNode } from 'vue'
 import { useI18n } from 'vue-i18n'
 import GradientButton from '@/components/ui/gradient-button/GradientButton.vue'
 import VanishingInput from '@/components/ui/vanishing-input/VanishingInput.vue'
+import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
 
 const { t } = useI18n()
 
@@ -244,7 +257,7 @@ const current = ref<string[]>([])
 // Use the custom type for the menus ref
 const menus = ref<CustomMenuItem[]>([
   {
-    key: '/',
+    key: '/home',
     icon: () => h(HomeOutlined),
     label: 'message.homePage',
     title: 'message.homePage',
@@ -451,5 +464,18 @@ onUnmounted(() => {
 
 :deep(.search-input-wrapper button) {
   margin-top: 8px; /* 按钮向下移动 */
+}
+
+.modal-custom-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.cancel-button {
+  border-color: #d9d9d9;
+  background-color: white;
+  color: rgba(0, 0, 0, 0.85);
 }
 </style>
