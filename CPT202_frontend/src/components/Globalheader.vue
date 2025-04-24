@@ -71,6 +71,10 @@
                         <UserOutlined />
                         {{ t('message.personalInfo') }}
                       </a-menu-item>
+                      <a-menu-item @click="goToUserUploads">
+                        <upload-outlined />
+                        {{ t('message.myUploads') }}
+                      </a-menu-item>
                       <a-menu-item @click="doLogout">
                         <LogoutOutlined />
                         {{ t('message.logout') }}
@@ -170,6 +174,10 @@
                           <a-menu-item @click="goToUserEdit">
                             <UserOutlined />
                             {{ t('message.personalInfo') }}
+                          </a-menu-item>
+                          <a-menu-item @click="goToUserUploads">
+                            <upload-outlined />
+                            {{ t('message.myUploads') }}
                           </a-menu-item>
                           <a-menu-item @click="doLogout">
                             <LogoutOutlined />
@@ -317,6 +325,13 @@ const doMenuClick = ({ key }: { key: string }) => {
 const goToUserEdit = () => {
   router.push({
     path: '/user/edit',
+  })
+}
+
+// Jump to the user uploads page
+const goToUserUploads = () => {
+  router.push({
+    path: '/user/uploads',
   })
 }
 

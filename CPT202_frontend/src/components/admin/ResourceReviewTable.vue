@@ -86,6 +86,11 @@
               @click="showRejectModal(record)"
             />
             <InteractiveHoverButton
+              v-if="record.reviewStatus === 1"
+              :text="t('message.reject') || 'Reject'"
+              @click="showRejectModal(record)"
+            />
+            <InteractiveHoverButton
               :text="'Details'"
               @click="showDetailsModal(record)"
             />
@@ -182,6 +187,11 @@
           />
           <InteractiveHoverButton
             v-if="currentResource.reviewStatus === 0"
+            :text="t('message.reject') || 'Reject'"
+            @click="showRejectModal(currentResource)"
+          />
+          <InteractiveHoverButton
+            v-if="currentResource.reviewStatus === 1"
             :text="t('message.reject') || 'Reject'"
             @click="showRejectModal(currentResource)"
           />

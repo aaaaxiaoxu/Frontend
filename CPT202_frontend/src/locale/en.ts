@@ -329,7 +329,20 @@ const en={
     genreEnergetic: 'Energetic',
     genreParty: 'Party',
     genreWork: 'Work',
-    genreRelaxing: 'Relaxing'
+    genreRelaxing: 'Relaxing',
+
+    // 用户上传状态页面
+    myUploads: 'My Uploads',
+    allStatus: 'All Status',
+    noUploads: 'No uploads yet',
+    noRejectReason: 'No rejection reason provided',
+    deleteConfirmText: 'Are you sure you want to delete this resource? This action cannot be undone.',
+    deleteSuccess: 'Delete successful',
+    deleteError: 'Error deleting',
+    editSuccess: 'Edit successful',
+    fetchFailed: 'Failed to fetch data',
+    fetchError: 'Error fetching data',
+    noMatchingResults: 'No matching results found'
   }
 }
 export default en

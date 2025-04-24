@@ -7,6 +7,7 @@ import UserRegisterPage from '@/pages/user/UserRegisterPage.vue'
 import UserManagePage from '@/pages/admin/UserManagePage.vue'
 import ResourceReviewPage from '@/pages/admin/ResourceReviewPage.vue'
 import UserEditPage from '@/pages/user/UserEditPage.vue'
+import UserUploadStatus from '@/pages/user/UserUploadStatus.vue'
 import NoAuth from '@/pages/NoAuth.vue'
 import ACCESS_ENUM from '@/access/accessEnum.ts'
 import AddMusicFilePage from '@/pages/AddMusicFilePage.vue'
@@ -70,6 +71,14 @@ const router = createRouter({
       path: '/user/edit',
       name: '个人信息',
       component: UserEditPage,
+      meta: {
+        access: ACCESS_ENUM.USER,
+      },
+    },
+    {
+      path: '/user/uploads',
+      name: '我的上传',
+      component: UserUploadStatus,
       meta: {
         access: ACCESS_ENUM.USER,
       },
