@@ -144,6 +144,20 @@ const en={
 
     uploadFailed: 'Upload failed',
     uploadError: 'Upload error',
+      // MusicEditModal 相关翻译
+
+    pleaseEnterMusicName: 'Please enter music name',
+
+    pleaseEnterArtist: 'Please enter artist',
+
+    pleaseEnterAlbumName: 'Please enter album name',
+
+    pleaseSelectCategory: 'Please select category',
+
+    pleaseSelectOrEnterTags: 'Please select or enter tags',
+    fetchCategoriesFailed: 'Failed to fetch categories',
+    missingMusicId: 'Missing music ID',
+
 
     // 音乐类型
     genrePop: 'Pop Music',

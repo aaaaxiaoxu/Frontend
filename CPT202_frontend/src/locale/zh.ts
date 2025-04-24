@@ -20,8 +20,23 @@ const zh={
     uploadCover: '上传封面',
     startUpload: '开始上传',
     pleaseSelectMusic: '请选择音乐文件',
-
+      // MusicEditModal 相关翻译
     editMusicInfo: '编辑音乐信息',
+    musicName: '名称',
+    pleaseEnterMusicName: '请输入音乐名称',
+    artist: '艺术家',
+    pleaseEnterArtist: '请输入艺术家',
+    album: '专辑',
+    pleaseEnterAlbumName: '请输入专辑名称',
+    category: '类别',
+    pleaseSelectCategory: '请选择类别',
+    tags: '标签',
+    pleaseSelectOrEnterTags: '请选择或输入标签',
+    fetchCategoriesFailed: '获取类别失败',
+    missingMusicId: '缺少音乐ID',
+    updateSuccess: '更新成功',
+    updateFailed: '更新失败',
+
     uploading: '上传中...',
     pleaseUploadAudioFile: '请上传音频文件!',
 
@@ -49,7 +64,7 @@ const zh={
     listeningMusic: '听音乐',
     homePage: '主页',
     uploadMusic: '上传音乐',
-    uploadSuccess: '音乐上传成功',
+
     noName: '无名',
     inputSearchText: '输入搜索内容',
     logoutSuccess: '退出登录成功',
@@ -194,7 +209,7 @@ const zh={
     fetchDataFailed: '获取数据失败',
     userUpdatedSuccess: '用户更新成功',
     navbarUpdated: '导航栏已更新最新用户信息',
-    updateFailed: '更新失败',
+
     sureToCancel: '确定取消吗？',
     edit: '编辑',
     delete: '删除',
@@ -212,9 +227,7 @@ const zh={
     enterRejectReason: '请输入拒绝理由',
     resourceDetails: '资源详情',
     resourceName: '资源名称',
-    artist: '艺术家',
-    album: '专辑',
-    category: '分类',
+
     fileFormat: '文件格式',
     fileSize: '文件大小',
     duration: '时长',
