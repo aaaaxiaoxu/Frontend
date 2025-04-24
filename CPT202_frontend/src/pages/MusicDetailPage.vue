@@ -2,19 +2,23 @@
   <div class="music-detail-page">
     <div class="detail-container" v-if="detail">
       <div class="detail-header">
-        <a-button @click="backToList" type="primary"> <arrow-left-outlined /> 返回 </a-button>
+        <interactive-hover-button @click="backToList" :text="t('message.back')">
+          <arrow-left-outlined />
+        </interactive-hover-button>
         <h2>{{ detail.name }}</h2>
         <div class="header-actions">
-          <a-button type="primary" @click="showEditModal" style="margin-right: 10px">
-            <edit-outlined /> 编辑
-          </a-button>
+          <interactive-hover-button @click="showEditModal" :text="t('message.edit')" class="mr-2">
+            <edit-outlined />
+          </interactive-hover-button>
           <a-popconfirm
-            title="确定要删除这个音乐文件吗？"
-            ok-text="确定"
-            cancel-text="取消"
+            :title="t('message.confirmDelete')"
+            :ok-text="t('message.confirm')"
+            :cancel-text="t('message.cancel')"
             @confirm="handleDelete"
           >
-            <a-button type="danger"> <delete-outlined /> 删除 </a-button>
+            <interactive-hover-button :text="t('message.delete')" class="delete-btn">
+              <delete-outlined />
+            </interactive-hover-button>
           </a-popconfirm>
         </div>
       </div>
@@ -24,107 +28,125 @@
           <div class="music-cover">
             <img :src="detail.coverUrl || 'https://via.placeholder.com/300'" alt="Cover" />
           </div>
-          <a-button
+          <interactive-hover-button
             @click="handlePlay"
-            type="primary"
+            :text="isCurrentlyPlaying ? t('message.playing') : t('message.play')"
             class="detail-play-btn"
             :class="{ 'playing-button': isCurrentlyPlaying }"
           >
             <play-circle-outlined v-if="!isCurrentlyPlaying" />
             <pause-circle-outlined v-else />
-            {{ isCurrentlyPlaying ? '播放中' : '播放' }}
-          </a-button>
+          </interactive-hover-button>
         </div>
 
         <div class="detail-right">
           <a-form :model="musicForm" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-            <a-form-item label="标题">
+            <a-form-item :label="t('message.tit')">
               <span>{{ detail.name }}</span>
             </a-form-item>
-            <a-form-item label="艺术家">
-              <span>{{ detail.artist || '未知艺术家' }}</span>
+            <a-form-item :label="t('message.artist')">
+              <span>{{ detail.artist || t('message.unknownArtist') }}</span>
             </a-form-item>
-            <a-form-item label="上传者">
+            <a-form-item :label="t('message.uploader')">
               <div class="uploader-info">
                 <div class="avatar">
                   <img :src="userInfo.userAvatar || 'https://via.placeholder.com/40'" alt="User" />
                 </div>
-                <div class="uploader-name">{{ userInfo.userName || '无名' }}</div>
+                <div class="uploader-name">{{ userInfo.userName || t('message.noName') }}</div>
               </div>
             </a-form-item>
-            <a-form-item label="类别">
-              <span>{{ detail.category || '未知类别' }}</span>
+            <a-form-item :label="t('message.category')">
+              <span>{{ detail.category || t('message.unknownCategory') }}</span>
             </a-form-item>
-            <a-form-item label="简介" v-if="detail.introduction">
+            <a-form-item :label="t('message.introduction')" v-if="detail.introduction">
               <span>{{ detail.introduction }}</span>
             </a-form-item>
-            <a-form-item label="标签">
+            <a-form-item :label="t('message.tags')">
               <div class="tags-container">
-                <span v-if="!parsedTags.length" class="no-tags">无标签</span>
+                <span v-if="!parsedTags.length" class="no-tags">{{ t('message.noTags') }}</span>
                 <span v-else v-for="tag in parsedTags" :key="tag" class="tag-item">{{ tag }}</span>
               </div>
             </a-form-item>
-            <a-form-item label="更新标签">
+            <a-form-item :label="t('message.updateTags')">
               <a-select
                 v-model:value="musicForm.tags"
                 mode="tags"
-                placeholder="添加标签"
+                :placeholder="t('message.addTags')"
                 style="width: 100%"
+                :options="defaultTags"
+                :tokenSeparators="[',']"
               >
-                <a-select-option v-for="tag in availableTags" :key="tag" :value="tag">
-                  {{ tag }}
-                </a-select-option>
               </a-select>
             </a-form-item>
             <a-form-item :wrapper-col="{ span: 20, offset: 4 }">
-              <a-button type="primary" @click="saveMusicChanges">保存标签更改</a-button>
+              <interactive-hover-button
+                :text="t('message.saveChanges')"
+                @click="saveMusicChanges"
+                :class="{ 'opacity-50 cursor-not-allowed': loading }"
+                :disabled="loading"
+              />
             </a-form-item>
           </a-form>
         </div>
       </div>
     </div>
     <div v-else-if="error" class="error-container">
-      <a-result status="warning" title="获取音乐详情失败" :sub-title="errorMessage">
+      <a-result status="warning" :title="t('message.failedToGetMusicDetail')" :sub-title="errorMessage">
         <template #extra>
-          <a-button type="primary" @click="backToList"> 返回列表 </a-button>
-          <a-button @click="retryFetch" style="margin-left: 8px"> 重试 </a-button>
+          <interactive-hover-button :text="t('message.backToList')" @click="backToList" />
+          <interactive-hover-button :text="t('message.retry')" @click="retryFetch" class="ml-2" />
         </template>
       </a-result>
     </div>
     <div v-else class="loading-container">
-      <a-spin tip="加载中..."></a-spin>
+      <a-spin :tip="t('message.loading')"></a-spin>
     </div>
 
     <!-- 编辑模态框 -->
     <a-modal
       v-model:open="editModalVisible"
-      title="编辑音乐信息"
-      :confirmLoading="editLoading"
-      @ok="handleEditSubmit"
+      :title="t('message.editMusicInfo')"
+      :footer="null"
+      @cancel="handleCancel"
     >
       <a-form :model="editForm" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-        <a-form-item label="标题" name="name">
+        <a-form-item :label="t('message.tit')" name="name">
           <a-input v-model:value="editForm.name" />
         </a-form-item>
-        <a-form-item label="艺术家" name="artist">
+        <a-form-item :label="t('message.artist')" name="artist">
           <a-input v-model:value="editForm.artist" />
         </a-form-item>
-        <a-form-item label="简介" name="introduction">
+        <a-form-item :label="t('message.introduction')" name="introduction">
           <a-textarea v-model:value="editForm.introduction" :rows="4" />
         </a-form-item>
-        <a-form-item label="类别" name="category">
-          <a-select v-model:value="editForm.category" placeholder="选择类别">
+        <a-form-item :label="t('message.category')" name="category">
+          <a-select v-model:value="editForm.category" :placeholder="t('message.selectCategory')">
             <a-select-option v-for="cat in availableCategories" :key="cat" :value="cat">
               {{ cat }}
             </a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="标签" name="tags">
-          <a-select v-model:value="editForm.tags" mode="tags" placeholder="添加标签">
+        <a-form-item :label="t('message.tags')" name="tags">
+          <a-select v-model:value="editForm.tags" mode="tags" :placeholder="t('message.addTags')">
             <a-select-option v-for="tag in availableTags" :key="tag" :value="tag">
               {{ tag }}
             </a-select-option>
           </a-select>
+        </a-form-item>
+        <a-form-item :wrapper-col="{ span: 20, offset: 4 }">
+          <div class="flex justify-end">
+            <interactive-hover-button
+              :text="t('message.cancel')"
+              @click="handleCancel"
+              class="mr-2"
+            />
+            <interactive-hover-button
+              :text="t('message.confirm')"
+              @click="handleEditSubmit"
+              :class="{ 'opacity-50 cursor-not-allowed': editLoading }"
+              :disabled="editLoading"
+            />
+          </div>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -137,11 +159,11 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import {
   Spin as ASpin,
   Form as AForm,
   FormItem as AFormItem,
-  Button as AButton,
   Select as ASelect,
   SelectOption as ASelectOption,
   Modal as AModal,
@@ -168,6 +190,7 @@ import { getUserByIdUsingGet } from '@/api/userController'
 import PlayerBar from '@/components/PlayerBar.vue'
 import { currentMusic, playMusic, isPlaying } from '@/utils/audioPlayerStore'
 import { useMusicStore } from '@/stores/musicStore'
+import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
 
 interface MusicDetail {
   id: number | string
@@ -189,13 +212,14 @@ interface UserInfo {
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 // 直接从路由参数获取ID
 const musicId = route.params.id
 
 const detail = ref<MusicDetail | null>(null)
 const userInfo = ref<UserInfo>({
-  userName: '无名',
+  userName: t('message.noName'),
   userAvatar: 'https://via.placeholder.com/40',
 })
 
@@ -235,7 +259,38 @@ const editForm = reactive({
 
 // 可用的类别和标签列表
 const availableCategories = ['Pop', 'Rock', 'Electronic', 'Jazz', 'Indie', 'Classical', 'R&B']
-const availableTags = ['热门', '流行', '经典', '现代', '舒缓', '激情', '派对', '工作', '放松']
+const availableTags = [
+  t('message.genreHot'), 
+  t('message.genrePop'), 
+  t('message.genreClassical'), 
+  t('message.genreModern'), 
+  t('message.genreSoothing'), 
+  t('message.genreEnergetic'), 
+  t('message.genreParty'), 
+  t('message.genreWork'), 
+  t('message.genreRelaxing')
+]
+
+// 添加默认标签选项
+const defaultTags = ref([
+  { label: t('message.genreHot'), value: t('message.genreHot') },
+  { label: t('message.genrePop'), value: t('message.genrePop') },
+  { label: t('message.genreClassical'), value: t('message.genreClassical') },
+  { label: t('message.genreModern'), value: t('message.genreModern') },
+  { label: t('message.genreSoothing'), value: t('message.genreSoothing') },
+  { label: t('message.genreEnergetic'), value: t('message.genreEnergetic') },
+  { label: t('message.genreParty'), value: t('message.genreParty') },
+  { label: t('message.genreWork'), value: t('message.genreWork') },
+  { label: t('message.genreRelaxing'), value: t('message.genreRelaxing') },
+  { label: t('message.genrePop'), value: 'Pop Music' },
+  { label: t('message.genreRock'), value: 'Rock' },
+  { label: t('message.genreClassical'), value: 'Classical' },
+  { label: t('message.genreJazz'), value: 'Jazz' },
+  { label: t('message.genreHipHop'), value: 'Hip Hop' },
+  { label: t('message.genreRnB'), value: 'R&B' },
+  { label: t('message.genreCountry'), value: 'Country' },
+  { label: t('message.genreElectronic'), value: 'Electronic' },
+])
 
 // 获取用户信息 - 与MusicCard完全相同
 const fetchUserInfo = async (userId: number) => {
@@ -245,24 +300,24 @@ const fetchUserInfo = async (userId: number) => {
     if (res.data.code === 0 && res.data.data) {
       userInfo.value = {
         userId: userId,
-        userName: res.data.data.userName || '无名',
+        userName: res.data.data.userName || t('message.noName'),
         userAvatar: res.data.data.userAvatar || 'https://via.placeholder.com/40',
       }
     } else {
-      console.error('获取用户信息失败:', res.data.message)
+      console.error(t('message.failedToGetUserInfo'), res.data.message)
       // 使用默认值
       userInfo.value = {
         userId: userId,
-        userName: '无名',
+        userName: t('message.noName'),
         userAvatar: 'https://via.placeholder.com/40',
       }
     }
   } catch (err: any) {
-    console.error('获取用户信息出错:', err)
+    console.error(t('message.errorGettingUserInfo'), err)
     // 使用默认值
     userInfo.value = {
       userId: userId,
-      userName: '无名',
+      userName: t('message.noName'),
       userAvatar: 'https://via.placeholder.com/40',
     }
   }
@@ -275,7 +330,7 @@ const parseTags = (tagsData) => {
     try {
       return JSON.parse(tagsData)
     } catch (e) {
-      console.error('解析标签失败:', e)
+      console.error(t('message.failedToParseTag'), e)
       return []
     }
   }
@@ -300,7 +355,7 @@ const fetchDetail = async () => {
       } else {
         // 没有userId，使用默认值
         userInfo.value = {
-          userName: '无名',
+          userName: t('message.noName'),
           userAvatar: 'https://via.placeholder.com/40',
         }
       }
@@ -315,16 +370,16 @@ const fetchDetail = async () => {
     } else {
       // 设置错误状态
       error.value = true
-      errorMessage.value = res.data.message || '请求数据不存在'
-      console.error('获取详情失败:', res.data)
-      message.error(res.data.message || '加载详情失败')
+      errorMessage.value = res.data.message || t('message.requestDataNotExist')
+      console.error(t('message.failedToGetDetails'), res.data)
+      message.error(res.data.message || t('message.failedToLoadDetails'))
     }
   } catch (err: any) {
     // 设置错误状态
     error.value = true
-    errorMessage.value = err.message || '请求发生错误'
-    console.error('获取详情出错:', err)
-    message.error('错误: ' + err.message)
+    errorMessage.value = err.message || t('message.requestError')
+    console.error(t('message.getDetailsError'), err)
+    message.error(t('message.error') + ': ' + err.message)
   } finally {
     loading.value = false
   }
@@ -341,6 +396,7 @@ const backToList = () => {
 // 保存音乐修改
 const saveMusicChanges = async () => {
   try {
+    loading.value = true
     const updateData = {
       id: musicForm.id,
       tags: musicForm.tags,
@@ -349,17 +405,19 @@ const saveMusicChanges = async () => {
     const response = await updateMusicFileUsingPost(updateData)
 
     if (response.data.code === 0 && response.data.data) {
-      message.success('标签更新成功')
+      message.success(t('message.tagsUpdateSuccess'))
 
       // 更新当前显示的音乐信息
       if (detail.value) {
         detail.value.tags = musicForm.tags
       }
     } else {
-      message.error('更新失败: ' + (response.data.message || '未知错误'))
+      message.error(t('message.updateFailed') + ': ' + (response.data.message || t('message.unknownError')))
     }
   } catch (error: any) {
-    message.error('更新出错: ' + error.message)
+    message.error(t('message.updateError') + ': ' + error.message)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -378,6 +436,11 @@ const showEditModal = () => {
   editModalVisible.value = true
 }
 
+// 处理取消
+const handleCancel = () => {
+  editModalVisible.value = false
+}
+
 // 提交编辑
 const handleEditSubmit = async () => {
   editLoading.value = true
@@ -394,16 +457,16 @@ const handleEditSubmit = async () => {
     const response = await editMusicFileUsingPost(editData)
 
     if (response.data.code === 0 && response.data.data) {
-      message.success('音乐信息编辑成功')
+      message.success(t('message.musicInfoEditSuccess'))
       editModalVisible.value = false
 
       // 刷新数据
       fetchDetail()
     } else {
-      message.error('编辑失败: ' + (response.data.message || '未知错误'))
+      message.error(t('message.editFailed') + ': ' + (response.data.message || t('message.unknownError')))
     }
   } catch (error: any) {
-    message.error('编辑出错: ' + error.message)
+    message.error(t('message.editError') + ': ' + error.message)
   } finally {
     editLoading.value = false
   }
@@ -421,13 +484,13 @@ const handleDelete = async () => {
     const response = await deleteMusicFileUsingPost(deleteData)
 
     if (response.data.code === 0 && response.data.data) {
-      message.success('音乐已成功删除')
+      message.success(t('message.musicDeletedSuccess'))
       router.push('/music')
     } else {
-      message.error('删除失败: ' + (response.data.message || '未知错误'))
+      message.error(t('message.deleteFailed') + ': ' + (response.data.message || t('message.unknownError')))
     }
   } catch (error: any) {
-    message.error('删除出错: ' + error.message)
+    message.error(t('message.deleteError') + ': ' + error.message)
   }
 }
 
@@ -442,7 +505,7 @@ const handlePlay = () => {
       url: detail.value.url,
     })
   } else {
-    message.error('无法播放：无效的音乐数据或URL')
+    message.error(t('message.cannotPlay'))
   }
 }
 
@@ -588,5 +651,42 @@ const retryFetch = () => {
 .no-tags {
   font-size: 12px;
   color: #999;
+}
+
+/* 添加新的样式 */
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.delete-btn :deep(.bg-primary) {
+  background-color: #ff4d4f;
+}
+
+.detail-play-btn :deep(.bg-primary) {
+  background-color: #1890ff;
+}
+
+.playing-button :deep(.bg-primary) {
+  background-color: #52c41a;
 }
 </style>

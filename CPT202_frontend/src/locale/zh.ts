@@ -36,6 +36,7 @@ const zh={
     missingMusicId: '缺少音乐ID',
     updateSuccess: '更新成功',
     updateFailed: '更新失败',
+    tit: "名字",
 
     uploading: '上传中...',
     pleaseUploadAudioFile: '请上传音频文件!',
@@ -291,7 +292,54 @@ const zh={
     urbanAndHipHop: '城市与嘻哈',
     classicalAndTraditional: '古典与传统',
     otherStyles: '其他风格',
-    clickToUpload: '点击上传'
+    clickToUpload: '点击上传',
+
+    // 新增的键值对
+
+    updateTags: '更新标签',
+    addTags: '添加标签',
+    saveChanges: '保存更改',
+    confirm: '确定',
+
+    failedToGetMusicDetail: '获取音乐详情失败',
+    backToList: '返回列表',
+    retry: '重试',
+
+    selectCategory: '选择类别',
+    confirmDelete: '确定要删除这个音乐文件吗？',
+    tit: '标题',
+    genreHot: '热门',
+
+    genreModern: '现代',
+    genreSoothing: '舒缓',
+    genreEnergetic: '激情',
+    genreParty: '派对',
+    genreWork: '工作',
+    genreRelaxing: '放松',
+    personalInformation: "个人信息",
+    avatar: "头像",
+    uploadAvatar: "上传头像",
+    account: "账号",
+    pleaseInputUsername: "请输入用户名!",
+    profile: "简介",
+    tellUsAboutYourself: "介绍一下自己",
+    role: "角色",
+    newPassword: "新密码",
+    enterNewPassword: "输入新密码",
+    confirmNewPassword: "确认新密码",
+    pleaseConfirmPassword: "请确认您的新密码!",
+    passwordMismatch: "两次输入的密码不一致",
+    pleaseInputNewPassword: "请输入您的新密码!",
+    passwordMinLength: "密码长度至少为8个字符",
+    passwordUpdateSuccess: "密码更新成功",
+    passwordUpdateFailed: "密码更新失败: ",
+    unknownError: "未知错误",
+    errorOccurred: "发生错误: ",
+    avatarUploadSuccess: "头像上传成功",
+    avatarUploadFailed: "头像上传失败: ",
+    infoUpdateSuccess: "您的信息已成功更新",
+    updateFailed: "更新失败: ",
+    loading: "加载中..."
   }
 }
 export default zh

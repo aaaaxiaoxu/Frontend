@@ -225,7 +225,7 @@ const en={
     fetchDataFailed: 'Failed to fetch data',
     userUpdatedSuccess: 'User updated successfully',
     navbarUpdated: 'Navigation bar updated with latest user info',
-    updateFailed: 'Update failed',
+
     sureToCancel: 'Sure to cancel?',
     edit: 'Edit',
     delete: 'Delete',
@@ -242,9 +242,7 @@ const en={
     enterRejectReason: 'Please enter reject reason',
     resourceDetails: 'Resource Details',
     resourceName: 'Resource Name',
-    artist: 'Artist',
-    album: 'Album',
-    category: 'Category',
+
     fileFormat: 'File Format',
     fileSize: 'File Size',
     duration: 'Duration',
@@ -305,7 +303,29 @@ const en={
     urbanAndHipHop: 'Urban & Hip Hop',
     classicalAndTraditional: 'Classical & Traditional',
     otherStyles: 'Other Styles',
-    clickToUpload: 'Click to upload'
+    clickToUpload: 'Click to upload',
+    back: 'Back',
+
+
+    updateTags: 'Update Tags',
+    addTags: 'Add Tags',
+    saveChanges: 'Save Changes',
+    confirm: 'Confirm',
+
+    failedToGetMusicDetail: 'Failed to Get Music Details',
+    backToList: 'Back to List',
+    retry: 'Retry',
+
+    confirmDelete: 'Are you sure you want to delete this music file?',
+    tit: 'Title',
+    genreHot: 'Hot',
+
+    genreModern: 'Modern',
+    genreSoothing: 'Soothing',
+    genreEnergetic: 'Energetic',
+    genreParty: 'Party',
+    genreWork: 'Work',
+    genreRelaxing: 'Relaxing'
   }
 }
 export default en
