@@ -75,19 +75,18 @@
         <!-- 操作列 -->
         <template v-if="column.dataIndex === 'action'">
           <div class="action-buttons">
-            <InteractiveHoverButton
+            <a-button
               v-if="record.reviewStatus === 0"
-              :text="t('message.approve')"
+              type="primary"
               @click="approveResource(record)"
             >
-              Approve
+              {{ t('message.approve') || 'Approve' }}
             </a-button>
             <a-button
               v-if="record.reviewStatus === 0"
-              :text="t('message.reject')"
               @click="showRejectModal(record)"
             >
-              Reject
+              {{ t('message.reject') || 'Reject' }}
             </a-button>
             <a-button type="link" size="small" @click="showDetailsModal(record)"> Details </a-button>
           </div>
@@ -180,15 +179,14 @@
           <a-button type="primary" @click="playMusic(currentResource)">Play</a-button>
           <a-button
             v-if="currentResource.reviewStatus === 0"
-            :text="t('message.approve')"
+            type="primary"
             @click="approveResource(currentResource)"
-            >Approve</a-button
+            >{{ t('message.approve') || 'Approve' }}</a-button
           >
           <a-button
             v-if="currentResource.reviewStatus === 0"
-            :text="t('message.reject')"
             @click="showRejectModal(currentResource)"
-            >Reject</a-button
+            >{{ t('message.reject') || 'Reject' }}</a-button
           >
         </div>
       </div>
@@ -211,6 +209,10 @@ import {
 } from '@/api/musicFileController'
 import dayjs from 'dayjs'
 import { playMusic as globalPlayMusic } from '@/utils/audioPlayerStore'
+import { useI18n } from 'vue-i18n'
+
+// 初始化i18n
+const { t } = useI18n()
 
 // 定义组件属性
 const props = defineProps({
@@ -270,7 +272,7 @@ const columns = computed(() => [
     title: 'Upload Time',
     dataIndex: 'createTime',
     width: 170,
-    customRender: ({ text }) => formatTime(text),
+    customRender: ({ text }: { text: string }) => formatTime(text),
   },
   {
     title: 'Status',
@@ -288,7 +290,7 @@ const columns = computed(() => [
 const rejectModalVisible = ref(false)
 const confirmLoading = ref(false)
 const rejectForm = reactive({
-  id: null,
+  id: 0,
   reviewStatus: 2,
   reviewMessage: '',
 })
@@ -462,7 +464,7 @@ const approveResource = async (record: any) => {
 }
 
 const showRejectModal = (record: any) => {
-  rejectForm.id = record.id
+  rejectForm.id = record.id || 0
   rejectForm.reviewMessage = ''
   rejectModalVisible.value = true
 }
