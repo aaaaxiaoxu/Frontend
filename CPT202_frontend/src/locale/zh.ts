@@ -44,6 +44,7 @@ const zh={
     uploadSuccess: '上传成功!',
     uploadFailed: '上传失败',
     uploadError: '上传出错',
+    uploadForbidden: '您的账号因违规上传已被禁止上传，请联系管理员。',
     failedToGetTagsAndCategories: '获取标签和类别失败',
 
     // 新增登录页面文本
@@ -195,14 +196,17 @@ const zh={
     genreBluegrass: '蓝草音乐',
     genreBaroque: '巴洛克音乐',
     genreAcappella: '无伴奏合唱',
-    
+
     // 新增用户管理页面
     userAccount: '用户账号',
     enterUsername: '请输入用户名',
     userAvatar: '用户头像',
     enterAvatarUrl: '请输入头像URL',
-    userProfile: '用户简介',
+    userProfile: '个人简介',
     userRole: '用户角色',
+    uploadPermission: '上传权限',
+    allowUpload: '允许上传',
+    forbidUpload: '禁止上传',
     createdAt: '创建时间',
     action: '操作',
     total: '总计',
@@ -218,7 +222,7 @@ const zh={
 
     // 资源审核页标签
     pending: '待审核',
-    approved: '已通过', 
+    approved: '已通过',
     rejected: '已拒绝',
     noCover: '无封面',
     approve: '通过',

@@ -12,14 +12,6 @@
           />
         </a-col>
         <a-col :span="6">
-          <a-input
-            v-model:value="searchParams.artist"
-            placeholder="Artist"
-            allow-clear
-            @pressEnter="handleSearch"
-          />
-        </a-col>
-        <a-col :span="6">
           <a-select
             v-model:value="searchParams.category"
             placeholder="Category"
@@ -32,9 +24,17 @@
           </a-select>
         </a-col>
         <a-col :span="6">
+          <a-input
+            v-model:value="searchParams.uploader"
+            placeholder="User Account"
+            allow-clear
+            @pressEnter="handleSearch"
+          />
+        </a-col>
+        <a-col :span="6">
           <a-space>
-            <a-button type="primary" @click="handleSearch">Search</a-button>
-            <a-button @click="handleReset">Reset</a-button>
+            <InteractiveHoverButton :text="'Search'" @click="handleSearch" />
+            <InteractiveHoverButton :text="'Reset'" @click="handleReset" />
           </a-space>
         </a-col>
       </a-row>
@@ -75,20 +75,20 @@
         <!-- 操作列 -->
         <template v-if="column.dataIndex === 'action'">
           <div class="action-buttons">
-            <a-button
+            <InteractiveHoverButton
               v-if="record.reviewStatus === 0"
-              type="primary"
+              :text="t('message.approve') || 'Approve'"
               @click="approveResource(record)"
-            >
-              {{ t('message.approve') || 'Approve' }}
-            </a-button>
-            <a-button
+            />
+            <InteractiveHoverButton
               v-if="record.reviewStatus === 0"
+              :text="t('message.reject') || 'Reject'"
               @click="showRejectModal(record)"
-            >
-              {{ t('message.reject') || 'Reject' }}
-            </a-button>
-            <a-button type="link" size="small" @click="showDetailsModal(record)"> Details </a-button>
+            />
+            <InteractiveHoverButton
+              :text="'Details'"
+              @click="showDetailsModal(record)"
+            />
           </div>
         </template>
       </template>
@@ -154,9 +154,7 @@
                 <a-spin size="small" /> Loading...
               </template>
               <template v-else>
-                <a-button type="link" size="small" @click="loadUserInfo(currentResource.userId)">
-                  Load User Info
-                </a-button>
+                <InteractiveHoverButton :text="'Load User Info'" @click="loadUserInfo(currentResource.userId)" />
               </template>
             </a-descriptions-item>
             <a-descriptions-item label="Description">{{
@@ -176,18 +174,17 @@
           </a-descriptions>
         </div>
         <div class="resource-actions">
-          <a-button type="primary" @click="playMusic(currentResource)">Play</a-button>
-          <a-button
+          <InteractiveHoverButton :text="'Play'" @click="playMusic(currentResource)" />
+          <InteractiveHoverButton
             v-if="currentResource.reviewStatus === 0"
-            type="primary"
+            :text="t('message.approve') || 'Approve'"
             @click="approveResource(currentResource)"
-            >{{ t('message.approve') || 'Approve' }}</a-button
-          >
-          <a-button
+          />
+          <InteractiveHoverButton
             v-if="currentResource.reviewStatus === 0"
+            :text="t('message.reject') || 'Reject'"
             @click="showRejectModal(currentResource)"
-            >{{ t('message.reject') || 'Reject' }}</a-button
-          >
+          />
         </div>
       </div>
     </a-modal>
@@ -210,6 +207,7 @@ import {
 import dayjs from 'dayjs'
 import { playMusic as globalPlayMusic } from '@/utils/audioPlayerStore'
 import { useI18n } from 'vue-i18n'
+import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
 
 // 初始化i18n
 const { t } = useI18n()
@@ -305,8 +303,8 @@ const loadingUserInfo = ref(false)
 // 搜索参数
 const searchParams = reactive({
   name: '',
-  artist: '',
-  category: undefined
+  category: undefined,
+  uploader: '',
 })
 
 // 分类列表
@@ -327,14 +325,102 @@ const fetchCategories = async () => {
 // 处理搜索
 const handleSearch = () => {
   pagination.current = 1 // 重置到第一页
-  fetchData()
+
+  // 如果是搜索用户账户，使用专用搜索方法
+  if (searchParams.uploader && searchParams.uploader.trim()) {
+    searchByUserAccount()
+  } else {
+    fetchData()
+  }
+}
+
+// 搜索用户账户的专用方法
+const searchByUserAccount = async () => {
+  loading.value = true
+
+  try {
+    // 首先获取所有资源
+    const queryRequest: API.MusicFileQueryRequest = {
+      current: 1,
+      pageSize: 100, // 增大分页大小以获取更多结果
+      reviewStatus: props.status,
+    }
+
+    const searchResponse = await listMusicFileByPageUsingPost(queryRequest)
+
+    if (searchResponse?.data?.code === 0 && searchResponse.data.data) {
+      const allRecords = searchResponse.data.data.records || []
+
+      if (allRecords.length === 0) {
+        dataList.value = []
+        pagination.total = 0
+        message.info('No resources found')
+        loading.value = false
+        return
+      }
+
+      message.loading('Searching for matching user accounts...', 0)
+
+      // 引入用户接口
+      const { getUserVoByIdUsingGet } = await import('@/api/userController')
+      const matchedRecords = []
+      const searchTerm = searchParams.uploader.trim().toLowerCase()
+
+      // 处理每个资源记录
+      for (const record of allRecords) {
+        if (record.userId) {
+          try {
+            // 获取用户信息
+            const userResponse = await getUserVoByIdUsingGet({ id: record.userId })
+
+            if (userResponse.data.code === 0 && userResponse.data.data) {
+              const userData = userResponse.data.data
+              record.user = userData
+
+              // 检查用户账户或用户名是否匹配
+              const userAccount = (userData.userAccount || '').toLowerCase()
+              const userName = (userData.userName || '').toLowerCase()
+
+              if (userAccount.includes(searchTerm) || userName.includes(searchTerm)) {
+                matchedRecords.push(record)
+              }
+            }
+          } catch (error) {
+            console.error('Failed to fetch user info:', error)
+          }
+        }
+      }
+
+      // 更新界面
+      message.destroy()
+      dataList.value = matchedRecords
+      pagination.total = matchedRecords.length
+
+      if (matchedRecords.length === 0) {
+        message.info('No resources found with matching user account')
+      } else {
+        message.success(`Found ${matchedRecords.length} resources with matching user account`)
+      }
+    } else {
+      dataList.value = []
+      pagination.total = 0
+      message.error('Failed to search resources')
+    }
+  } catch (error) {
+    console.error('Search by user account failed:', error)
+    message.error('Search failed')
+    dataList.value = []
+    pagination.total = 0
+  } finally {
+    loading.value = false
+  }
 }
 
 // 重置搜索表单
 const handleReset = () => {
   searchParams.name = ''
-  searchParams.artist = ''
   searchParams.category = undefined
+  searchParams.uploader = ''
   pagination.current = 1
   fetchData()
 }
@@ -344,30 +430,25 @@ const fetchData = async () => {
   loading.value = true
 
   try {
-    // 如果有搜索参数，使用POST查询接口
-    if (searchParams.name || searchParams.artist || searchParams.category) {
+    // 如果有名称或分类搜索参数，使用POST查询接口
+    if (searchParams.name || searchParams.category) {
       // 构建查询请求
       const queryRequest: API.MusicFileQueryRequest = {
         current: pagination.current,
         pageSize: pagination.pageSize,
         reviewStatus: props.status, // 重要：指定审核状态
         name: searchParams.name || undefined,
-        category: searchParams.category || undefined,
-        // 使用searchText参数来搜索艺术家
-        searchText: searchParams.artist || undefined
+        category: searchParams.category || undefined
       }
 
       // 使用POST查询接口
       const searchResponse = await listMusicFileByPageUsingPost(queryRequest)
 
-      console.log('Search results:', searchResponse?.data?.data?.records)
-
       if (searchResponse?.data?.code === 0 && searchResponse.data.data) {
-        const records = searchResponse.data.data.records || []
-        dataList.value = records
+        dataList.value = searchResponse.data.data.records || []
         pagination.total = searchResponse.data.data.total || 0
 
-        if (records.length === 0) {
+        if (dataList.value.length === 0) {
           message.info('No matching results found')
         }
       } else {
@@ -636,6 +717,7 @@ defineExpose({
 <style scoped>
 .resource-review-table {
   width: 100%;
+  margin-bottom: 60px; /* 为底部播放条留出空间 */
 }
 
 .action-buttons {

@@ -8,6 +8,7 @@
       <a-layout-content class="content">
         <router-view />
       </a-layout-content>
+      <PlayerBar />
       <a-layout-footer class="footer"> MelodyHub </a-layout-footer>
     </a-layout>
   </div>
@@ -15,6 +16,7 @@
 
 <script setup lang="ts">
 import GlobalHeader from '@/components/Globalheader.vue'
+import PlayerBar from '@/components/PlayerBar.vue'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -36,11 +38,12 @@ const isUserPage = computed(() => {
   left: 0;
   right: 0;
   text-align: center;
+  z-index: 99;
 }
 
 #basicLayout .content {
   background: linear-gradient(to right, #fefefe, #fff);
-  margin-bottom: 28px;
+  margin-bottom: 60px;
   padding: 20px;
 }
 

@@ -54,7 +54,7 @@ const en={
     jay_genre: "Pop, R&B, Hip-Hop",
     jay_quote: "Jay Chou is a renowned Taiwanese singer, songwriter, and music producer, known for his unique musical style and innovative lyrics. His representative works include \"Blue and White Porcelain,\" \"Rice Field,\" and \"Simple Love,\" blending pop, R&B, hip-hop, and Chinese elements. Jay Chou's music has had a profound influence on the Chinese-speaking world, becoming a classic for an entire generation.",
 
-    michael_name: "Michael Jackson", 
+    michael_name: "Michael Jackson",
     michael_genre: "Pop, Rock, R&B, Funk, Soul",
     michael_quote: "Michael Jackson was an American singer, songwriter, and dancer, often referred to as the \"King of Pop.\" His iconic works include \"Billie Jean,\" \"Thriller,\" and \"Beat It,\" which revolutionized pop music and music videos. Jackson's influence on global music, dance, and culture remains unparalleled, making him one of the best-selling music artists of all time.",
 
@@ -144,6 +144,7 @@ const en={
 
     uploadFailed: 'Upload failed',
     uploadError: 'Upload error',
+    uploadForbidden: 'Your account has been forbidden to upload due to violations. Please contact the administrator.',
       // MusicEditModal 相关翻译
 
     pleaseEnterMusicName: 'Please enter music name',
@@ -210,7 +211,7 @@ const en={
     genreBluegrass: 'Bluegrass',
     genreBaroque: 'Baroque',
     genreAcappella: 'A cappella',
-    
+
     // 新增用户管理页面
     userAccount: 'User Account',
     enterUsername: 'Please enter username',
@@ -218,6 +219,9 @@ const en={
     enterAvatarUrl: 'Please enter avatar URL',
     userProfile: 'User Profile',
     userRole: 'User Role',
+    uploadPermission: 'Upload Permission',
+    allowUpload: 'Allow Upload',
+    forbidUpload: 'Forbid Upload',
     createdAt: 'Created At',
     action: 'Action',
     total: 'Total',

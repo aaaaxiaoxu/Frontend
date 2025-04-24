@@ -196,16 +196,16 @@
     <div class="h-14"></div>
 
     <!-- 上传模态框 -->
-    <a-modal 
-      v-model:visible="uploadModalVisible" 
-      :title="t('message.uploadMusic')" 
+    <a-modal
+      v-model:visible="uploadModalVisible"
+      :title="t('message.uploadMusic')"
       @cancel="handleCancel"
       :footer="null"
     >
       <music-file-upload @upload-success="handleUploadSuccess"></music-file-upload>
       <div class="modal-custom-footer">
-        <InteractiveHoverButton 
-          :text="t('message.cancel')" 
+        <InteractiveHoverButton
+          :text="t('message.cancel')"
           @click="handleCancel"
           class="cancel-button"
         />
@@ -236,6 +236,7 @@ import { useI18n } from 'vue-i18n'
 import GradientButton from '@/components/ui/gradient-button/GradientButton.vue'
 import VanishingInput from '@/components/ui/vanishing-input/VanishingInput.vue'
 import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
+import { getUserByIdUsingGet } from '@/api/userController.ts'
 
 const { t } = useI18n()
 
@@ -349,8 +350,31 @@ const handleUploadSuccess = () => {
   uploadModalVisible.value = false
 }
 
-const showUploadModal = () => {
-  uploadModalVisible.value = true
+const showUploadModal = async () => {
+  // 检查用户是否已登录
+  if (!loginUserStore.loginUser.id) {
+    message.warning(t('message.noAccount'))
+    router.push('/user/login')
+    return
+  }
+
+  // 检查用户上传权限
+  try {
+    const res = await getUserByIdUsingGet({ id: loginUserStore.loginUser.id })
+    if (res.data.code === 0 && res.data.data) {
+      const userStatus = res.data.data.user_status || 0
+      if (userStatus === 1) {
+        message.error(t('message.uploadForbidden'))
+        return
+      }
+    }
+    // 用户状态正常，显示上传模态框
+    uploadModalVisible.value = true
+  } catch (error) {
+    console.error('获取用户状态失败:', error)
+    // 出错时默认显示上传模态框
+    uploadModalVisible.value = true
+  }
 }
 
 // Add search functionality

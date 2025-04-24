@@ -22,9 +22,9 @@
     </div>
 
     <div class="upload-actions">
-      <InteractiveHoverButton 
-        :text="uploading ? t('message.uploading') : t('message.startUpload')" 
-        :class="'primary-button'" 
+      <InteractiveHoverButton
+        :text="uploading ? t('message.uploading') : t('message.startUpload')"
+        :class="'primary-button'"
         @click="handleUpload"
       />
     </div>
@@ -41,12 +41,14 @@
 <script lang="ts">
 import { message } from 'ant-design-vue'
 import { UploadOutlined } from '@ant-design/icons-vue'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { uploadMusicFileUsingPost } from '@/api/musicFileController.ts'
+import { getUserByIdUsingGet } from '@/api/userController.ts'
 import MusicEditModal from './MusicEditModal.vue'
 import FileUpload from './ui/file-upload/FileUpload.vue'
 import InteractiveHoverButton from './ui/interactive-hover-button/InteractiveHoverButton.vue'
 import { useI18n } from 'vue-i18n'
+import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 
 export default defineComponent({
   components: {
@@ -58,12 +60,33 @@ export default defineComponent({
   emits: ['upload-success'],
   setup(props, { emit }) {
     const { t } = useI18n()
-    
+
     const musicFileList = ref([])
     const coverFile = ref(null)
     const uploading = ref(false)
     const editModalVisible = ref(false)
     const uploadedMusic = ref(null)
+    const loginUserStore = useLoginUserStore()
+    const userStatus = ref(0) // 默认为0，允许上传
+
+    // 获取用户状态
+    const getUserStatus = async () => {
+      if (!loginUserStore.loginUser.id) return
+
+      try {
+        const res = await getUserByIdUsingGet({ id: loginUserStore.loginUser.id })
+        if (res.data.code === 0 && res.data.data) {
+          userStatus.value = res.data.data.user_status || 0
+        }
+      } catch (error) {
+        console.error('获取用户状态失败:', error)
+      }
+    }
+
+    // 组件挂载时获取用户状态
+    onMounted(() => {
+      getUserStatus()
+    })
 
     // 预处理音乐文件上传
     const beforeMusicUpload = (file) => {
@@ -84,6 +107,12 @@ export default defineComponent({
 
     // 处理文件上传
     const handleUpload = async () => {
+      // 检查用户是否有上传权限
+      if (userStatus.value === 1) {
+        message.error(t('message.uploadForbidden'))
+        return
+      }
+
       const musicFile = musicFileList.value[0]?.originFileObj
 
       if (!musicFile) {
@@ -132,10 +161,12 @@ export default defineComponent({
       uploading,
       editModalVisible,
       uploadedMusic,
+      userStatus,
       beforeMusicUpload,
       handleCoverChange,
       handleUpload,
       handleEditSuccess,
+      getUserStatus,
     }
   },
 })
