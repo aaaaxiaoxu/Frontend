@@ -296,4 +296,25 @@ onMounted(() => {
 .editable-row-operations a {
   margin-right: 8px;
 }
+
+/* 修复搜索框无法点击的问题 */
+#UserManagePage {
+  position: relative;
+}
+
+#UserManagePage .ant-form {
+  position: relative;
+  z-index: 100;
+  pointer-events: auto !important;
+}
+
+#UserManagePage .ant-input {
+  position: relative;
+  z-index: 100;
+  pointer-events: auto !important;
+}
+
+#UserManagePage .ant-form-item {
+  pointer-events: auto !important;
+}
 </style>
