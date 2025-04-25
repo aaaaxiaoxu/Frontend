@@ -37,6 +37,10 @@ const zh={
     updateSuccess: '更新成功',
     updateFailed: '更新失败',
     tit: "名字",
+    avatarLabel: '头像',
+    avatarUploadSuccess: '头像上传成功',
+    avatarUploadFailed: '头像上传失败',
+    pleaseUploadImageFile: '请上传图片文件',
 
     uploading: '上传中...',
     pleaseUploadAudioFile: '请上传音频文件!',
@@ -281,7 +285,7 @@ const zh={
     // MusicPage 组件相关
     uploaded: '已上传',
     popularCategory: '热门分类',
-    customCategory: '自定义分类',
+    customCategory: '自定义类别',
     unknownCategory: '未知分类',
     failedToLoadMusic: '加载音乐失败',
     unknownError: '未知错误',
@@ -343,7 +347,21 @@ const zh={
     avatarUploadFailed: "头像上传失败: ",
     infoUpdateSuccess: "您的信息已成功更新",
     updateFailed: "更新失败: ",
-    loading: "加载中..."
+    loading: "加载中...",
+    customCategory: '自定义类别',
+    addCustomCategory: '添加新类别',
+    categoryName: '类别名称',
+    categoryAddedSuccess: '类别添加成功',
+    categoryDeletedSuccess: '类别删除成功',
+    categoryNameRequired: '请输入类别名称',
+    tagsFilter: '标签筛选',
+    addCustomTag: '添加新标签',
+    tagName: '标签名称',
+    tagAddedSuccess: '标签添加成功',
+    tagDeletedSuccess: '标签删除成功',
+    tagNameRequired: '请输入标签名称',
+    taggedAs: '标签',
+    pleaseSelectOrEnterCategory: '请选择或输入类别'
   }
 }
 export default zh

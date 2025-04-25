@@ -89,6 +89,52 @@
           <a-menu-item key="genreBluegrass">{{ t('message.genreBluegrass') }}</a-menu-item>
           <a-menu-item key="genreAcappella">{{ t('message.genreAcappella') }}</a-menu-item>
         </a-sub-menu>
+
+        <!-- 自定义类别 -->
+        <a-sub-menu key="custom" :title="t('message.customCategory')">
+          <a-menu-item key="addCustom">
+            <div @click.stop="showAddCustomCategoryModal">
+              <PlusOutlined /> {{ t('message.addCustomCategory') }}
+            </div>
+          </a-menu-item>
+          <!-- 动态渲染自定义类别 -->
+          <a-menu-item 
+            v-for="category in musicStore.customCategories" 
+            :key="`custom_${category}`"
+            class="custom-category-item"
+          >
+            <div class="custom-category-wrapper">
+              <span>{{ category }}</span>
+              <DeleteOutlined 
+                class="delete-icon" 
+                @click.stop="handleDeleteCustomCategory(category)" 
+              />
+            </div>
+          </a-menu-item>
+        </a-sub-menu>
+
+        <!-- 添加标签筛选 -->
+        <a-sub-menu key="tags" :title="t('message.tagsFilter')">
+          <a-menu-item key="addTag">
+            <div @click.stop="showAddCustomTagModal">
+              <PlusOutlined /> {{ t('message.addCustomTag') }}
+            </div>
+          </a-menu-item>
+          <!-- 动态渲染自定义标签 -->
+          <a-menu-item 
+            v-for="tag in musicStore.customTags" 
+            :key="`tag_${tag}`"
+            class="custom-tag-item"
+          >
+            <div class="custom-category-wrapper">
+              <span>{{ tag }}</span>
+              <DeleteOutlined 
+                class="delete-icon" 
+                @click.stop="handleDeleteCustomTag(tag)" 
+              />
+            </div>
+          </a-menu-item>
+        </a-sub-menu>
       </a-menu>
     </a-layout-sider>
 
@@ -173,6 +219,34 @@
         />
       </div>
     </a-modal>
+
+    <!-- 添加自定义类别模态框 -->
+    <a-modal
+      v-model:visible="customCategoryModalVisible"
+      :title="t('message.addCustomCategory')"
+      @ok="handleAddCustomCategory"
+      @cancel="handleCustomCategoryCancel"
+    >
+      <a-form layout="vertical">
+        <a-form-item :label="t('message.categoryName')">
+          <a-input v-model:value="newCustomCategory" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <!-- 添加自定义标签模态框 -->
+    <a-modal
+      v-model:visible="customTagModalVisible"
+      :title="t('message.addCustomTag')"
+      @ok="handleAddCustomTag"
+      @cancel="handleCustomTagCancel"
+    >
+      <a-form layout="vertical">
+        <a-form-item :label="t('message.tagName')">
+          <a-input v-model:value="newCustomTag" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </a-layout>
 </template>
 
@@ -199,6 +273,9 @@ import {
   Pagination as APagination,
   Modal as AModal,
   Button as AButton,
+  Form as AForm,
+  FormItem as AFormItem,
+  Input as AInput,
 } from 'ant-design-vue'
 import {
   DownloadOutlined,
@@ -206,10 +283,13 @@ import {
   DeleteOutlined,
   PlayCircleOutlined,
   UploadOutlined,
+  PlusOutlined,
 } from '@ant-design/icons-vue'
 import {
-  listMusicFileVoByPageUsingPost,
+  listMusicFileByPageUsingPost,
   listMusicFileVoByCategoryPageUsingGet,
+  getMusicFileVoByIdUsingGet,
+  getMusicFileByIdUsingGet,
 } from '@/api/musicFileController'
 import MusicCard from '@/components/MusicCard.vue'
 import PlayerBar from '@/components/PlayerBar.vue'
@@ -253,6 +333,14 @@ const paginationProps = computed(() => ({
 const router = useRouter()
 const musicStore = useMusicStore()
 
+// 自定义类别相关状态
+const customCategoryModalVisible = ref(false)
+const newCustomCategory = ref('')
+
+// 自定义标签相关状态
+const customTagModalVisible = ref(false)
+const newCustomTag = ref('')
+
 const fetchMusicData = async () => {
   loading.value = true
   const currentCategory = selectedCategoryKeys.value[0]
@@ -260,18 +348,143 @@ const fetchMusicData = async () => {
 
   try {
     if (currentCategory === 'uploaded') {
-      // Fetch all music using POST endpoint
+      // 获取所有上传的音乐
       const queryParams: API.MusicFileQueryRequest = {
         current: pagination.current,
         pageSize: pagination.pageSize,
         category: undefined,
       }
-      response = await listMusicFileVoByPageUsingPost(queryParams)
-    } else if (currentCategory && !['popular', 'international', 'electronic', 'rockAlt', 'urbanHipHop', 'classical', 'other'].includes(currentCategory)) {
-      // 处理带genre前缀的key，移除前缀后传给后端
+      response = await listMusicFileByPageUsingPost(queryParams)
+    } else if (currentCategory.startsWith('custom_')) {
+      // 处理自定义类别
+      const categoryName = currentCategory.replace('custom_', '')
+      const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
+        category: categoryName,
+        current: pagination.current,
+        pageSize: pagination.pageSize,
+      }
+      response = await listMusicFileVoByCategoryPageUsingGet(params)
+    } else if (currentCategory.startsWith('tag_')) {
+      // 获取当前选中的标签名称
+      const tagName = currentCategory.replace('tag_', '')
+      console.log('========== 标签筛选开始 ==========')
+      console.log('当前选中的标签:', tagName)
+      
+      // 获取所有音乐
+      const queryParams = {
+        current: pagination.current,
+        pageSize: pagination.pageSize,
+        // 可以尝试添加tag参数，如果后端支持
+        // tag: tagName
+      }
+      console.log('发送请求参数:', queryParams)
+      
+      try {
+        // 使用正确的API
+        const response = await listMusicFileByPageUsingPost(queryParams)
+        console.log('API响应状态:', response?.data?.code)
+        
+        // 处理响应
+        if (response && response.data.code === 0 && response.data.data) {
+          const allMusic = response.data.data.records || []
+          console.log(`获取到 ${allMusic.length} 条音乐记录`)
+          
+          if (allMusic.length > 0) {
+            console.log('第一条音乐记录示例:', allMusic[0])
+            console.log('第一条音乐的tags属性:', allMusic[0].tags, '类型:', typeof allMusic[0].tags)
+          }
+          
+          // 筛选包含特定标签的音乐
+          const filteredMusic = []
+          
+          for (let i = 0; i < allMusic.length; i++) {
+            const music = allMusic[i]
+            console.log(`\n检查音乐[${i}]: "${music.name || '未命名'}"`)
+            
+            // 如果音乐没有tags属性，跳过
+            if (!music || !music.tags) {
+              console.log(`  - 跳过: 没有tags属性`)
+              continue
+            }
+            
+            console.log(`  - tags原始值: ${music.tags}`)
+            
+            // 解析标签 - 预期格式: "[\"吴云峰\",\"大牛牛\",\"小牛牛\"]"
+            try {
+              // 解析JSON字符串为数组
+              const tagsArray = JSON.parse(music.tags)
+              console.log(`  - 解析后的标签数组:`, tagsArray)
+              
+              // 查找是否有匹配的标签（不区分大小写）
+              let found = false
+              for (let j = 0; j < tagsArray.length; j++) {
+                const tag = tagsArray[j]
+                console.log(`    - 比较: "${tag.toLowerCase()}" vs "${tagName.toLowerCase()}"`)
+                
+                if (tag.toLowerCase() === tagName.toLowerCase()) {
+                  found = true
+                  console.log(`    - 匹配成功!`)
+                  break
+                }
+              }
+              
+              if (found) {
+                console.log(`  - 结果: 添加到筛选结果`)
+                filteredMusic.push(music)
+              } else {
+                console.log(`  - 结果: 不包含目标标签`)
+              }
+            } catch (error) {
+              console.error(`  - 解析出错:`, error)
+              
+              // 尝试替代方法
+              console.log(`  - 尝试替代解析方法`)
+              const tagsString = String(music.tags)
+                .replace(/^\[|\]$/g, '') // 移除开头和结尾的方括号
+                .replace(/\\"/g, '"') // 处理转义的引号
+                .replace(/"/g, '') // 移除所有引号
+              
+              const tagsArray = tagsString.split(',').map(tag => tag.trim())
+              console.log(`  - 替代方法解析结果:`, tagsArray)
+              
+              // 查找是否有匹配的标签
+              const found = tagsArray.some(tag => tag.toLowerCase() === tagName.toLowerCase())
+              
+              if (found) {
+                console.log(`  - 结果: 通过替代方法找到匹配，添加到筛选结果`)
+                filteredMusic.push(music)
+              } else {
+                console.log(`  - 结果: 替代方法也未找到匹配`)
+              }
+            }
+          }
+          
+          console.log(`\n找到 ${filteredMusic.length} 条包含标签 "${tagName}" 的音乐`)
+          
+          // 更新UI
+          musicList.value = filteredMusic
+          pagination.total = filteredMusic.length
+          console.log('========== 标签筛选完成 ==========')
+        } else {
+          console.error('API响应错误:', response?.data)
+          message.error(t('message.failedToLoadMusic') + ': ' + (response?.data?.message || t('message.unknownError')))
+          musicList.value = []
+          pagination.total = 0
+        }
+      } catch (error) {
+        console.error('发送请求时出错:', error)
+        message.error(t('message.errorFetchingMusicData') + ': ' + error.message)
+        musicList.value = []
+        pagination.total = 0
+      } finally {
+        loading.value = false
+      }
+      
+      return
+    } else if (currentCategory && !['popular', 'international', 'electronic', 'rockAlt', 'urbanHipHop', 'classical', 'other', 'custom', 'addCustom', 'tags', 'addTag'].includes(currentCategory)) {
+      // 处理现有类别
       let category = currentCategory
       if (category.startsWith('genre')) {
-        // 将genreRock转换为Rock格式发送给后端
         category = category.replace('genre', '')
       }
       
@@ -290,7 +503,7 @@ const fetchMusicData = async () => {
       return
     }
 
-    // Process the response (same logic for both endpoints)
+    // 处理响应
     if (response && response.data.code === 0 && response.data.data) {
       musicList.value = response.data.data.records || []
       pagination.total = parseInt(String(response.data.data.total ?? '0'), 10)
@@ -317,6 +530,10 @@ const categoryLabels = computed(() => ({
   urbanHipHop: t('message.urbanAndHipHop'),
   classical: t('message.classicalAndTraditional'),
   other: t('message.otherStyles'),
+  custom: t('message.customCategory'),
+  addCustom: t('message.addCustomCategory'),
+  tags: t('message.tagsFilter'),
+  addTag: t('message.addCustomTag'),
   
   // 所有音乐类型
   genrePop: t('message.genrePop'),
@@ -373,13 +590,25 @@ const categoryLabels = computed(() => ({
 
 const handleCategoryClick = (info: MenuInfo) => {
   const key = info.key as string
-  // 处理分类组标题点击，不执行数据加载
-  if (['popular', 'international', 'electronic', 'rockAlt', 'urbanHipHop', 'classical', 'other'].includes(key)) {
+  
+  // 跳过特殊类别的点击处理
+  if (['popular', 'international', 'electronic', 'rockAlt', 'urbanHipHop', 'classical', 'other', 'custom', 'addCustom', 'tags', 'addTag'].includes(key)) {
     return
   }
 
   selectedCategoryKeys.value = [key]
-  selectedCategoryLabel.value = categoryLabels.value[key] || t('message.unknownCategory')
+  
+  // 处理自定义类别和标签的显示标签
+  if (key.startsWith('custom_')) {
+    const categoryName = key.replace('custom_', '')
+    selectedCategoryLabel.value = categoryName
+  } else if (key.startsWith('tag_')) {
+    const tagName = key.replace('tag_', '')
+    selectedCategoryLabel.value = t('message.taggedAs') + ': ' + tagName
+  } else {
+    selectedCategoryLabel.value = categoryLabels.value[key] || t('message.unknownCategory')
+  }
+  
   pagination.current = 1
   fetchMusicData()
 }
@@ -427,7 +656,85 @@ const showUploadModal = () => {
   uploadModalVisible.value = true
 }
 
+// 显示添加自定义类别模态框
+const showAddCustomCategoryModal = (e) => {
+  e.stopPropagation()
+  customCategoryModalVisible.value = true
+  newCustomCategory.value = ''
+}
+
+// 处理添加自定义类别
+const handleAddCustomCategory = () => {
+  if (newCustomCategory.value.trim()) {
+    musicStore.addCustomCategory(newCustomCategory.value.trim())
+    customCategoryModalVisible.value = false
+    newCustomCategory.value = ''
+    message.success(t('message.categoryAddedSuccess'))
+  } else {
+    message.error(t('message.categoryNameRequired'))
+  }
+}
+
+// 处理取消添加自定义类别
+const handleCustomCategoryCancel = () => {
+  customCategoryModalVisible.value = false
+  newCustomCategory.value = ''
+}
+
+// 处理删除自定义类别
+const handleDeleteCustomCategory = (category) => {
+  musicStore.removeCustomCategory(category)
+  // 如果当前选中的是要删除的类别，则重置为上传类别
+  if (selectedCategoryKeys.value[0] === `custom_${category}`) {
+    selectedCategoryKeys.value = ['uploaded']
+    selectedCategoryLabel.value = categoryLabels.value.uploaded || t('message.uploaded')
+    fetchMusicData()
+  }
+  message.success(t('message.categoryDeletedSuccess'))
+}
+
+// 显示添加自定义标签模态框
+const showAddCustomTagModal = (e) => {
+  e.stopPropagation()
+  customTagModalVisible.value = true
+  newCustomTag.value = ''
+}
+
+// 处理添加自定义标签
+const handleAddCustomTag = () => {
+  if (newCustomTag.value.trim()) {
+    musicStore.addCustomTag(newCustomTag.value.trim())
+    customTagModalVisible.value = false
+    newCustomTag.value = ''
+    message.success(t('message.tagAddedSuccess'))
+  } else {
+    message.error(t('message.tagNameRequired'))
+  }
+}
+
+// 处理取消添加自定义标签
+const handleCustomTagCancel = () => {
+  customTagModalVisible.value = false
+  newCustomTag.value = ''
+}
+
+// 处理删除自定义标签
+const handleDeleteCustomTag = (tag) => {
+  musicStore.removeCustomTag(tag)
+  // 如果当前选中的是要删除的标签，则重置为上传类别
+  if (selectedCategoryKeys.value[0] === `tag_${tag}`) {
+    selectedCategoryKeys.value = ['uploaded']
+    selectedCategoryLabel.value = categoryLabels.value.uploaded || t('message.uploaded')
+    fetchMusicData()
+  }
+  message.success(t('message.tagDeletedSuccess'))
+}
+
 onMounted(() => {
+  // 初始化自定义类别和标签
+  musicStore.initCustomCategories()
+  musicStore.initCustomTags()
+  
   selectedCategoryKeys.value = ['uploaded']
   selectedCategoryLabel.value = categoryLabels.value.uploaded || t('message.uploaded')
   fetchMusicData()
@@ -786,5 +1093,54 @@ onMounted(() => {
 .cancel-button {
   border-color: #d9d9d9;
   background-color: white;
+}
+
+/* 自定义类别样式 */
+.custom-category-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.delete-icon {
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+
+.delete-icon:hover {
+  opacity: 1;
+  color: #ff4d4f;
+}
+
+.custom-category-item:hover .delete-icon {
+  opacity: 0.8;
+}
+
+/* 自定义标签样式 */
+.custom-tag-item {
+  /* 可以使用与自定义类别相同的样式 */
+}
+
+/* 自定义标签样式 - 可以使用与自定义类别相同的样式 */
+.custom-tag-item .custom-category-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.custom-tag-item .delete-icon {
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+
+.custom-tag-item .delete-icon:hover {
+  opacity: 1;
+  color: #ff4d4f;
+}
+
+.custom-tag-item:hover .delete-icon {
+  opacity: 0.8;
 }
 </style>

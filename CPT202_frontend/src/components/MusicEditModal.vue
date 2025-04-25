@@ -20,10 +20,19 @@
       </a-form-item>
 
       <a-form-item :label="t('category')" name="category">
-        <a-select v-model:value="formState.category" :placeholder="t('pleaseSelectCategory')" style="width: 100%">
-          <a-select-option v-for="category in categories" :key="category.value" :value="category.value">
-            {{ category.label }}
-          </a-select-option>
+        <a-select 
+          v-model:value="formState.category" 
+          :placeholder="t('pleaseSelectOrEnterCategory')" 
+          style="width: 100%"
+          mode="tags"
+          :tokenSeparators="[',']"
+          :options="categories"
+          :maxTagCount="1"
+          :tokenProps="{
+            onKeyDown: (e)=>{e.stopPropagation()},
+          }"
+          @change="handleCategoryChange"
+        >
         </a-select>
       </a-form-item>
 
@@ -60,6 +69,7 @@ import {
 } from '@/api/musicFileController.ts'
 import { useI18n } from 'vue-i18n'
 import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
+import { useMusicStore } from '@/stores/musicStore'
 
 export default defineComponent({
   components: {
@@ -80,6 +90,7 @@ export default defineComponent({
     const { t } = useI18n()
     const confirmLoading = ref(false)
     const categories = ref<{ label: string; value: string }[]>([])
+    const musicStore = useMusicStore()
     
     // 预设的默认标签选项
     const defaultTags = ref([
@@ -160,6 +171,24 @@ export default defineComponent({
       tags: [] as string[],
     })
 
+    // 处理类别变化 - 当用户自定义类别时添加到Store
+    const handleCategoryChange = (value) => {
+      if (Array.isArray(value) && value.length > 0) {
+        // 限制只能选择一个类别
+        const category = value[value.length - 1]
+        formState.category = category
+        
+        // 检查是否是自定义类别，如果是新的自定义类别则添加到MusicStore
+        const existingCategory = categories.value.find(cat => cat.value === category)
+        if (!existingCategory) {
+          musicStore.addCustomCategory(category)
+          message.success(t('categoryAddedSuccess'))
+        }
+      } else if (value === '') {
+        formState.category = ''
+      }
+    }
+
     // 监听musicFile变化，更新表单
     watch(
       () => props.musicFile,
@@ -181,13 +210,20 @@ export default defineComponent({
       try {
         const res = await listMusicFileTagCategoryUsingGet()
         if (res.data.code === 0 && res.data.data) {
-          // 合并API返回的类别和音乐类型
+          // 合并API返回的类别、音乐类型和自定义类别
           const apiCategories = (res.data.data.categoryList || []).map(cat => ({
             label: cat,
             value: cat
           }))
           const genreCategories = getMusicGenres()
-          categories.value = [...new Set([...apiCategories, ...genreCategories])]
+          
+          // 添加用户自定义类别
+          const customCategories = musicStore.customCategories.map(cat => ({
+            label: cat,
+            value: cat
+          }))
+          
+          categories.value = [...new Set([...apiCategories, ...genreCategories, ...customCategories])]
         }
       } catch (error) {
         message.error(t('fetchCategoriesFailed'))
@@ -244,6 +280,7 @@ export default defineComponent({
       categories,
       handleOk,
       handleCancel,
+      handleCategoryChange,
     }
   },
 })

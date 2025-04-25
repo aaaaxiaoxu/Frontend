@@ -85,6 +85,27 @@
           />
         </a-form-item>
 
+        <!-- 修改头像上传部分 -->
+        <div class="form-label">{{ $t('message.avatarLabel') }}</div>
+        <a-form-item name="avatar">
+          <a-upload
+            v-model:file-list="avatarFileList"
+            name="file"
+            :beforeUpload="beforeAvatarUpload"
+            :maxCount="1"
+            :showUploadList="false"
+            accept="image/*"
+          >
+            <div class="avatar-upload-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
+          </a-upload>
+        </a-form-item>
+
         <a-form-item>
           <a-button type="primary" html-type="submit" class="submit-button">
             {{ $t('message.registerButton') }} →
@@ -112,7 +133,7 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
-import { userRegisterUsingPost } from '@/api/userController.ts'
+import { userRegisterUsingPost, uploadAvatarUsingPost } from '@/api/userController.ts'
 import { sendVerificationCodeUsingPost } from '@/api/emailController.ts'
 import { message } from 'ant-design-vue'
 // 导入多彩粒子背景组件
@@ -140,6 +161,24 @@ const formState = reactive({
 // 获取路由实例
 const router = useRouter()
 const loginUserStore = useLoginUserStore()
+
+// 头像文件列表
+const avatarFileList = ref([])
+
+// 预处理头像上传
+const beforeAvatarUpload = (file) => {
+  // 检查文件类型
+  const isImage = file.type.startsWith('image/')
+  if (!isImage) {
+    message.error(t('message.pleaseUploadImageFile'))
+    return false
+  }
+
+  // 保存文件到列表中
+  avatarFileList.value = [{ ...file, status: 'done', url: URL.createObjectURL(file) }]
+
+  return false // 阻止自动上传
+}
 
 // 验证码发送按钮状态管理
 const sendCodeDisabled = ref(false)
@@ -216,10 +255,28 @@ const handleSubmit = async (values: any) => {
   }
 
   try {
+    // 先进行注册
     const res = await userRegisterUsingPost(registerData)
 
-    // 注册成功，跳转至登录页
+    // 注册成功
     if (res.data.code === 0 && res.data.data) {
+      const userId = res.data.data
+      let avatarUrl = ''
+
+      // 如果有上传头像，则调用上传头像API
+      if (avatarFileList.value.length > 0) {
+        try {
+          const avatarFile = avatarFileList.value[0].originFileObj || avatarFileList.value[0]
+          const avatarRes = await uploadAvatarUsingPost({}, avatarFile)
+          if (avatarRes.data.code === 0 && avatarRes.data.data) {
+            avatarUrl = avatarRes.data.data
+            message.success(t('message.avatarUploadSuccess'))
+          }
+        } catch (error) {
+          message.error(t('message.avatarUploadFailed'))
+        }
+      }
+
       message.success(t('message.registerSuccess'))
       router.push({
         path: '/user/login',
@@ -318,6 +375,34 @@ const handleSubmit = async (values: any) => {
   border-radius: 4px;
   min-width: 60px;
   background-color: #1890ff;
+}
+
+/* 头像上传样式 */
+.avatar-upload-box {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  background-color: #fafafa;
+  border: 1px dashed #d9d9d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.avatar-upload-box:hover {
+  border-color: #1890ff;
+  background-color: #f0f7ff;
+}
+
+.upload-icon {
+  color: #999;
+  transition: color 0.3s;
+}
+
+.avatar-upload-box:hover .upload-icon {
+  color: #1890ff;
 }
 
 .submit-button {

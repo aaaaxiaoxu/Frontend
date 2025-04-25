@@ -309,6 +309,16 @@ const en={
     otherStyles: 'Other Styles',
     clickToUpload: 'Click to upload',
     back: 'Back',
+    avatarLabel: 'Avatar',
+    avatarUploadSuccess: 'Avatar uploaded successfully',
+    avatarUploadFailed: 'Avatar upload failed',
+    pleaseUploadImageFile: 'Please upload an image file',
+
+    addCustomCategory: 'Add Category',
+    categoryName: 'Category Name',
+    categoryAddedSuccess: 'Category added successfully',
+    categoryDeletedSuccess: 'Category deleted successfully',
+    categoryNameRequired: 'Please enter a category name',
 
 
     updateTags: 'Update Tags',
@@ -342,7 +352,16 @@ const en={
     editSuccess: 'Edit successful',
     fetchFailed: 'Failed to fetch data',
     fetchError: 'Error fetching data',
-    noMatchingResults: 'No matching results found'
+    noMatchingResults: 'No matching results found',
+
+    tagsFilter: 'Tags Filter',
+    addCustomTag: 'Add New Tag',
+    tagName: 'Tag Name',
+    tagAddedSuccess: 'Tag added successfully',
+    tagDeletedSuccess: 'Tag deleted successfully',
+    tagNameRequired: 'Please enter a tag name',
+    taggedAs: 'Tagged as',
+    pleaseSelectOrEnterCategory: 'Please select or enter a category'
   }
 }
 export default en
