@@ -242,11 +242,6 @@ CPT202_frontend/
 
 ## 🖼️ User Interface
 
-<p align="center">
-  <img src="docs/screenshots/music-explorer.png" alt="Music Explorer" width="45%">
-  <img src="docs/screenshots/upload-status.png" alt="Upload Status" width="45%">
-</p>
-
 The CPT202 Music Platform features a modern, responsive UI designed for optimal user experience:
 
 ### 🎨 Design System
