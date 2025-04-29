@@ -106,7 +106,7 @@ const handleSubmit = async (values: any) => {
     await loginUserStore.fetchLoginUser()
     message.success(t('message.loginSuccess'))
     router.push({
-      path: '/',
+      path: '/home',
       replace: true,
     })
   } else {
