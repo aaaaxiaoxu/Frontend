@@ -14,6 +14,7 @@ import AddMusicFilePage from '@/pages/AddMusicFilePage.vue'
 import MusicPage from '@/pages/musicPage.vue'
 import SearchedMusicPage from '@/pages/searchedMusicPage.vue'
 import MusicDetailPage from '@/pages/MusicDetailPage.vue'
+import UserAvatarUploadPage from '@/pages/user/UserAvatarUploadPage.vue'
 
 
 const router = createRouter({
@@ -119,6 +120,14 @@ const router = createRouter({
       path: '/music/detail/:id',
       name: '音乐详情',
       component: MusicDetailPage,
+      meta: {
+        access: ACCESS_ENUM.NOT_LOGIN,
+      },
+    },
+    {
+      path: '/user/upload-avatar',
+      name: '上传头像',
+      component: UserAvatarUploadPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
       },

@@ -161,11 +161,11 @@ const en={
 
 
     // 音乐类型
-    genrePop: 'Pop Music',
+    genrePop: 'Pop',
     genreRock: 'Rock',
     genreClassical: 'Classical',
     genreJazz: 'Jazz',
-    genreHipHop: 'Hip Hop',
+    genreHipHop: 'HipHop',
     genreRnB: 'R&B',
     genreCountry: 'Country',
     genreElectronic: 'Electronic',
@@ -200,7 +200,7 @@ const en={
     genreDubstep: 'Dubstep',
     genreAcoustic: 'Acoustic',
     genreExperimental: 'Experimental',
-    genreWorldMusic: 'World Music',
+    genreWorldMusic: 'WorldMusic',
     genreSymphonic: 'Symphonic',
     genreChillout: 'Chillout',
     genreLofi: 'Lo-fi',
@@ -313,6 +313,15 @@ const en={
     avatarUploadSuccess: 'Avatar uploaded successfully',
     avatarUploadFailed: 'Avatar upload failed',
     pleaseUploadImageFile: 'Please upload an image file',
+      // 头像上传页面相关翻译
+    uploadAvatar: 'Upload Avatar',
+    uploadAvatarDesc: 'Choose an avatar for your account (optional)',
+
+    confirm: 'Confirm',
+    skip: 'Skip this step',
+    sessionExpired: 'Session expired, please login again',
+
+    skipAvatarUpload: 'Skipped avatar upload',
 
     addCustomCategory: 'Add Category',
     categoryName: 'Category Name',
@@ -324,7 +333,7 @@ const en={
     updateTags: 'Update Tags',
     addTags: 'Add Tags',
     saveChanges: 'Save Changes',
-    confirm: 'Confirm',
+
 
     failedToGetMusicDetail: 'Failed to Get Music Details',
     backToList: 'Back to List',

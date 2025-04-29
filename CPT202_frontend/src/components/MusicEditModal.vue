@@ -92,19 +92,24 @@ export default defineComponent({
     const categories = ref<{ label: string; value: string }[]>([])
     const musicStore = useMusicStore()
     
-    // 预设的默认标签选项
-    const defaultTags = ref([
-      { label: t('genreRock'), value: t('genreRock') },
-      { label: t('genrePop'), value: t('genrePop') },
-      { label: t('genreJazz'), value: t('genreJazz') },
-      { label: t('genreClassical'), value: t('genreClassical') },
-      { label: t('genreElectronic'), value: t('genreElectronic') },
-      { label: t('genreFolk'), value: t('genreFolk') },
-      { label: t('genreHipHop'), value: t('genreHipHop') },
-      { label: t('genreRnB'), value: t('genreRnB') },
-      { label: t('genreCountry'), value: t('genreCountry') },
-      { label: t('genreBlues'), value: t('genreBlues') },
-    ])
+    // 修改defaultTags定义
+    const defaultTags = ref<{ label: string; value: string }[]>([])
+
+    // 预设一些基础标签选项
+    const getDefaultTags = () => {
+      return [
+        { label: t('genreRock'), value: 'Rock' },
+        { label: t('genrePop'), value: 'Pop' },
+        { label: t('genreJazz'), value: 'Jazz' },
+        { label: t('genreClassical'), value: 'Classical' },
+        { label: t('genreElectronic'), value: 'Electronic' },
+        { label: t('genreFolk'), value: 'Folk' },
+        { label: t('genreHipHop'), value: 'Hip Hop' },
+        { label: t('genreRnB'), value: 'R&B' },
+        { label: t('genreCountry'), value: 'Country' },
+        { label: t('genreBlues'), value: 'Blues' },
+      ]
+    }
 
     // 从语言包获取音乐类型
     const getMusicGenres = () => {
@@ -205,12 +210,12 @@ export default defineComponent({
       { immediate: true, deep: true },
     )
 
-    // 获取标签和类别列表
+    // 修改fetchTagsAndCategories函数以处理标签
     const fetchTagsAndCategories = async () => {
       try {
         const res = await listMusicFileTagCategoryUsingGet()
         if (res.data.code === 0 && res.data.data) {
-          // 合并API返回的类别、音乐类型和自定义类别
+          // 处理类别
           const apiCategories = (res.data.data.categoryList || []).map(cat => ({
             label: cat,
             value: cat
@@ -223,7 +228,46 @@ export default defineComponent({
             value: cat
           }))
           
-          categories.value = [...new Set([...apiCategories, ...genreCategories, ...customCategories])]
+          // 正确的去重方法：使用Map按value属性去重
+          const categoryMap = new Map()
+          
+          // 合并所有类别
+          const allCategories = [...apiCategories, ...genreCategories, ...customCategories]
+          
+          // 按value去重
+          allCategories.forEach(category => {
+            if (!categoryMap.has(category.value)) {
+              categoryMap.set(category.value, category)
+            }
+          })
+          
+          // 转换回数组
+          categories.value = Array.from(categoryMap.values())
+          
+          // 处理标签
+          const apiTags = (res.data.data.tagList || []).map(tag => ({
+            label: tag,
+            value: tag
+          }))
+
+          // 使用getMusicGenres()作为基础标签，避免重复定义
+          const musicGenres = getMusicGenres()
+          
+          // 同样使用Map去重标签
+          const tagMap = new Map()
+          
+          // 合并所有标签
+          const allTags = [...apiTags, ...musicGenres]
+          
+          // 按value去重
+          allTags.forEach(tag => {
+            if (!tagMap.has(tag.value)) {
+              tagMap.set(tag.value, tag)
+            }
+          })
+          
+          // 转换回数组
+          defaultTags.value = Array.from(tagMap.values())
         }
       } catch (error) {
         message.error(t('fetchCategoriesFailed'))

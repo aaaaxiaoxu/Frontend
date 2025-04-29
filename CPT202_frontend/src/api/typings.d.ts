@@ -319,6 +319,16 @@ declare namespace API {
     filepath?: string
   }
 
+  type uploadAvatarByAccountUsingPOSTParams = {
+    /** userAccount */
+    userAccount: string
+  }
+
+  type uploadAvatarByIdUsingPOSTParams = {
+    /** userId */
+    userId: number
+  }
+
   type uploadMusicFileUsingPOSTParams = {
     coverUrl?: string
     id?: number

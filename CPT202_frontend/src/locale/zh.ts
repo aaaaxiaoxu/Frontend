@@ -315,7 +315,7 @@ const zh={
 
     selectCategory: '选择类别',
     confirmDelete: '确定要删除这个音乐文件吗？',
-    tit: '标题',
+
     genreHot: '热门',
 
     genreModern: '现代',
@@ -336,19 +336,16 @@ const zh={
     enterNewPassword: "输入新密码",
     confirmNewPassword: "确认新密码",
     pleaseConfirmPassword: "请确认您的新密码!",
-    passwordMismatch: "两次输入的密码不一致",
+
     pleaseInputNewPassword: "请输入您的新密码!",
     passwordMinLength: "密码长度至少为8个字符",
     passwordUpdateSuccess: "密码更新成功",
     passwordUpdateFailed: "密码更新失败: ",
-    unknownError: "未知错误",
+
     errorOccurred: "发生错误: ",
-    avatarUploadSuccess: "头像上传成功",
-    avatarUploadFailed: "头像上传失败: ",
+
     infoUpdateSuccess: "您的信息已成功更新",
-    updateFailed: "更新失败: ",
-    loading: "加载中...",
-    customCategory: '自定义类别',
+
     addCustomCategory: '添加新类别',
     categoryName: '类别名称',
     categoryAddedSuccess: '类别添加成功',
@@ -361,7 +358,16 @@ const zh={
     tagDeletedSuccess: '标签删除成功',
     tagNameRequired: '请输入标签名称',
     taggedAs: '标签',
-    pleaseSelectOrEnterCategory: '请选择或输入类别'
+    pleaseSelectOrEnterCategory: '请选择或输入类别',
+
+
+    uploadAvatarDesc: '为您的账户选择一个头像（可选）',
+
+
+    skip: '跳过此步骤',
+    sessionExpired: '会话已过期，请重新登录',
+
+    skipAvatarUpload: '已跳过头像上传'
   }
 }
 export default zh

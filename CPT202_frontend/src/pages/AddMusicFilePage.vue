@@ -6,6 +6,13 @@
 
 <script lang="ts">
 import MusicFileUpload from '@/components/MusicFileUpload.vue'
+
+export default {
+  name: 'AddMusicFilePage',
+  components: {
+    MusicFileUpload
+  }
+}
 </script>
 
 <style scoped>

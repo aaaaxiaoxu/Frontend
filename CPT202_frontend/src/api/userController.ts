@@ -125,7 +125,7 @@ export async function userRegisterUsingPost(
   body: API.UserRegisterRequest,
   options?: { [key: string]: any }
 ) {
-  return request<API.BaseResponseLong_>('/api/user/register', {
+  return request<API.BaseResponseUserVO_>('/api/user/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -180,6 +180,88 @@ export async function uploadAvatarUsingPost(
 
   return request<API.BaseResponseString_>('/api/user/upload/avatar', {
     method: 'POST',
+    data: formData,
+    requestType: 'form',
+    ...(options || {}),
+  })
+}
+
+/** uploadAvatarByAccount POST /api/user/upload/avatar/by-account */
+export async function uploadAvatarByAccountUsingPost(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.uploadAvatarByAccountUsingPOSTParams,
+  body: {},
+  file?: File,
+  options?: { [key: string]: any }
+) {
+  const formData = new FormData()
+
+  if (file) {
+    formData.append('file', file)
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as any)[ele]
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === 'object' && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ''))
+        } else {
+          formData.append(ele, JSON.stringify(item))
+        }
+      } else {
+        formData.append(ele, item)
+      }
+    }
+  })
+
+  return request<API.BaseResponseString_>('/api/user/upload/avatar/by-account', {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+    data: formData,
+    requestType: 'form',
+    ...(options || {}),
+  })
+}
+
+/** uploadAvatarById POST /api/user/upload/avatar/by-id */
+export async function uploadAvatarByIdUsingPost(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.uploadAvatarByIdUsingPOSTParams,
+  body: {},
+  file?: File,
+  options?: { [key: string]: any }
+) {
+  const formData = new FormData()
+
+  if (file) {
+    formData.append('file', file)
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as any)[ele]
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === 'object' && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ''))
+        } else {
+          formData.append(ele, JSON.stringify(item))
+        }
+      } else {
+        formData.append(ele, item)
+      }
+    }
+  })
+
+  return request<API.BaseResponseString_>('/api/user/upload/avatar/by-id', {
+    method: 'POST',
+    params: {
+      ...params,
+    },
     data: formData,
     requestType: 'form',
     ...(options || {}),
