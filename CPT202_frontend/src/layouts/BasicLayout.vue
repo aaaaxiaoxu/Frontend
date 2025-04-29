@@ -22,7 +22,7 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
-// 只在用户页面隐藏导航
+// Only hide navigation on user pages
 const isUserPage = computed(() => {
   const path = route.path
   return path.includes('/user/')

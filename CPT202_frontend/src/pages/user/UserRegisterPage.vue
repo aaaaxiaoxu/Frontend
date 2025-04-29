@@ -1,6 +1,6 @@
 <template>
   <div id="userRegisterPage">
-    <!-- 使用多彩粒子背景，可以设置不同的颜色组合 -->
+    <!-- Using colorful particle background, can set different color combinations -->
     <MultiColorParticlesBg
       class="particles-background"
       :colors="['#2F54EB', '#EB2F96', '#FAAD14', '#13C2C2', '#52C41A']"
@@ -24,7 +24,7 @@
           name="email"
           :rules="[
             { required: true, message: $t('message.enterEmail') },
-            { type: 'email', message: '请输入有效的邮箱地址' },
+            { type: 'email', message: 'Please enter a valid email address' },
           ]"
         >
           <div class="input-with-button">
@@ -49,7 +49,7 @@
           name="userPassword"
           :rules="[
             { required: true, message: $t('message.enterPassword') },
-            { min: 8, message: '密码长度至少为8个字符' },
+            { min: 8, message: 'Password must be at least 8 characters' },
           ]"
         >
           <IInput
@@ -65,7 +65,7 @@
           name="checkPassword"
           :rules="[
             { required: true, message: $t('message.enterConfirmPassword') },
-            { min: 8, message: '确认密码长度至少为8个字符' },
+            { min: 8, message: 'Confirm password must be at least 8 characters' },
           ]"
         >
           <IInput
@@ -97,7 +97,7 @@
         <RouterLink to="/user/login" class="link">{{ $t('message.login') }}</RouterLink>
       </div>
 
-      <!-- 添加语言切换按钮 -->
+      <!-- Add language switch button -->
       <div class="language-switch">
         <a @click="changeLanguage" class="language-link">
           {{ locale === 'en' ? '中文' : 'English' }}
@@ -108,23 +108,23 @@
 </template>
 
 <script setup lang="ts">
-// 用于接收表单输入的值
+// For receiving form input values
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userRegisterUsingPost } from '@/api/userController.ts'
 import { sendVerificationCodeUsingPost } from '@/api/emailController.ts'
 import { message } from 'ant-design-vue'
-// 导入多彩粒子背景组件
+// Import colorful particle background component
 import MultiColorParticlesBg from '@/components/ui/particles-bg/MultiColorParticlesBg.vue'
-// 导入i18n
+// Import i18n
 import { useI18n } from 'vue-i18n'
-// 导入自定义输入框组件
+// Import custom input component
 import IInput from '@/components/ui/input/IInput.vue'
 
 const { t, locale } = useI18n()
 
-// 切换语言方法
+// Language switch method
 const changeLanguage = () => {
   locale.value = locale.value === 'en' ? 'zh' : 'en'
 }
@@ -137,24 +137,24 @@ const formState = reactive({
   userAccount: '',
 })
 
-// 获取路由实例
+// Get router instance
 const router = useRouter()
 const loginUserStore = useLoginUserStore()
 
-// 验证码发送按钮状态管理
+// Verification code button state management
 const sendCodeDisabled = ref(false)
 const sendCodeText = ref('Send')
 const countdown = ref(60)
 let timer: number | null = null
 
-// 发送验证码
+// Send verification code
 const sendVerificationCode = async () => {
   if (!formState.email) {
     message.error(t('message.enterEmail'))
     return
   }
 
-  // 验证邮箱格式
+  // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(formState.email)) {
     message.error(t('message.invalidEmail'))
@@ -177,7 +177,7 @@ const sendVerificationCode = async () => {
   }
 }
 
-// 倒计时功能
+// Countdown functionality
 const startCountdown = () => {
   sendCodeDisabled.value = true
   countdown.value = 60
@@ -196,19 +196,19 @@ const startCountdown = () => {
 }
 
 /**
- * 提交表单
+ * Submit form
  * @param values
  */
 const handleSubmit = async (values: any) => {
-  // 校验两次输入的密码是否一致
+  // Check if the two passwords match
   if (values.userPassword != values.checkPassword) {
     message.error(t('message.passwordMismatch'))
     return
   }
 
-  // 构建注册请求数据
+  // Build registration request data
   const registerData = {
-    userAccount: values.email, // 使用邮箱作为账号
+    userAccount: values.email, // Use email as account
     userPassword: values.userPassword,
     checkPassword: values.checkPassword,
     email: values.email,
@@ -216,16 +216,16 @@ const handleSubmit = async (values: any) => {
   }
 
   try {
-    // 先进行注册
+    // First register
     const res = await userRegisterUsingPost(registerData)
 
-    // 注册成功
+    // Registration successful
     if (res.data.code === 0 && res.data.data) {
-      // 获取注册响应中的用户账号
+      // Get user account from registration response
       const userAccount = res.data.data.userAccount
       
       message.success(t('message.registerSuccess'))
-      // 跳转到上传头像页面，并传递用户账号
+      // Redirect to avatar upload page and pass user account
       router.push({
         path: '/user/upload-avatar',
         query: { userAccount: userAccount },
@@ -256,7 +256,7 @@ const handleSubmit = async (values: any) => {
   background-color: #f5f5f5;
 }
 
-/* 粒子背景样式 */
+/* Particle background styles */
 .particles-background {
   position: absolute;
   top: 0;
@@ -266,7 +266,7 @@ const handleSubmit = async (values: any) => {
   z-index: 0;
 }
 
-/* 表单卡片样式 */
+/* Form card styles */
 .form-card {
   width: 100%;
   max-width: 450px;
@@ -361,7 +361,7 @@ const handleSubmit = async (values: any) => {
   text-decoration: underline;
 }
 
-/* 语言切换按钮 */
+/* Language switch button */
 .language-switch {
   position: absolute;
   top: 15px;

@@ -22,7 +22,7 @@
           class="register-btn"
           @click="goToRegister"
         />
-        <!-- 添加一个专门用于切换语言的按钮 -->
+        <!-- Add a dedicated button for language switching -->
         <InteractiveHoverButton
         :text="locale === 'en' ? '中文' : 'English'"
         class="language-btn"
@@ -60,13 +60,13 @@ onMounted(() => {
   change_language.value = locale.value
 })
 
-// 定义语言的状态
+// Define language state
 const {locale} = useI18n()
 const change_language = ref('')
 
-// 定义切换语言的方法 - 修改为切换中英文
+// Define language switching method - modified to switch between Chinese and English
 const changeLanguage = () => {
-  // 如果当前是英文，切换到中文；如果是中文，切换到英文
+  // If current language is English, switch to Chinese; if Chinese, switch to English
   locale.value = locale.value === 'en' ? 'zh' : 'en'
 }
 </script>

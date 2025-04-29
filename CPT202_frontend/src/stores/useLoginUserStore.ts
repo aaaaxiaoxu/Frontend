@@ -4,15 +4,15 @@ import { getLoginUserUsingGet } from '@/api/userController.ts'
 import LoginUserVO = API.LoginUserVO
 
 /**
- * 存储登录用户信息的状态 这里一个store就是一个状态
+ * Store for logged-in user information - each store represents a state
  */
 export const useLoginUserStore = defineStore('loginUser', () => {
   const loginUser = ref<LoginUserVO>({
-    userName: '未登录',
+    userName: 'Not logged in',
   })
 
   /**
-   * 远程获取用户
+   * Fetch user remotely
    */
   async function fetchLoginUser() {
     const res = await getLoginUserUsingGet()
@@ -21,7 +21,7 @@ export const useLoginUserStore = defineStore('loginUser', () => {
     }
   }
 
-  // 设置登录用户
+  // Set logged-in user
   function setLoginUser(newloginUser: any) {
     loginUser.value = newloginUser
   }

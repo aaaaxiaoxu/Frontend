@@ -6,27 +6,16 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 import BasicLayout from '@/layouts/BasicLayout.vue'
 import EmptyLayout from '@/layouts/EmptyLayout.vue'
-// import { healthUsingGet } from '@/api/mainController.ts'
-// import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 
-//已经改为在权限校验文件当中获取
-// const loginUserStore = useLoginUserStore()
-// loginUserStore.fetchLoginUser()
-//
-//
-// healthUsingGet().then(res => {
-//   console.log(res)
-// })
 
 const route = useRoute()
 
-// 判断是否应该使用空布局（没有导航栏）
+// Determine if you should use an empty layout (no navigation bar)
 const shouldUseEmptyLayout = computed(() => {
   return route.path === '/'
 })

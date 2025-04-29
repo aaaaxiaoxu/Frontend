@@ -132,6 +132,11 @@ declare namespace API {
     id?: number
   }
 
+  type increaseUserBanNumberUsingPOSTParams = {
+    /** userId */
+    userId: number
+  }
+
   type listApprovedMusicFilesUsingGETParams = {
     /** current */
     current?: number
@@ -335,6 +340,7 @@ declare namespace API {
   }
 
   type User = {
+    banNumber?: number
     banReason?: string
     createTime?: string
     editTime?: string
@@ -400,6 +406,7 @@ declare namespace API {
   }
 
   type UserVO = {
+    banNumber?: number
     createTime?: string
     id?: number
     userAccount?: string

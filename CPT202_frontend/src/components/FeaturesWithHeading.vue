@@ -16,10 +16,10 @@
             <component :is="feature.icon" :size="iconSize" />
           </div>
           <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {{ t(feature.nameKey) }}
+            {{ t('message.' + feature.nameKey) }}
           </h3>
           <p class="text-sm text-gray-600 dark:text-gray-400">
-            {{ t(feature.descriptionKey) }}
+            {{ t('message.' + feature.descriptionKey) }}
           </p>
         </div>
       </div>
@@ -37,38 +37,38 @@ const iconSize = 18;
 const featuresData = [
   {
     id: 1,
-    nameKey: 'music.features.easyUpload.title',
-    descriptionKey: 'music.features.easyUpload.description',
+    nameKey: 'easyUploadTitle',
+    descriptionKey: 'easyUploadDesc',
     icon: Music
   },
   {
     id: 2,
-    nameKey: 'music.features.personalization.title',
-    descriptionKey: 'music.features.personalization.description',
+    nameKey: 'personalizationTitle',
+    descriptionKey: 'personalizationDesc',
     icon: Library
   },
   {
     id: 3,
-    nameKey: 'music.features.highQuality.title',
-    descriptionKey: 'music.features.highQuality.description',
+    nameKey: 'highQualityTitle',
+    descriptionKey: 'highQualityDesc',
     icon: Headphones
   },
   {
     id: 4,
-    nameKey: 'music.features.responsive.title',
-    descriptionKey: 'music.features.responsive.description',
+    nameKey: 'responsiveTitle',
+    descriptionKey: 'responsiveDesc',
     icon: Smartphone
   },
   {
     id: 5,
-    nameKey: 'music.features.sharing.title',
-    descriptionKey: 'music.features.sharing.description',
+    nameKey: 'sharingTitle',
+    descriptionKey: 'sharingDesc',
     icon: Heart
   },
   {
     id: 6,
-    nameKey: 'music.features.updates.title',
-    descriptionKey: 'music.features.updates.description',
+    nameKey: 'updatesTitle',
+    descriptionKey: 'updatesDesc',
     icon: RefreshCw
   }
 ];

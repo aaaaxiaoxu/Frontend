@@ -3,28 +3,41 @@ import { defineStore } from 'pinia'
 export const useMusicStore = defineStore('music', {
   state: () => ({
     currentMusic: null,
-    customCategories: [],  // 存储用户自定义类别
-    customTags: [],       // 存储用户自定义标签
+    customCategories: [],  // Store user-defined categories
+    customTags: [],       // Store user-defined tags
   }),
   actions: {
     setCurrentMusic(music) {
       this.currentMusic = music
     },
-    // 添加自定义类别
+    // Add custom category
     addCustomCategory(category) {
       if (!this.customCategories.includes(category)) {
         this.customCategories.push(category)
-        // 保存到本地存储
+        // Save to local storage
         localStorage.setItem('customCategories', JSON.stringify(this.customCategories))
       }
     },
-    // 删除自定义类别
+    // Remove custom category
     removeCustomCategory(category) {
       this.customCategories = this.customCategories.filter(item => item !== category)
-      // 更新本地存储
+      // Update local storage
       localStorage.setItem('customCategories', JSON.stringify(this.customCategories))
     },
-    // 初始化自定义类别（从本地存储加载）
+    // Update custom category
+    updateCustomCategory(oldCategory, newCategory) {
+      if (oldCategory !== newCategory && !this.customCategories.includes(newCategory)) {
+        const index = this.customCategories.indexOf(oldCategory)
+        if (index !== -1) {
+          this.customCategories[index] = newCategory
+          // Update local storage
+          localStorage.setItem('customCategories', JSON.stringify(this.customCategories))
+          return true
+        }
+      }
+      return false
+    },
+    // Initialize custom categories (load from local storage)
     initCustomCategories() {
       const savedCategories = localStorage.getItem('customCategories')
       if (savedCategories) {
@@ -32,21 +45,34 @@ export const useMusicStore = defineStore('music', {
       }
     },
     
-    // 添加自定义标签
+    // Add custom tag
     addCustomTag(tag) {
       if (!this.customTags.includes(tag)) {
         this.customTags.push(tag)
-        // 保存到本地存储
+        // Save to local storage
         localStorage.setItem('customTags', JSON.stringify(this.customTags))
       }
     },
-    // 删除自定义标签
+    // Remove custom tag
     removeCustomTag(tag) {
       this.customTags = this.customTags.filter(item => item !== tag)
-      // 更新本地存储
+      // Update local storage
       localStorage.setItem('customTags', JSON.stringify(this.customTags))
     },
-    // 初始化自定义标签（从本地存储加载）
+    // Update custom tag
+    updateCustomTag(oldTag, newTag) {
+      if (oldTag !== newTag && !this.customTags.includes(newTag)) {
+        const index = this.customTags.indexOf(oldTag)
+        if (index !== -1) {
+          this.customTags[index] = newTag
+          // Update local storage
+          localStorage.setItem('customTags', JSON.stringify(this.customTags))
+          return true
+        }
+      }
+      return false
+    },
+    // Initialize custom tags (load from local storage)
     initCustomTags() {
       const savedTags = localStorage.getItem('customTags')
       if (savedTags) {

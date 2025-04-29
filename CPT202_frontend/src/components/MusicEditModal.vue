@@ -92,10 +92,10 @@ export default defineComponent({
     const categories = ref<{ label: string; value: string }[]>([])
     const musicStore = useMusicStore()
     
-    // 修改defaultTags定义
+    // Modified defaultTags definition
     const defaultTags = ref<{ label: string; value: string }[]>([])
 
-    // 预设一些基础标签选项
+    // Preset some basic tag options
     const getDefaultTags = () => {
       return [
         { label: t('genreRock'), value: 'Rock' },
@@ -111,7 +111,7 @@ export default defineComponent({
       ]
     }
 
-    // 从语言包获取音乐类型
+    // Get music genres from language pack
     const getMusicGenres = () => {
       return [
         { label: 'Pop Music', value: 'Pop Music' },
@@ -176,14 +176,14 @@ export default defineComponent({
       tags: [] as string[],
     })
 
-    // 处理类别变化 - 当用户自定义类别时添加到Store
+    // Handle category changes - add to Store when user customizes a category
     const handleCategoryChange = (value) => {
       if (Array.isArray(value) && value.length > 0) {
-        // 限制只能选择一个类别
+        // Limit to only one category
         const category = value[value.length - 1]
         formState.category = category
         
-        // 检查是否是自定义类别，如果是新的自定义类别则添加到MusicStore
+        // Check if it's a custom category, if it's a new custom category, add it to MusicStore
         const existingCategory = categories.value.find(cat => cat.value === category)
         if (!existingCategory) {
           musicStore.addCustomCategory(category)
@@ -194,7 +194,7 @@ export default defineComponent({
       }
     }
 
-    // 监听musicFile变化，更新表单
+    // Watch for musicFile changes, update form
     watch(
       () => props.musicFile,
       (newVal) => {
@@ -210,63 +210,63 @@ export default defineComponent({
       { immediate: true, deep: true },
     )
 
-    // 修改fetchTagsAndCategories函数以处理标签
+    // Modify fetchTagsAndCategories function to process tags
     const fetchTagsAndCategories = async () => {
       try {
         const res = await listMusicFileTagCategoryUsingGet()
         if (res.data.code === 0 && res.data.data) {
-          // 处理类别
+          // Process categories
           const apiCategories = (res.data.data.categoryList || []).map(cat => ({
             label: cat,
             value: cat
           }))
           const genreCategories = getMusicGenres()
           
-          // 添加用户自定义类别
+          // Add user-defined custom categories
           const customCategories = musicStore.customCategories.map(cat => ({
             label: cat,
             value: cat
           }))
           
-          // 正确的去重方法：使用Map按value属性去重
+          // Correct deduplication method: use Map to deduplicate by value property
           const categoryMap = new Map()
           
-          // 合并所有类别
+          // Merge all categories
           const allCategories = [...apiCategories, ...genreCategories, ...customCategories]
           
-          // 按value去重
+          // Deduplicate by value
           allCategories.forEach(category => {
             if (!categoryMap.has(category.value)) {
               categoryMap.set(category.value, category)
             }
           })
           
-          // 转换回数组
+          // Convert back to array
           categories.value = Array.from(categoryMap.values())
           
-          // 处理标签
+          // Process tags
           const apiTags = (res.data.data.tagList || []).map(tag => ({
             label: tag,
             value: tag
           }))
 
-          // 使用getMusicGenres()作为基础标签，避免重复定义
+          // Use getMusicGenres() as basic tags, avoid duplicate definitions
           const musicGenres = getMusicGenres()
           
-          // 同样使用Map去重标签
+          // Similarly use Map to deduplicate tags
           const tagMap = new Map()
           
-          // 合并所有标签
+          // Merge all tags
           const allTags = [...apiTags, ...musicGenres]
           
-          // 按value去重
+          // Deduplicate by value
           allTags.forEach(tag => {
             if (!tagMap.has(tag.value)) {
               tagMap.set(tag.value, tag)
             }
           })
           
-          // 转换回数组
+          // Convert back to array
           defaultTags.value = Array.from(tagMap.values())
         }
       } catch (error) {
@@ -275,10 +275,10 @@ export default defineComponent({
       }
     }
 
-    // 初始化时获取类别
+    // Initialize categories when loading
     fetchTagsAndCategories()
 
-    // 确认更新
+    // Confirm update
     const handleOk = async () => {
       if (!formState.id) {
         message.error(t('missingMusicId'))
@@ -311,7 +311,7 @@ export default defineComponent({
       }
     }
 
-    // 取消
+    // Cancel
     const handleCancel = () => {
       emit('update:visible', false)
     }

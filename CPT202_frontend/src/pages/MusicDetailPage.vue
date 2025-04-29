@@ -102,7 +102,7 @@
       <a-spin :tip="t('message.loading')"></a-spin>
     </div>
 
-    <!-- 编辑模态框 -->
+    <!-- Edit modal -->
     <a-modal
       v-model:open="editModalVisible"
       :title="t('message.editMusicInfo')"
@@ -151,7 +151,7 @@
       </a-form>
     </a-modal>
 
-    <!-- 添加播放器组件 -->
+    <!-- Add player component -->
     <player-bar />
   </div>
 </template>
@@ -214,7 +214,7 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 
-// 直接从路由参数获取ID
+// Get ID directly from route parameters
 const musicId = route.params.id
 
 const detail = ref<MusicDetail | null>(null)
@@ -229,25 +229,25 @@ const errorMessage = ref('')
 const editModalVisible = ref(false)
 const editLoading = ref(false)
 
-// 计算当前卡片是否正在播放
+// Calculate if the current card is playing
 const isCurrentlyPlaying = computed(() => {
   return isPlaying.value && String(currentMusic.id) === String(musicId)
 })
 
-// 解析标签的计算属性
+// Computed property for parsing tags
 const parsedTags = computed(() => {
   if (!detail.value?.tags) return []
   return Array.isArray(detail.value.tags) ? detail.value.tags : [detail.value.tags]
 })
 
-// 表单数据
+// Form data
 const musicForm = reactive({
   id: null as number | string | null,
   category: '',
   tags: [] as string[],
 })
 
-// 编辑表单数据
+// Edit form data
 const editForm = reactive({
   id: null as number | string | null,
   name: '',
@@ -257,7 +257,7 @@ const editForm = reactive({
   tags: [] as string[],
 })
 
-// 可用的类别和标签列表
+// Available categories and tags lists
 const availableCategories = ['Pop', 'Rock', 'Electronic', 'Jazz', 'Indie', 'Classical', 'R&B']
 const availableTags = [
   t('message.genreHot'), 
@@ -271,7 +271,7 @@ const availableTags = [
   t('message.genreRelaxing')
 ]
 
-// 添加默认标签选项
+// Add default tag options
 const defaultTags = ref([
   { label: t('message.genreHot'), value: t('message.genreHot') },
   { label: t('message.genrePop'), value: t('message.genrePop') },
@@ -292,7 +292,7 @@ const defaultTags = ref([
   { label: t('message.genreElectronic'), value: 'Electronic' },
 ])
 
-// 获取用户信息 - 与MusicCard完全相同
+// Get user information - identical to MusicCard
 const fetchUserInfo = async (userId: number) => {
   try {
     const res = await getUserByIdUsingGet({ id: userId })
@@ -305,7 +305,7 @@ const fetchUserInfo = async (userId: number) => {
       }
     } else {
       console.error(t('message.failedToGetUserInfo'), res.data.message)
-      // 使用默认值
+      // Use default values
       userInfo.value = {
         userId: userId,
         userName: t('message.noName'),
@@ -314,7 +314,7 @@ const fetchUserInfo = async (userId: number) => {
     }
   } catch (err: any) {
     console.error(t('message.errorGettingUserInfo'), err)
-    // 使用默认值
+    // Use default values
     userInfo.value = {
       userId: userId,
       userName: t('message.noName'),
@@ -323,7 +323,7 @@ const fetchUserInfo = async (userId: number) => {
   }
 }
 
-// 解析标签 - 与MusicCard完全相同
+// Parse tags - identical to MusicCard
 const parseTags = (tagsData) => {
   if (!tagsData) return []
   if (typeof tagsData === 'string') {
@@ -337,45 +337,45 @@ const parseTags = (tagsData) => {
   return Array.isArray(tagsData) ? tagsData : [tagsData]
 }
 
-// 获取详情 - 采用MusicCard的方式
+// Get details - using MusicCard's approach
 const fetchDetail = async () => {
   error.value = false
   loading.value = true
 
   try {
-    // 直接使用路由参数传递的ID
+    // Use ID passed through route params directly
     const res = await getMusicFileByIdUsingGet({ id: musicId })
 
     if (res.data.code === 0 && res.data.data) {
       detail.value = res.data.data
 
-      // 如果有userId，则获取用户信息
+      // If there is a userId, get user information
       if (detail.value.userId) {
         await fetchUserInfo(detail.value.userId)
       } else {
-        // 没有userId，使用默认值
+        // No userId, use default values
         userInfo.value = {
           userName: t('message.noName'),
           userAvatar: 'https://via.placeholder.com/40',
         }
       }
 
-      // 解析标签
+      // Parse tags
       detail.value.tags = parseTags(detail.value.tags)
 
-      // 初始化表单数据
+      // Initialize form data
       musicForm.id = detail.value.id
       musicForm.category = detail.value.category || ''
       musicForm.tags = detail.value.tags || []
     } else {
-      // 设置错误状态
+      // Set error state
       error.value = true
       errorMessage.value = res.data.message || t('message.requestDataNotExist')
       console.error(t('message.failedToGetDetails'), res.data)
       message.error(res.data.message || t('message.failedToLoadDetails'))
     }
   } catch (err: any) {
-    // 设置错误状态
+    // Set error state
     error.value = true
     errorMessage.value = err.message || t('message.requestError')
     console.error(t('message.getDetailsError'), err)
@@ -385,15 +385,15 @@ const fetchDetail = async () => {
   }
 }
 
-// 组件挂载时获取详情
+// Get details when component is mounted
 onMounted(fetchDetail)
 
-// 返回列表页
+// Return to list page
 const backToList = () => {
   router.back()
 }
 
-// 保存音乐修改
+// Save music changes
 const saveMusicChanges = async () => {
   try {
     loading.value = true
@@ -407,7 +407,7 @@ const saveMusicChanges = async () => {
     if (response.data.code === 0 && response.data.data) {
       message.success(t('message.tagsUpdateSuccess'))
 
-      // 更新当前显示的音乐信息
+      // Update currently displayed music information
       if (detail.value) {
         detail.value.tags = musicForm.tags
       }
@@ -421,11 +421,11 @@ const saveMusicChanges = async () => {
   }
 }
 
-// 显示编辑模态框
+// Show edit modal
 const showEditModal = () => {
   if (!detail.value) return
 
-  // 初始化编辑表单数据
+  // Initialize edit form data
   editForm.id = detail.value.id
   editForm.name = detail.value.name || ''
   editForm.artist = detail.value.artist || ''
@@ -436,12 +436,12 @@ const showEditModal = () => {
   editModalVisible.value = true
 }
 
-// 处理取消
+// Handle cancel
 const handleCancel = () => {
   editModalVisible.value = false
 }
 
-// 提交编辑
+// Submit edit
 const handleEditSubmit = async () => {
   editLoading.value = true
   try {
@@ -460,7 +460,7 @@ const handleEditSubmit = async () => {
       message.success(t('message.musicInfoEditSuccess'))
       editModalVisible.value = false
 
-      // 刷新数据
+      // Refresh data
       fetchDetail()
     } else {
       message.error(t('message.editFailed') + ': ' + (response.data.message || t('message.unknownError')))
@@ -472,7 +472,7 @@ const handleEditSubmit = async () => {
   }
 }
 
-// 删除音乐
+// Delete music
 const handleDelete = async () => {
   if (!detail.value) return
 
@@ -494,7 +494,7 @@ const handleDelete = async () => {
   }
 }
 
-// 播放音乐
+// Play music
 const handlePlay = () => {
   if (detail.value && detail.value.url) {
     playMusic({
@@ -509,7 +509,7 @@ const handlePlay = () => {
   }
 }
 
-// 添加重试方法
+// Add retry method
 const retryFetch = () => {
   fetchDetail()
 }
@@ -607,7 +607,7 @@ const retryFetch = () => {
   justify-content: center;
 }
 
-/* 上传者信息样式 */
+/* Uploader information styles */
 .uploader-info {
   display: flex;
   align-items: center;
@@ -632,7 +632,7 @@ const retryFetch = () => {
   color: #666;
 }
 
-/* 标签容器样式 */
+/* Tags container styles */
 .tags-container {
   display: flex;
   flex-wrap: wrap;
@@ -653,7 +653,7 @@ const retryFetch = () => {
   color: #999;
 }
 
-/* 添加新的样式 */
+/* Add new styles */
 .opacity-50 {
   opacity: 0.5;
 }

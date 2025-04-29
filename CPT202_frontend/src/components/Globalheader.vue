@@ -108,7 +108,7 @@
           <!-- 移动导航头部 -->
           <div class="flex w-full flex-row items-center justify-between px-3">
             <router-link to="/" class="relative z-20 mr-3 flex items-center space-x-1 px-1 py-1 text-sm font-normal text-black">
-              <img src="../assets/logo.png" alt="logo" width="36" height="36" />
+              <img src="../assets/logo.svg" alt="logo" width="36" height="36" />
               <span class="font-medium text-black text-base">MelodyHub</span>
             </router-link>
 

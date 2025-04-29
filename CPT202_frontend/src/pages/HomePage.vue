@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <!-- 头部 Banner -->
+    <!-- Header Banner -->
     <div class="hero-banner">
       <div class="banner-content">
         <TypingAnimation
@@ -26,22 +26,22 @@
       </div>
     </div>
 
-    <!-- 动态功能展示 -->
+    <!-- Dynamic function display -->
     <!-- <features-carousel /> -->
 
-    <!-- 热门音乐推荐 -->
+    <!-- Hot music recommendations -->
     <div class="animated-testimonials-section">
       <AnimatedTestimonials :testimonials="testimonials" :autoplay="true" :duration="10000" />
     </div>
 
-    <!-- 系统统计数据 -->
+    <!-- System statistics -->
     <FeaturesWithHeading />
 
-    <!-- 用户评价轮播 -->
+    <!-- User reviews are carousel -->
     <div class="user-reviews">
       <div class="container">
         <div class="reviews-container">
-          <!-- 上部分向左滚动 -->
+          
           <Marquee pauseOnHover class="reviews-marquee">
             <div v-for="(review, index) in userReviews" :key="`top-${index}`" class="review-card">
               <div class="review-content">
@@ -57,7 +57,7 @@
             </div>
           </Marquee>
 
-          <!-- 下部分向右滚动 -->
+         
           <Marquee pauseOnHover reverse class="reviews-marquee mt-6">
             <div v-for="(review, index) in userReviews.slice().reverse()" :key="`bottom-${index}`" class="review-card">
               <div class="review-content">
@@ -76,7 +76,7 @@
       </div>
     </div>
 
-    <!-- 上传模态框 -->
+    <!-- Upload the modal -->
     <a-modal 
       v-model:visible="uploadModalVisible" 
       :title="t('message.uploadMusic')" 
@@ -104,14 +104,14 @@ import TypingAnimation from '@/components/magicui/typing-animation.vue'
 import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
 import FeaturesWithHeading from '@/components/FeaturesWithHeading.vue'
 import AnimatedTestimonials from '@/components/ui/animated-testimonials/AnimatedTestimonials.vue'
-import { useI18n } from 'vue-i18n'  // 添加这行
+import { useI18n } from 'vue-i18n' 
 import MusicFileUpload from '@/components/MusicFileUpload.vue'
 import { message } from 'ant-design-vue'
 
-const { t } = useI18n()  // 添加这行
+const { t } = useI18n() 
 const router = useRouter()
 
-// 模拟的统计数据
+
 const stats = ref({
   musicCount: '10,000+',
   userCount: '1,500+',
@@ -119,7 +119,7 @@ const stats = ref({
   categoryCount: '20+',
 })
 
-// 用户评价数据
+// User review data
 const userReviews = ref([
   {
     userName: 'Lisa',
@@ -153,7 +153,7 @@ const userReviews = ref([
   }
 ])
 
-// 添加在现有的 ref 定义旁边
+
 const testimonials = ref([
   {
     quote: t('message.taylor_quote'),
@@ -187,7 +187,7 @@ const testimonials = ref([
   }
 ])
 
-// 上传模态框相关
+// Upload modals
 const uploadModalVisible = ref(false)
 const handleCancel = () => {
   uploadModalVisible.value = false

@@ -2,30 +2,30 @@
   <div class="music-card-component">
     <div v-if="loading" class="loading-container">{{ t('message.loading') }}</div>
     <div v-else-if="detail" class="music-card">
-      <!-- 音乐封面图部分 - 缩小比例 -->
+      <!-- Music cover image section - reduced scale -->
       <div class="cover-container">
         <img :src="detail.coverUrl" alt="Cover" class="cover" />
 
-        <!-- 播放状态覆盖图标 -->
+        <!-- Play status overlay icon -->
         <div v-if="isCurrentlyPlaying" class="playing-indicator">
           <div class="playing-icon">▶</div>
         </div>
       </div>
 
-      <!-- 信息部分 -->
+      <!-- Information section -->
       <div class="music-info">
         <h3 class="music-title">{{ detail.name }}</h3>
         <p class="music-artist">{{ detail.artist || t('message.unknownArtist') }}</p>
-        <!-- 显示标签 -->
+        <!-- Display tags -->
         <div class="tags-container">
           <span v-if="!parsedTags.length" class="no-tags">{{ t('message.noTags') }}</span>
           <span v-else v-for="tag in parsedTags" :key="tag" class="tag-item">{{ tag }}</span>
         </div>
       </div>
 
-      <!-- 底部区域：上传者信息和播放按钮 -->
+      <!-- Bottom area: uploader information and play button -->
       <div class="card-footer">
-        <!-- 上传者信息 -->
+        <!-- Uploader information -->
         <div class="uploader-info">
           <div class="avatar">
             <img :src="userInfo.userAvatar || 'https://via.placeholder.com/40'" alt="User" />
@@ -33,7 +33,7 @@
           <div class="uploader-name">{{ userInfo.userName || t('message.noName') }}</div>
         </div>
 
-        <!-- 播放按钮 -->
+        <!-- Play button -->
         <div class="play-button-container">
           <InteractiveHoverButton 
             @click="handlePlay" 
@@ -87,12 +87,12 @@ const userInfo = ref<UserInfo>({
 const loading = ref(true)
 const showDebug = ref(false)
 
-// 计算当前卡片是否正在播放
+// Calculate if the current card is playing
 const isCurrentlyPlaying = computed(() => {
   return isPlaying.value && String(currentMusic.id) === String(props.id)
 })
 
-// 获取类别对应的CSS类名
+// Get CSS class name corresponding to category
 // const getCategoryClass = (category?: string) => {
 //   if (!category) return 'default';
 //
@@ -109,7 +109,7 @@ const isCurrentlyPlaying = computed(() => {
 //   return categoryMap[category] || 'default';
 // };
 
-// 获取用户信息
+// Get user information
 const fetchUserInfo = async (userId: number) => {
   try {
     const res = await getUserByIdUsingGet({ id: userId })
@@ -122,7 +122,7 @@ const fetchUserInfo = async (userId: number) => {
       }
     } else {
       console.error(t('message.getUserInfoFailed') + ':', res.data.message)
-      // 使用默认值
+      // Use default values
       userInfo.value = {
         userId: userId,
         userName: t('message.noName'),
@@ -131,7 +131,7 @@ const fetchUserInfo = async (userId: number) => {
     }
   } catch (err: any) {
     console.error(t('message.getUserInfoError') + ':', err)
-    // 使用默认值
+    // Use default values
     userInfo.value = {
       userId: userId,
       userName: t('message.noName'),
@@ -147,18 +147,18 @@ const fetchDetail = async () => {
     if (res.data.code === 0 && res.data.data) {
       detail.value = res.data.data
 
-      // 如果有userId，则获取用户信息
+      // If there is a userId, get user information
       if (detail.value.userId) {
         await fetchUserInfo(detail.value.userId)
       } else {
-        // 没有userId，使用默认值
+        // No userId, use default values
         userInfo.value = {
           userName: t('message.noName'),
           userAvatar: 'https://via.placeholder.com/40',
         }
       }
 
-      // 解析标签
+      // Parse tags
       detail.value.tags = parseTags(detail.value.tags)
     } else {
       console.error(t('message.getDetailFailed') + ':', res.data.message)
@@ -174,7 +174,7 @@ const fetchDetail = async () => {
 
 onMounted(fetchDetail)
 
-// 处理播放事件
+// Handle play event
 const handlePlay = () => {
   if (!detail.value) {
     message.error(t('message.noPlayableMusic'))
@@ -186,7 +186,7 @@ const handlePlay = () => {
     return
   }
 
-  // 调用全局播放函数
+  // Call global play function
   const success = playMusic({
     id: detail.value.id,
     name: detail.value.name,
@@ -202,14 +202,14 @@ const handlePlay = () => {
   }
 }
 
-// 解析标签的计算属性
+// Computed property for parsing tags
 const parsedTags = computed(() => {
   if (!detail.value?.tags) return []
   return Array.isArray(detail.value.tags) ? detail.value.tags : [detail.value.tags]
 })
 
-// 在 fetchMusicDetail 或 initMusicDetail 函数中，添加标签解析逻辑
-// 将字符串形式的 JSON 标签转换为数组
+// In fetchMusicDetail or initMusicDetail function, add tag parsing logic
+// Convert string format JSON tags to array
 const parseTags = (tagsData) => {
   if (!tagsData) return []
   if (typeof tagsData === 'string') {
@@ -259,7 +259,7 @@ const parseTags = (tagsData) => {
 .cover-container {
   position: relative;
   width: 100%;
-  /* 修改比例为80%，原来是100% */
+  /* Changed ratio to 80%, was 100% before */
   padding-top: 80%;
   overflow: hidden;
   background-color: #f0f0f0;
@@ -317,7 +317,7 @@ const parseTags = (tagsData) => {
   text-overflow: ellipsis;
 }
 
-/* 类别标签样式 */
+/* Category tag styles */
 .category-tag {
   display: inline-block;
   padding: 2px 8px;
@@ -360,7 +360,7 @@ const parseTags = (tagsData) => {
   background-color: #888;
 }
 
-/* 卡片底部样式 */
+/* Card footer styles */
 .card-footer {
   display: flex;
   align-items: center;
@@ -369,7 +369,7 @@ const parseTags = (tagsData) => {
   border-top: 1px solid #f0f0f0;
 }
 
-/* 上传者信息样式 */
+/* Uploader information styles */
 .uploader-info {
   display: flex;
   align-items: center;
@@ -398,7 +398,7 @@ const parseTags = (tagsData) => {
   text-overflow: ellipsis;
 }
 
-/* 播放按钮容器 */
+/* Play button container */
 .play-button-container {
   flex-shrink: 0;
 }
@@ -408,7 +408,7 @@ const parseTags = (tagsData) => {
   color: white;
 }
 
-/* 标签容器样式 */
+/* Tags container styles */
 .tags-container {
   display: flex;
   flex-wrap: wrap;

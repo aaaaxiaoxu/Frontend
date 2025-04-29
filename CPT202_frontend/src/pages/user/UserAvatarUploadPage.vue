@@ -1,6 +1,6 @@
 <template>
   <div id="userAvatarUploadPage">
-    <!-- 使用多彩粒子背景，可以设置不同的颜色组合 -->
+    <!-- Using colorful particle background, can set different color combinations -->
     <MultiColorParticlesBg
       class="particles-background"
       :colors="['#2F54EB', '#EB2F96', '#FAAD14', '#13C2C2', '#52C41A']"
@@ -66,40 +66,40 @@ const { t, locale } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
-// 获取URL中的用户账号
+// Get user account from URL
 const userAccount = ref('')
 
 onMounted(() => {
   if (route.query.userAccount) {
     userAccount.value = route.query.userAccount as string
   } else {
-    // 如果没有用户账号，跳转回登录页
+    // If no user account is found, redirect back to login page
     message.error(t('message.sessionExpired') || 'Session expired, please login again')
     router.push('/user/login')
   }
 })
 
-// 头像文件列表
+// Avatar file list
 const avatarFileList = ref([])
 const avatarPreview = ref('')
 const uploading = ref(false)
 
-// 预处理头像上传
+// Pre-process avatar upload
 const beforeAvatarUpload = (file) => {
-  // 检查文件类型
+  // Check file type
   const isImage = file.type.startsWith('image/')
   if (!isImage) {
     message.error(t('message.pleaseUploadImageFile') || 'Please upload an image file')
     return false
   }
 
-  // 保存文件到列表中
+  // Save file to list
   avatarFileList.value = [{ ...file, status: 'done', url: URL.createObjectURL(file) }]
   
-  // 设置预览图
+  // Set preview image
   avatarPreview.value = URL.createObjectURL(file)
 
-  return false // 阻止自动上传
+  return false // Prevent automatic upload
 }
 
 const handleUploadAvatar = async () => {
@@ -111,12 +111,12 @@ const handleUploadAvatar = async () => {
 
   try {
     const avatarFile = avatarFileList.value[0].originFileObj || avatarFileList.value[0]
-    // 使用账号来上传头像
+    // Use account to upload avatar
     const avatarRes = await uploadAvatarByAccountUsingPost(
-      { userAccount: userAccount.value }, // 使用字符串账号
+      { userAccount: userAccount.value }, // Use string account
       {}, 
       avatarFile,
-      { timeout: 30000 } // 增加超时时间
+      { timeout: 30000 } // Increase timeout
     )
 
     if (avatarRes.data.code === 0 && avatarRes.data.data) {
@@ -127,7 +127,7 @@ const handleUploadAvatar = async () => {
     }
   } catch (error) {
     console.error('Avatar upload failed:', error)
-    // 添加更详细的错误信息
+    // Add more detailed error information
     if (error.code === 'ECONNABORTED') {
       message.error('Connection timeout. Please try again later.')
     } else if (error.response && error.response.status === 404) {
@@ -140,7 +140,7 @@ const handleUploadAvatar = async () => {
   }
 }
 
-// 跳过上传
+// Skip upload
 const skipUpload = () => {
   message.info(t('message.skipAvatarUpload') || 'Skipped avatar upload')
   router.push('/user/login')
@@ -164,7 +164,7 @@ const skipUpload = () => {
   background-color: #f5f5f5;
 }
 
-/* 粒子背景样式 */
+/* Particle background styles */
 .particles-background {
   position: absolute;
   top: 0;
@@ -174,7 +174,7 @@ const skipUpload = () => {
   z-index: 0;
 }
 
-/* 表单卡片样式 */
+/* Form card styles */
 .form-card {
   width: 100%;
   max-width: 450px;

@@ -8,18 +8,20 @@
         </a-breadcrumb>
         <a-row :gutter="[16, 16]">
           <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
-            <music-card
-              :id="item.id"
-              :name="item.name"
-              :coverUrl="item.coverUrl"
-              :url="item.url"
-              :artist="item.artist || '未知艺术家'"
-              :category="item.category"
-              @download="handleDownload(item)"
-              @edit="handleEdit(item)"
-              @delete="handleDelete(item.id)"
-              @play="handlePlay(item)"
-            />
+            <div class="music-card-wrapper" @click="showMusicDetails(item)">
+              <music-card
+                :id="item.id"
+                :name="item.name"
+                :coverUrl="item.coverUrl"
+                :url="item.url"
+                :artist="item.artist || '未知艺术家'"
+                :category="item.category"
+                @download.stop="handleDownload(item)"
+                @edit.stop="handleEdit(item)"
+                @delete.stop="handleDelete(item.id)"
+                @play.stop="handlePlay(item)"
+              />
+            </div>
           </a-col>
         </a-row>
         <a-pagination
@@ -51,12 +53,14 @@ import {
 } from 'ant-design-vue'
 import MusicCard from '@/components/MusicCard.vue'
 import { searchMusicFilesUsingGet } from '@/api/musicFileController'
+import { useMusicStore } from '@/stores/musicStore'
 
 const route = useRoute()
 const router = useRouter()
 const musicList = ref<API.MusicFileVO[]>([])
 const loading = ref(false)
 const searchKeyword = ref('')
+const musicStore = useMusicStore()
 
 const pagination = reactive({
   current: 1,
@@ -141,11 +145,22 @@ const handlePaginationChange = (page: number, pageSize: number) => {
   fetchSearchResults()
 }
 
-// Re-fetch when route changes
 const handleRouteChange = () => {
   searchKeyword.value = (route.query.q as string) || ''
   pagination.current = 1
   fetchSearchResults()
+}
+
+const showMusicDetails = (item) => {
+  if (item && item.id) {
+    console.log('Navigating to detail:', item.id)
+
+    musicStore.setCurrentMusic(item)
+
+    router.push(`/music/detail/${item.id}`)
+  } else {
+    message.error('Invalid music ID')
+  }
 }
 
 onMounted(() => {
@@ -153,7 +168,6 @@ onMounted(() => {
   fetchSearchResults()
 })
 
-// Watch for route changes
 router.afterEach((to, from) => {
   if (to.path === '/search' && to.query.q !== from.query.q) {
     handleRouteChange()
@@ -180,5 +194,14 @@ router.afterEach((to, from) => {
 :deep(.ant-pagination) {
   text-align: center;
   margin-top: 24px;
+}
+
+.music-card-wrapper {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.music-card-wrapper:hover {
+  transform: translateY(-5px);
 }
 </style>

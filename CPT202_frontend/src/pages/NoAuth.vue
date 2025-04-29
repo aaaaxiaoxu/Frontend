@@ -1,8 +1,8 @@
 <template>
   <div class="no-auth-container">
-    <a-result status="403" title="403" sub-title="抱歉，您没有权限访问此页面">
+    <a-result status="403" title="403" sub-title="Sorry, you do not have access to this page">
       <template #extra>
-        <a-button type="primary" @click="goHome"> 返回首页 </a-button>
+        <a-button type="primary" @click="goHome"> back homepage </a-button>
       </template>
     </a-result>
   </div>

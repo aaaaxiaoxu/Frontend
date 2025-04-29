@@ -1,6 +1,6 @@
 import { ref, reactive } from 'vue'
 
-// 当前播放的音乐信息
+// Currently playing music information
 export const currentMusic = reactive({
   id: null as number | null,
   name: '',
@@ -9,17 +9,17 @@ export const currentMusic = reactive({
   url: '',
 })
 
-// 播放状态
+// Playback status
 export const isPlaying = ref(false)
 export const currentTime = ref(0)
 export const duration = ref(0)
 export const volume = ref(0.7)
 
-// Audio元素实例
+// Audio element instance
 const audioElement = new Audio()
 audioElement.volume = volume.value
 
-// 设置事件监听
+// Set event listeners
 audioElement.addEventListener('timeupdate', () => {
   currentTime.value = audioElement.currentTime
 })
@@ -33,37 +33,37 @@ audioElement.addEventListener('ended', () => {
   currentTime.value = 0
 })
 
-// 播放音乐
+// Play music
 export function playMusic(musicData: any) {
   if (!musicData || !musicData.url) {
-    console.error('无效的音乐数据或URL')
+    console.error('Invalid music data or URL')
     return false
   }
 
-  // 更新当前音乐信息
+  // Update current music information
   currentMusic.id = musicData.id
-  currentMusic.name = musicData.name || '未知歌曲'
-  currentMusic.artist = musicData.artist || '未知艺术家'
+  currentMusic.name = musicData.name || 'Unknown Track'
+  currentMusic.artist = musicData.artist || 'Unknown Artist'
   currentMusic.coverUrl = musicData.coverUrl || ''
   currentMusic.url = musicData.url
 
-  // 设置音频源并播放
+  // Set audio source and play
   audioElement.src = musicData.url
   audioElement
     .play()
     .then(() => {
       isPlaying.value = true
-      console.log('开始播放:', musicData.name)
+      console.log('Started playing:', musicData.name)
     })
     .catch((err) => {
-      console.error('播放失败:', err)
+      console.error('Playback failed:', err)
       return false
     })
 
   return true
 }
 
-// 播放/暂停切换
+// Toggle play/pause
 export function togglePlay() {
   if (audioElement.paused) {
     audioElement
@@ -72,7 +72,7 @@ export function togglePlay() {
         isPlaying.value = true
       })
       .catch((err) => {
-        console.error('播放失败:', err)
+        console.error('Playback failed:', err)
       })
   } else {
     audioElement.pause()
@@ -80,7 +80,7 @@ export function togglePlay() {
   }
 }
 
-// 跳转到指定时间
+// Seek to specified time
 export function seekTo(time: number) {
   if (time >= 0 && time <= audioElement.duration) {
     audioElement.currentTime = time
@@ -88,7 +88,7 @@ export function seekTo(time: number) {
   }
 }
 
-// 设置音量
+// Set volume
 export function setVolume(vol: number) {
   if (vol >= 0 && vol <= 1) {
     audioElement.volume = vol
@@ -96,7 +96,7 @@ export function setVolume(vol: number) {
   }
 }
 
-// 格式化时间 (秒 -> MM:SS)
+// Format time (seconds -> MM:SS)
 export function formatTime(seconds: number) {
   if (!isFinite(seconds) || seconds < 0) return '00:00'
   const mins = Math.floor(seconds / 60)

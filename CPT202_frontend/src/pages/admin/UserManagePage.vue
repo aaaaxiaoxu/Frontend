@@ -98,6 +98,13 @@
             </a-tag>
           </div>
         </template>
+        <template v-if="column.dataIndex === 'banNumber'">
+          <div>
+            <a-tag :color="getBanNumberColor(record.banNumber)">
+              {{ record.banNumber || 0 }}
+            </a-tag>
+          </div>
+        </template>
         <template v-if="column.dataIndex === 'createTime'">
           {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
@@ -184,6 +191,10 @@ const columns = computed(() => [
     dataIndex: 'user_status',
   },
   {
+    title: t('message.banNumber'),
+    dataIndex: 'banNumber',
+  },
+  {
     title: t('message.createdAt'),
     dataIndex: 'createTime',
   },
@@ -247,14 +258,15 @@ const fetchData = async () => {
   if (res.data.code === 0 && res.data.data) {
     const userList = res.data.data.records ?? []
 
-    // 检查是否需要获取完整用户信息（包括user_status）
-    // 1. 尝试从后端直接获取完整用户信息
+    // Check whether you need to obtain complete user information (including user_status)
+    // 1. Try to get the full user information directly from the backend
     for (let i = 0; i < userList.length; i++) {
       try {
         const userRes = await getUserByIdUsingGet({ id: userList[i].id })
         if (userRes.data.code === 0 && userRes.data.data) {
           // 从完整的User对象中获取user_status
           userList[i].user_status = userRes.data.data.user_status
+          userList[i].banNumber = userRes.data.data.banNumber
         }
       } catch (error) {
         console.error(`获取用户 ${userList[i].id} 的完整信息失败:`, error)
@@ -273,7 +285,7 @@ const editableData: UnwrapRef<Record<string, API.UserUpdateRequest>> = reactive(
 
 // Edit user
 const edit = async (id: string) => {
-  // 直接从后端获取完整的用户信息，确保包含user_status
+  // Get complete user information directly from the backend, ensuring user_status is included
   try {
     const res = await getUserByIdUsingGet({ id })
     if (res.data.code === 0 && res.data.data) {
@@ -284,13 +296,14 @@ const edit = async (id: string) => {
         userAvatar: fullUser.userAvatar,
         userProfile: fullUser.userProfile,
         userRole: fullUser.userRole,
-        user_status: fullUser.user_status === undefined || fullUser.user_status === null ? 0 : fullUser.user_status
+        user_status: fullUser.user_status === undefined || fullUser.user_status === null ? 0 : fullUser.user_status,
+        banNumber: fullUser.banNumber || 0
       }
     }
   } catch (error) {
     console.error('获取完整用户信息失败:', error)
 
-    // 回退到使用列表中的数据
+    // Fallback to the data in the usage list
     const targetUser = datalist.value.find((item) => id === item.id)
     if (targetUser) {
       editableData[id] = {
@@ -299,7 +312,8 @@ const edit = async (id: string) => {
         userAvatar: targetUser.userAvatar,
         userProfile: targetUser.userProfile,
         userRole: targetUser.userRole,
-        user_status: targetUser.user_status === undefined || targetUser.user_status === null ? 0 : targetUser.user_status
+        user_status: targetUser.user_status === undefined || targetUser.user_status === null ? 0 : targetUser.user_status,
+        banNumber: targetUser.banNumber || 0
       }
     }
   }
@@ -312,7 +326,7 @@ const save = async (id: string) => {
     if (res.data.code === 0) {
       message.success(t('message.userUpdatedSuccess'))
 
-      // 重新获取一次数据，确保本地数据与数据库同步
+      // 重Re-get data once, ensuring local data is synchronized with the database
       fetchData()
 
       // If the updated user is the current login user, update the navigation bar
@@ -341,6 +355,13 @@ const cancel = (id: string) => {
 onMounted(() => {
   fetchData()
 })
+
+// 添加获取ban_number颜色的方法
+const getBanNumberColor = (banNumber) => {
+  if (!banNumber) return 'green'
+  if (banNumber <= 2) return 'orange'
+  return 'red'
+}
 </script>
 
 <style scoped>

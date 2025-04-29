@@ -12,7 +12,7 @@
           {{ t('message.uploaded') }}
         </a-menu-item>
 
-        <!-- 主流音乐类别 -->
+        
         <a-sub-menu key="popular" :title="t('message.popularCategory')">
           <a-menu-item key="genrePop">{{ t('message.genrePop') }}</a-menu-item>
           <a-menu-item key="genreRock">{{ t('message.genreRock') }}</a-menu-item>
@@ -26,7 +26,7 @@
           <a-menu-item key="genreMetal">{{ t('message.genreMetal') }}</a-menu-item>
         </a-sub-menu>
 
-        <!-- 国际流行 -->
+        
         <a-sub-menu key="international" :title="t('message.internationalPop')">
           <a-menu-item key="genreLatin">{{ t('message.genreLatin') }}</a-menu-item>
           <a-menu-item key="genreKpop">{{ t('message.genreKpop') }}</a-menu-item>
@@ -34,7 +34,7 @@
           <a-menu-item key="genreCpop">{{ t('message.genreCpop') }}</a-menu-item>
         </a-sub-menu>
 
-        <!-- 电子音乐 -->
+        
         <a-sub-menu key="electronic" :title="t('message.electronicMusic')">
           <a-menu-item key="genreEDM">{{ t('message.genreEDM') }}</a-menu-item>
           <a-menu-item key="genreTechno">{{ t('message.genreTechno') }}</a-menu-item>
@@ -45,7 +45,7 @@
           <a-menu-item key="genreAmbient">{{ t('message.genreAmbient') }}</a-menu-item>
         </a-sub-menu>
 
-        <!-- 摇滚/另类 -->
+        
         <a-sub-menu key="rockAlt" :title="t('message.rockAndAlternative')">
           <a-menu-item key="genreAlternative">{{ t('message.genreAlternative') }}</a-menu-item>
           <a-menu-item key="genreIndie">{{ t('message.genreIndie') }}</a-menu-item>
@@ -55,7 +55,7 @@
           <a-menu-item key="genreGrunge">{{ t('message.genreGrunge') }}</a-menu-item>
         </a-sub-menu>
 
-        <!-- 嘻哈/城市 -->
+       
         <a-sub-menu key="urbanHipHop" :title="t('message.urbanAndHipHop')">
           <a-menu-item key="genreRap">{{ t('message.genreRap') }}</a-menu-item>
           <a-menu-item key="genreTrap">{{ t('message.genreTrap') }}</a-menu-item>
@@ -65,7 +65,7 @@
           <a-menu-item key="genreDisco">{{ t('message.genreDisco') }}</a-menu-item>
         </a-sub-menu>
 
-        <!-- 古典/传统 -->
+        
         <a-sub-menu key="classical" :title="t('message.classicalAndTraditional')">
           <a-menu-item key="genreSymphonic">{{ t('message.genreSymphonic') }}</a-menu-item>
           <a-menu-item key="genreOrchestral">{{ t('message.genreOrchestral') }}</a-menu-item>
@@ -75,7 +75,7 @@
           <a-menu-item key="genreJazz_Fusion">{{ t('message.genreJazz_Fusion') }}</a-menu-item>
         </a-sub-menu>
 
-        <!-- 其他风格 -->
+        
         <a-sub-menu key="other" :title="t('message.otherStyles')">
           <a-menu-item key="genreFolk">{{ t('message.genreFolk') }}</a-menu-item>
           <a-menu-item key="genreGospel">{{ t('message.genreGospel') }}</a-menu-item>
@@ -90,14 +90,14 @@
           <a-menu-item key="genreAcappella">{{ t('message.genreAcappella') }}</a-menu-item>
         </a-sub-menu>
 
-        <!-- 自定义类别 -->
+       
         <a-sub-menu key="custom" :title="t('message.customCategory')">
           <a-menu-item key="addCustom">
             <div @click.stop="showAddCustomCategoryModal">
               <PlusOutlined /> {{ t('message.addCustomCategory') }}
             </div>
           </a-menu-item>
-          <!-- 动态渲染自定义类别 -->
+         
           <a-menu-item 
             v-for="category in musicStore.customCategories" 
             :key="`custom_${category}`"
@@ -105,22 +105,28 @@
           >
             <div class="custom-category-wrapper">
               <span>{{ category }}</span>
-              <DeleteOutlined 
-                class="delete-icon" 
-                @click.stop="handleDeleteCustomCategory(category)" 
-              />
+              <div class="icon-group">
+                <EditOutlined 
+                  class="edit-icon" 
+                  @click.stop="handleEditCustomCategory(category)" 
+                />
+                <DeleteOutlined 
+                  class="delete-icon" 
+                  @click.stop="handleDeleteCustomCategory(category)" 
+                />
+              </div>
             </div>
           </a-menu-item>
         </a-sub-menu>
 
-        <!-- 添加标签筛选 -->
+        
         <a-sub-menu key="tags" :title="t('message.tagsFilter')">
           <a-menu-item key="addTag">
             <div @click.stop="showAddCustomTagModal">
               <PlusOutlined /> {{ t('message.addCustomTag') }}
             </div>
           </a-menu-item>
-          <!-- 动态渲染自定义标签 -->
+         
           <a-menu-item 
             v-for="tag in musicStore.customTags" 
             :key="`tag_${tag}`"
@@ -128,10 +134,16 @@
           >
             <div class="custom-category-wrapper">
               <span>{{ tag }}</span>
-              <DeleteOutlined 
-                class="delete-icon" 
-                @click.stop="handleDeleteCustomTag(tag)" 
-              />
+              <div class="icon-group">
+                <EditOutlined 
+                  class="edit-icon" 
+                  @click.stop="handleEditCustomTag(tag)" 
+                />
+                <DeleteOutlined 
+                  class="delete-icon" 
+                  @click.stop="handleDeleteCustomTag(tag)" 
+                />
+              </div>
             </div>
           </a-menu-item>
         </a-sub-menu>
@@ -145,9 +157,8 @@
           <h2 class="category-title">{{ selectedCategoryLabel }}</h2>
         </div>
 
-        <!-- 将所有卡片放在同一个Row中，包括上传卡片 -->
+        
         <a-row :gutter="[16, 16]">
-          <!-- 上传卡片作为第一张卡片 -->
           <a-col :xs="24" :sm="12" :md="8" :lg="6">
             <div class="music-card-wrapper upload-wrapper" @click="showUploadModal">
               <div class="upload-card">
@@ -168,7 +179,7 @@
             </div>
           </a-col>
 
-          <!-- 音乐卡片列表 -->
+          
           <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
             <div class="music-card-wrapper" @click="showMusicDetails(item)">
               <music-card
@@ -198,10 +209,10 @@
       </div>
     </a-layout-content>
 
-    <!-- 添加播放器组件 -->
+    
     <player-bar />
 
-    <!-- 添加上传模态框 -->
+    
     <a-modal 
       v-model:visible="uploadModalVisible" 
       :title="t('message.uploadMusic')" 
@@ -220,7 +231,7 @@
       </div>
     </a-modal>
 
-    <!-- 添加自定义类别模态框 -->
+    
     <a-modal
       v-model:visible="customCategoryModalVisible"
       :title="t('message.addCustomCategory')"
@@ -234,7 +245,7 @@
       </a-form>
     </a-modal>
 
-    <!-- 添加自定义标签模态框 -->
+    
     <a-modal
       v-model:visible="customTagModalVisible"
       :title="t('message.addCustomTag')"
@@ -244,6 +255,34 @@
       <a-form layout="vertical">
         <a-form-item :label="t('message.tagName')">
           <a-input v-model:value="newCustomTag" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <!-- 添加编辑类别的模态框 -->
+    <a-modal
+      v-model:visible="editCategoryModalVisible"
+      :title="t('message.editCustomCategory')"
+      @ok="handleUpdateCustomCategory"
+      @cancel="handleEditCategoryCancel"
+    >
+      <a-form layout="vertical">
+        <a-form-item :label="t('message.newCategoryName')">
+          <a-input v-model:value="editedCategoryName" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <!-- 添加编辑标签的模态框 -->
+    <a-modal
+      v-model:visible="editTagModalVisible"
+      :title="t('message.editCustomTag')"
+      @ok="handleUpdateCustomTag"
+      @cancel="handleEditTagCancel"
+    >
+      <a-form layout="vertical">
+        <a-form-item :label="t('message.newTagName')">
+          <a-input v-model:value="editedTagName" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -333,13 +372,95 @@ const paginationProps = computed(() => ({
 const router = useRouter()
 const musicStore = useMusicStore()
 
-// 自定义类别相关状态
+
 const customCategoryModalVisible = ref(false)
 const newCustomCategory = ref('')
 
-// 自定义标签相关状态
+
 const customTagModalVisible = ref(false)
 const newCustomTag = ref('')
+
+// 编辑类别相关变量和方法
+const editCategoryModalVisible = ref(false)
+const editedCategoryName = ref('')
+const currentEditingCategory = ref('')
+
+const handleEditCustomCategory = (category) => {
+  currentEditingCategory.value = category
+  editedCategoryName.value = category
+  editCategoryModalVisible.value = true
+}
+
+const handleUpdateCustomCategory = () => {
+  if (editedCategoryName.value.trim()) {
+    const success = musicStore.updateCustomCategory(
+      currentEditingCategory.value, 
+      editedCategoryName.value.trim()
+    )
+    
+    if (success) {
+      // 如果当前选中的是被编辑的类别，更新选中的类别
+      if (selectedCategoryKeys.value[0] === `custom_${currentEditingCategory.value}`) {
+        selectedCategoryKeys.value = [`custom_${editedCategoryName.value.trim()}`]
+        selectedCategoryLabel.value = editedCategoryName.value.trim()
+        fetchMusicData()
+      }
+      message.success(t('message.categoryUpdatedSuccess'))
+    } else {
+      message.error(t('message.categoryNameAlreadyExists'))
+    }
+  } else {
+    message.error(t('message.categoryNameRequired'))
+  }
+  editCategoryModalVisible.value = false
+}
+
+const handleEditCategoryCancel = () => {
+  editCategoryModalVisible.value = false
+  currentEditingCategory.value = ''
+  editedCategoryName.value = ''
+}
+
+// 编辑标签相关变量和方法
+const editTagModalVisible = ref(false)
+const editedTagName = ref('')
+const currentEditingTag = ref('')
+
+const handleEditCustomTag = (tag) => {
+  currentEditingTag.value = tag
+  editedTagName.value = tag
+  editTagModalVisible.value = true
+}
+
+const handleUpdateCustomTag = () => {
+  if (editedTagName.value.trim()) {
+    const success = musicStore.updateCustomTag(
+      currentEditingTag.value, 
+      editedTagName.value.trim()
+    )
+    
+    if (success) {
+      // 如果当前选中的是被编辑的标签，更新选中的标签
+      if (selectedCategoryKeys.value[0] === `tag_${currentEditingTag.value}`) {
+        selectedCategoryKeys.value = [`tag_${editedTagName.value.trim()}`]
+        selectedCategoryLabel.value = t('message.taggedAs') + ': ' + editedTagName.value.trim()
+        fetchMusicData()
+      }
+      message.success(t('message.tagUpdatedSuccess'))
+    } else {
+      message.error(t('message.tagNameAlreadyExists'))
+    }
+  } else {
+    message.error(t('message.tagNameRequired'))
+  }
+  editTagModalVisible.value = false
+}
+
+const handleEditTagCancel = () => {
+  editTagModalVisible.value = false
+  currentEditingTag.value = ''
+  editedTagName.value = ''
+}
 
 const fetchMusicData = async () => {
   loading.value = true
@@ -348,15 +469,15 @@ const fetchMusicData = async () => {
 
   try {
     if (currentCategory === 'uploaded') {
-      // 获取所有上传的音乐
       const queryParams: API.MusicFileQueryRequest = {
         current: pagination.current,
         pageSize: pagination.pageSize,
         category: undefined,
+        reviewStatus: 1
       }
       response = await listMusicFileByPageUsingPost(queryParams)
     } else if (currentCategory.startsWith('custom_')) {
-      // 处理自定义类别
+      
       const categoryName = currentCategory.replace('custom_', '')
       const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
         category: categoryName,
@@ -365,26 +486,26 @@ const fetchMusicData = async () => {
       }
       response = await listMusicFileVoByCategoryPageUsingGet(params)
     } else if (currentCategory.startsWith('tag_')) {
-      // 获取当前选中的标签名称
+      
       const tagName = currentCategory.replace('tag_', '')
       console.log('========== 标签筛选开始 ==========')
       console.log('当前选中的标签:', tagName)
       
-      // 获取所有音乐
+      
       const queryParams = {
         current: pagination.current,
         pageSize: pagination.pageSize,
-        // 可以尝试添加tag参数，如果后端支持
-        // tag: tagName
+        
+
       }
       console.log('发送请求参数:', queryParams)
       
       try {
-        // 使用正确的API
+       
         const response = await listMusicFileByPageUsingPost(queryParams)
         console.log('API响应状态:', response?.data?.code)
         
-        // 处理响应
+
         if (response && response.data.code === 0 && response.data.data) {
           const allMusic = response.data.data.records || []
           console.log(`获取到 ${allMusic.length} 条音乐记录`)
@@ -394,14 +515,14 @@ const fetchMusicData = async () => {
             console.log('第一条音乐的tags属性:', allMusic[0].tags, '类型:', typeof allMusic[0].tags)
           }
           
-          // 筛选包含特定标签的音乐
+      
           const filteredMusic = []
           
           for (let i = 0; i < allMusic.length; i++) {
             const music = allMusic[i]
             console.log(`\n检查音乐[${i}]: "${music.name || '未命名'}"`)
             
-            // 如果音乐没有tags属性，跳过
+          
             if (!music || !music.tags) {
               console.log(`  - 跳过: 没有tags属性`)
               continue
@@ -409,13 +530,13 @@ const fetchMusicData = async () => {
             
             console.log(`  - tags原始值: ${music.tags}`)
             
-            // 解析标签 - 预期格式: "[\"吴云峰\",\"大牛牛\",\"小牛牛\"]"
+            
             try {
-              // 解析JSON字符串为数组
+              
               const tagsArray = JSON.parse(music.tags)
               console.log(`  - 解析后的标签数组:`, tagsArray)
               
-              // 查找是否有匹配的标签（不区分大小写）
+              
               let found = false
               for (let j = 0; j < tagsArray.length; j++) {
                 const tag = tagsArray[j]
@@ -437,7 +558,7 @@ const fetchMusicData = async () => {
             } catch (error) {
               console.error(`  - 解析出错:`, error)
               
-              // 尝试替代方法
+              
               console.log(`  - 尝试替代解析方法`)
               const tagsString = String(music.tags)
                 .replace(/^\[|\]$/g, '') // 移除开头和结尾的方括号
@@ -461,7 +582,7 @@ const fetchMusicData = async () => {
           
           console.log(`\n找到 ${filteredMusic.length} 条包含标签 "${tagName}" 的音乐`)
           
-          // 更新UI
+          
           musicList.value = filteredMusic
           pagination.total = filteredMusic.length
           console.log('========== 标签筛选完成 ==========')
@@ -482,7 +603,7 @@ const fetchMusicData = async () => {
       
       return
     } else if (currentCategory && !['popular', 'international', 'electronic', 'rockAlt', 'urbanHipHop', 'classical', 'other', 'custom', 'addCustom', 'tags', 'addTag'].includes(currentCategory)) {
-      // 处理现有类别
+      
       let category = currentCategory
       if (category.startsWith('genre')) {
         category = category.replace('genre', '')
@@ -495,7 +616,7 @@ const fetchMusicData = async () => {
       }
       response = await listMusicFileVoByCategoryPageUsingGet(params)
     } else {
-      // 处理未知分类情况...
+      
       console.log('No data fetch for category:', currentCategory)
       musicList.value = []
       pagination.total = 0
@@ -503,7 +624,7 @@ const fetchMusicData = async () => {
       return
     }
 
-    // 处理响应
+    
     if (response && response.data.code === 0 && response.data.data) {
       musicList.value = response.data.data.records || []
       pagination.total = parseInt(String(response.data.data.total ?? '0'), 10)
@@ -535,7 +656,7 @@ const categoryLabels = computed(() => ({
   tags: t('message.tagsFilter'),
   addTag: t('message.addCustomTag'),
   
-  // 所有音乐类型
+  
   genrePop: t('message.genrePop'),
   genreRock: t('message.genreRock'),
   genreClassical: t('message.genreClassical'),
@@ -591,14 +712,14 @@ const categoryLabels = computed(() => ({
 const handleCategoryClick = (info: MenuInfo) => {
   const key = info.key as string
   
-  // 跳过特殊类别的点击处理
+  
   if (['popular', 'international', 'electronic', 'rockAlt', 'urbanHipHop', 'classical', 'other', 'custom', 'addCustom', 'tags', 'addTag'].includes(key)) {
     return
   }
 
   selectedCategoryKeys.value = [key]
   
-  // 处理自定义类别和标签的显示标签
+  
   if (key.startsWith('custom_')) {
     const categoryName = key.replace('custom_', '')
     selectedCategoryLabel.value = categoryName
@@ -629,17 +750,17 @@ const showMusicDetails = (item) => {
   if (item && item.id) {
     console.log(t('message.navigatingToDetail') + ':', item.id)
 
-    // 存储到store
+    
     musicStore.setCurrentMusic(item)
 
-    // 直接使用原始ID格式跳转，不进行转换
+    
     router.push(`/music/detail/${item.id}`)
   } else {
     message.error(t('message.invalidMusicId'))
   }
 }
 
-// 简化后的上传模态框相关状态和函数
+
 const uploadModalVisible = ref(false)
 const handleCancel = () => {
   uploadModalVisible.value = false
@@ -647,23 +768,23 @@ const handleCancel = () => {
 const handleUploadSuccess = () => {
   message.success(t('message.uploadSuccess'))
   uploadModalVisible.value = false
-  // 上传成功后刷新数据
+  
   fetchMusicData()
 }
 
-// 修改上传函数为显示模态框
+
 const showUploadModal = () => {
   uploadModalVisible.value = true
 }
 
-// 显示添加自定义类别模态框
+
 const showAddCustomCategoryModal = (e) => {
   e.stopPropagation()
   customCategoryModalVisible.value = true
   newCustomCategory.value = ''
 }
 
-// 处理添加自定义类别
+
 const handleAddCustomCategory = () => {
   if (newCustomCategory.value.trim()) {
     musicStore.addCustomCategory(newCustomCategory.value.trim())
@@ -675,16 +796,15 @@ const handleAddCustomCategory = () => {
   }
 }
 
-// 处理取消添加自定义类别
 const handleCustomCategoryCancel = () => {
   customCategoryModalVisible.value = false
   newCustomCategory.value = ''
 }
 
-// 处理删除自定义类别
+
 const handleDeleteCustomCategory = (category) => {
   musicStore.removeCustomCategory(category)
-  // 如果当前选中的是要删除的类别，则重置为上传类别
+  
   if (selectedCategoryKeys.value[0] === `custom_${category}`) {
     selectedCategoryKeys.value = ['uploaded']
     selectedCategoryLabel.value = categoryLabels.value.uploaded || t('message.uploaded')
@@ -693,14 +813,14 @@ const handleDeleteCustomCategory = (category) => {
   message.success(t('message.categoryDeletedSuccess'))
 }
 
-// 显示添加自定义标签模态框
+
 const showAddCustomTagModal = (e) => {
   e.stopPropagation()
   customTagModalVisible.value = true
   newCustomTag.value = ''
 }
 
-// 处理添加自定义标签
+
 const handleAddCustomTag = () => {
   if (newCustomTag.value.trim()) {
     musicStore.addCustomTag(newCustomTag.value.trim())
@@ -712,13 +832,13 @@ const handleAddCustomTag = () => {
   }
 }
 
-// 处理取消添加自定义标签
+
 const handleCustomTagCancel = () => {
   customTagModalVisible.value = false
   newCustomTag.value = ''
 }
 
-// 处理删除自定义标签
+
 const handleDeleteCustomTag = (tag) => {
   musicStore.removeCustomTag(tag)
   // 如果当前选中的是要删除的标签，则重置为上传类别
@@ -731,7 +851,7 @@ const handleDeleteCustomTag = (tag) => {
 }
 
 onMounted(() => {
-  // 初始化自定义类别和标签
+  
   musicStore.initCustomCategories()
   musicStore.initCustomTags()
   
@@ -882,7 +1002,7 @@ onMounted(() => {
   display: none !important;
 }
 
-/* 添加卡片悬停效果 */
+
 .music-card-wrapper {
   cursor: pointer;
   transition: transform 0.2s;
@@ -892,7 +1012,7 @@ onMounted(() => {
   transform: translateY(-5px);
 }
 
-/* 侧边栏文字样式 */
+
 .sidebar-text {
   display: inline-block;
   font-weight: 500;
@@ -914,13 +1034,12 @@ onMounted(() => {
   padding: 0 !important;
 }
 
-/* 超粗字体样式 */
 .ultra-bold-text {
-  font-weight: 900 !important; /* 使用最粗的字重 */
-  font-size: 1.2em !important; /* 稍微增大字体 */
+  font-weight: 900 !important; 
+  font-size: 1.2em !important; 
 }
 
-/* 替代面包屑的样式 */
+
 .category-header {
   margin: 16px 0 24px 0;
   text-align: left;
@@ -938,13 +1057,13 @@ onMounted(() => {
   margin-left: 0 !important;
 }
 
-/* 为分类菜单添加样式，确保滚动条可见 */
+
 :deep(.ant-menu) {
   max-height: calc(100vh - 64px);
   overflow-y: auto;
 }
 
-/* 美化滚动条 */
+
 :deep(.ant-menu)::-webkit-scrollbar {
   width: 6px;
 }
@@ -958,7 +1077,7 @@ onMounted(() => {
   background-color: #f0f0f0;
 }
 
-/* 添加上传卡片样式 */
+
 .upload-wrapper {
   cursor: pointer;
 }
@@ -1008,7 +1127,7 @@ onMounted(() => {
   font-size: 14px;
 }
 
-/* 确保上传卡片与音乐卡片高度一致 */
+
 .music-card-wrapper {
   height: 100%;
   display: flex;
@@ -1073,12 +1192,12 @@ onMounted(() => {
   justify-content: center;
 }
 
-/* 按钮相关样式 */
+
 .disabled-button {
   pointer-events: none;
 }
 
-/* 上传模态框样式 */
+
 .modal-content {
   margin-bottom: 24px;
 }
@@ -1095,7 +1214,7 @@ onMounted(() => {
   background-color: white;
 }
 
-/* 自定义类别样式 */
+
 .custom-category-wrapper {
   display: flex;
   justify-content: space-between;
@@ -1103,9 +1222,19 @@ onMounted(() => {
   width: 100%;
 }
 
-.delete-icon {
+.icon-group {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-icon, .delete-icon {
   opacity: 0.5;
   transition: all 0.3s;
+}
+
+.edit-icon:hover {
+  opacity: 1;
+  color: #1890ff;
 }
 
 .delete-icon:hover {
@@ -1113,16 +1242,19 @@ onMounted(() => {
   color: #ff4d4f;
 }
 
-.custom-category-item:hover .delete-icon {
+.custom-category-item:hover .edit-icon,
+.custom-category-item:hover .delete-icon,
+.custom-tag-item:hover .edit-icon,
+.custom-tag-item:hover .delete-icon {
   opacity: 0.8;
 }
 
-/* 自定义标签样式 */
+
 .custom-tag-item {
-  /* 可以使用与自定义类别相同的样式 */
+  
 }
 
-/* 自定义标签样式 - 可以使用与自定义类别相同的样式 */
+
 .custom-tag-item .custom-category-wrapper {
   display: flex;
   justify-content: space-between;

@@ -1,6 +1,6 @@
 <template>
   <div id="userLoginPage">
-    <!-- 保留粒子背景 -->
+    <!-- Keep particle background -->
     <MultiColorParticlesBg
       class="particles-background"
       :colors="['#1890FF', '#722ED1', '#52C41A', '#FA8C16', '#F5222D']"
@@ -33,7 +33,7 @@
           name="userPassword"
           :rules="[
             { required: true, message: $t('message.enterPassword') },
-            { min: 8, message: '密码长度至少为8个字符' },
+            { min: 8, message: 'Password must be at least 8 characters' },
           ]"
         >
           <IInput
@@ -66,22 +66,22 @@
 </template>
 
 <script setup lang="ts">
-// 用于接收表单输入的值
+// For receiving form input values
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userLoginUsingPost } from '@/api/userController.ts'
 import { message } from 'ant-design-vue'
-// 导入多彩粒子背景组件
+// Import multicolor particle background component
 import MultiColorParticlesBg from '@/components/ui/particles-bg/MultiColorParticlesBg.vue'
-// 导入i18n
+// Import i18n
 import { useI18n } from 'vue-i18n'
-// 导入自定义输入框组件
+// Import custom input component
 import IInput from '@/components/ui/input/IInput.vue'
 
 const { t, locale } = useI18n()
 
-// 切换语言方法
+// Language switch method
 const changeLanguage = () => {
   locale.value = locale.value === 'en' ? 'zh' : 'en'
 }
@@ -91,17 +91,17 @@ const formState = reactive<API.UserLoginRequest>({
   userPassword: '',
 })
 
-// 获取路由实例
+// Get router instance
 const router = useRouter()
 const loginUserStore = useLoginUserStore()
 
 /**
- * 提交表单
+ * Submit form
  * @param values
  */
 const handleSubmit = async (values: any) => {
   const res = await userLoginUsingPost(values)
-  // 登录成功，把登录态保存到全局状态中
+  // If login successful, save login state to global state
   if (res.data.code === 0 && res.data.data) {
     await loginUserStore.fetchLoginUser()
     message.success(t('message.loginSuccess'))
@@ -132,7 +132,7 @@ const handleSubmit = async (values: any) => {
   background-color: #f5f5f5;
 }
 
-/* 粒子背景样式 */
+/* Particle background styles */
 .particles-background {
   position: absolute;
   top: 0;
@@ -142,7 +142,7 @@ const handleSubmit = async (values: any) => {
   z-index: 0;
 }
 
-/* 表单卡片样式 */
+/* Form card styles */
 .form-card {
   width: 100%;
   max-width: 450px;
@@ -220,7 +220,7 @@ const handleSubmit = async (values: any) => {
   text-decoration: underline;
 }
 
-/* 语言切换按钮 */
+/* Language switch button */
 .language-switch {
   position: absolute;
   top: 15px;

@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import ResourceReviewTable from '@/components/admin/ResourceReviewTable.vue'
 import { useI18n } from 'vue-i18n'
 import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'

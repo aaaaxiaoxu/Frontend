@@ -370,7 +370,32 @@ const en={
     tagDeletedSuccess: 'Tag deleted successfully',
     tagNameRequired: 'Please enter a tag name',
     taggedAs: 'Tagged as',
-    pleaseSelectOrEnterCategory: 'Please select or enter a category'
+    pleaseSelectOrEnterCategory: 'Please select or enter a category',
+    editCustomCategory: 'EditCustomCategory',
+    newCategoryName: 'newCategoryName',
+    editCustomTag: 'editCustomTag',
+    newTagName: 'newTagName',
+
+    // MelodyHub Feature文字
+    categoryUpdatedSuccess: 'Category updated successfully',
+    categoryNameAlreadyExists: 'Category name already exists',
+    tagUpdatedSuccess: 'Tag updated successfully',
+    tagNameAlreadyExists: 'Tag name already exists',
+    
+    // MelodyHub Feature页面
+    easyUploadTitle: 'Easy Upload',
+    easyUploadDesc: 'Upload your music with just a few clicks. Supports various audio formats for a seamless experience.',
+    personalizationTitle: 'Personalization',
+    personalizationDesc: 'Create custom playlists and organize your music library exactly how you want it.',
+    highQualityTitle: 'High Quality Audio',
+    highQualityDesc: 'Enjoy crystal clear sound quality with our advanced audio processing technology.',
+    responsiveTitle: 'Responsive Design',
+    responsiveDesc: 'Access your music library from any device - desktop, tablet, or mobile phone.',
+    sharingTitle: 'Easy Sharing',
+    sharingDesc: 'Share your favorite tracks and playlists with friends or discover music from other users.',
+    updatesTitle: 'Regular Updates',
+    updatesDesc: 'We constantly improve our platform with new features and enhanced user experience.',
+    banNumber: 'banNumber'
   }
 }
 export default en

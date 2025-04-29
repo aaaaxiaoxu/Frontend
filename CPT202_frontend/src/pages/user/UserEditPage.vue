@@ -71,7 +71,7 @@
             @click="showPasswordModal"
           >
             <template #icon><AlertOutlined /></template>
-            修改密码
+            Change Password
           </a-button>
         </a-form-item>
       </a-form>
@@ -139,7 +139,7 @@ const validateConfirmPassword = async (_rule: FormRule, value: string) => {
   if (value === '') {
     return Promise.reject('Please confirm your new password!')
   } else if (value !== passwordForm.newPassword) {
-    return Promise.reject('确认密码应与新密码相同') // Confirm password should be the same as the new password
+    return Promise.reject('The confirmation password should be the same as the new password') // Confirm password should be the same as the new password
   } else {
     return Promise.resolve()
   }
@@ -148,7 +148,7 @@ const validateConfirmPassword = async (_rule: FormRule, value: string) => {
 const passwordRules: Record<string, FormRule[]> = {
   newPassword: [
     { required: true, message: 'Please input your new password!' },
-    { min: 8, message: '密码长度至少为8个字符' }, // Password length must be at least 8 characters
+    { min: 8, message: 'The password must be at least 8 characters long' }, // Password length must be at least 8 characters
   ],
   confirmPassword: [{ required: true, validator: validateConfirmPassword, trigger: 'change' }],
 }

@@ -367,7 +367,32 @@ const zh={
     skip: '跳过此步骤',
     sessionExpired: '会话已过期，请重新登录',
 
-    skipAvatarUpload: '已跳过头像上传'
+    skipAvatarUpload: '已跳过头像上传',
+    editCustomCategory: '编辑自定义类别',
+    newCategoryName: '新名称',
+    editCustomTag: '编辑自定义标签',
+    newTagName: '新名称',
+
+    // MelodyHub Feature文字
+    categoryUpdatedSuccess: '类别更新成功',
+    categoryNameAlreadyExists: '类别名称已存在',
+    tagUpdatedSuccess: '标签更新成功',
+    tagNameAlreadyExists: '标签名称已存在',
+    
+    // MelodyHub 特性页面
+    easyUploadTitle: '轻松上传',
+    easyUploadDesc: '只需点击几下即可上传您的音乐。支持各种音频格式，体验无缝。',
+    personalizationTitle: '个性化',
+    personalizationDesc: '创建自定义播放列表，按照您想要的方式组织音乐库。',
+    highQualityTitle: '高品质音频',
+    highQualityDesc: '通过我们的先进音频处理技术，享受清晰的音质。',
+    responsiveTitle: '响应式设计',
+    responsiveDesc: '从任何设备访问您的音乐库 - 桌面电脑、平板电脑或手机。',
+    sharingTitle: '轻松分享',
+    sharingDesc: '与朋友分享您喜爱的曲目和播放列表，或发现其他用户的音乐。',
+    updatesTitle: '定期更新',
+    updatesDesc: '我们不断完善平台，提供新功能和增强用户体验。',
+    banNumber: '封禁次数'
   }
 }
 export default zh

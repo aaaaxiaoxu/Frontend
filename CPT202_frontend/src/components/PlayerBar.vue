@@ -4,7 +4,7 @@
       <img :src="currentMusic.coverUrl || defaultCover" alt="cover" class="cover" />
       <div class="info">
         <div class="title">{{ currentMusic.name }}</div>
-        <div class="artist">{{ currentMusic.artist || '未知艺术家' }}</div>
+        <div class="artist">{{ currentMusic.artist || 'Unknown Artist' }}</div>
       </div>
     </div>
 
@@ -62,13 +62,13 @@ const defaultCover = 'https://via.placeholder.com/300'
 const isMuted = ref(false)
 const previousVolume = ref(volume.value)
 
-// 处理进度条拖动
+// Handle progress bar dragging
 const handleSeek = (e: Event) => {
   const target = e.target as HTMLInputElement
   seekTo(Number(target.value))
 }
 
-// 处理音量调节
+// Handle volume adjustment
 const handleVolumeChange = (e: Event) => {
   const target = e.target as HTMLInputElement
   const newVolume = Number(target.value)
@@ -84,14 +84,14 @@ const handleVolumeChange = (e: Event) => {
   }
 }
 
-// 切换静音
+// Toggle mute
 const toggleMute = () => {
   if (isMuted.value) {
-    // 恢复音量
+    // Restore volume
     setVolume(previousVolume.value > 0 ? previousVolume.value : 0.5)
     isMuted.value = false
   } else {
-    // 静音前保存当前音量
+    // Save current volume before muting
     previousVolume.value = volume.value
     setVolume(0)
     isMuted.value = true

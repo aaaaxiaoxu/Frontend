@@ -29,7 +29,7 @@
       />
     </div>
 
-    <!-- 编辑弹窗 -->
+    <!-- Edit modal -->
     <music-edit-modal
       v-model:visible="editModalVisible"
       :musicFile="uploadedMusic"
@@ -67,9 +67,9 @@ export default defineComponent({
     const editModalVisible = ref(false)
     const uploadedMusic = ref(null)
     const loginUserStore = useLoginUserStore()
-    const userStatus = ref(0) // 默认为0，允许上传
+    const userStatus = ref(0) // Default is 0, allowed to upload
 
-    // 获取用户状态
+    // Get user status
     const getUserStatus = async () => {
       if (!loginUserStore.loginUser.id) return
 
@@ -79,35 +79,35 @@ export default defineComponent({
           userStatus.value = res.data.data.user_status || 0
         }
       } catch (error) {
-        console.error('获取用户状态失败:', error)
+        console.error('Failed to get user status:', error)
       }
     }
 
-    // 组件挂载时获取用户状态
+    // Get user status when component is mounted
     onMounted(() => {
       getUserStatus()
     })
 
-    // 预处理音乐文件上传
+    // Pre-process music file upload
     const beforeMusicUpload = (file) => {
-      // 检查文件类型
+      // Check file type
       const isAudio = file.type.startsWith('audio/')
       if (!isAudio) {
         message.error(t('message.pleaseUploadAudioFile'))
       }
-      return false // 阻止自动上传
+      return false // Prevent automatic upload
     }
 
-    // 处理封面图片变更
+    // Handle cover image change
     const handleCoverChange = (files) => {
       if (files && files.length > 0) {
         coverFile.value = files[files.length - 1]
       }
     }
 
-    // 处理文件上传
+    // Handle file upload
     const handleUpload = async () => {
-      // 检查用户是否有上传权限
+      // Check if user has upload permission
       if (userStatus.value === 1) {
         message.error(t('message.uploadForbidden'))
         return
@@ -125,7 +125,7 @@ export default defineComponent({
       try {
         const result = await uploadMusicFileUsingPost(
           {}, // params
-          {}, // body - 已移除ID和艺术家字段
+          {}, // body - ID and artist fields have been removed
           coverFile.value, // coverFile
           musicFile, // file
         )
@@ -133,11 +133,11 @@ export default defineComponent({
         if (result.data.code === 0) {
           message.success(t('message.uploadSuccess'))
 
-          // 保存上传的音乐信息，并打开编辑弹窗
+          // Save uploaded music info and open edit modal
           uploadedMusic.value = result.data.data
           editModalVisible.value = true
 
-          // 清空表单
+          // Clear form
           musicFileList.value = []
           coverFile.value = null
         } else {
@@ -150,7 +150,7 @@ export default defineComponent({
       }
     }
 
-    // 处理编辑成功
+    // Handle edit success
     const handleEditSuccess = () => {
       emit('upload-success', uploadedMusic.value)
     }

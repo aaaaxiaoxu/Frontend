@@ -82,6 +82,21 @@ export async function getUserVoByIdUsingGet(
   })
 }
 
+/** increaseUserBanNumber POST /api/user/increase/ban-number */
+export async function increaseUserBanNumberUsingPost(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.increaseUserBanNumberUsingPOSTParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseBoolean_>('/api/user/increase/ban-number', {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
 /** listUserVOByPage POST /api/user/list/page/vo */
 export async function listUserVoByPageUsingPost(
   body: API.UserQueryRequest,

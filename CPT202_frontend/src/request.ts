@@ -1,19 +1,19 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
 
-// 创建 Axios 实例
-// 区分开发和生产环境
+
+// Distinguish between development and production environments
 const DEV_BASE_URL = "http://localhost:8080";
 const PROD_BASE_URL = "http://118.31.173.230";
-// 创建 Axios 实例
+// Create an Axios instance
 const myAxios = axios.create({
-  baseURL: DEV_BASE_URL,
+  baseURL: PROD_BASE_URL,
   timeout: 10000,
   withCredentials: true,
 });
 
 
-// 全局请求拦截器
+// Global request interceptor
 myAxios.interceptors.request.use(
   function (config) {
     // Do something before request is sent
@@ -25,13 +25,13 @@ myAxios.interceptors.request.use(
   },
 )
 
-// 全局响应拦截器
+// Global response interceptor
 myAxios.interceptors.response.use(
   function (response) {
     const { data } = response
-    // 未登录
+    // Not Login
     if (data.code === 40100) {
-      // 不是获取用户信息的请求，并且用户目前不是已经在用户登录页面，则跳转到登录页面
+      // It is not a request to obtain user information, and the user is not currently on the user login page, so it will jump to the login page.
       if (
         !response.request.responseURL.includes('user/get/login') &&
         !window.location.pathname.includes('/user/login')
