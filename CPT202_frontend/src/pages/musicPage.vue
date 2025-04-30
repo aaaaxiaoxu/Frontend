@@ -558,9 +558,23 @@ const fetchMusicData = async () => {
     } else if (currentCategory && !['popular', 'international', 'electronic', 'rockAlt', 'urbanHipHop', 'classical', 'other', 'custom', 'addCustom', 'tags', 'addTag'].includes(currentCategory)) {
       
       let category = currentCategory
+      
+      // 处理特殊的genre前缀
       if (category.startsWith('genre')) {
         category = category.replace('genre', '')
+        
+        // 特殊处理HipHop -> "Hip Hop"
+        if (category === 'HipHop') {
+          category = 'Hip Hop'
+        }
+        // 可以添加其他需要空格的类别
+        else if (category === 'RnB') {
+          category = 'R&B'
+        }
+        // 其他类似的映射...
       }
+      
+      console.log('Fetching category:', category) // 调试用
       
       const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
         category: category,

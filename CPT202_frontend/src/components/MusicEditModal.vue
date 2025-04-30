@@ -167,6 +167,45 @@ export default defineComponent({
       ]
     }
 
+    // 添加情绪和场景标签
+    const getEmotionAndSceneTags = () => {
+      return [
+        // 情绪标签
+        { label: 'Happy', value: 'Happy' },
+        { label: 'Relaxed', value: 'Relaxed' },
+        { label: 'Pensive', value: 'Pensive' },
+        { label: 'Motivational', value: 'Motivational' },
+        { label: 'Melancholic', value: 'Melancholic' },
+        
+        // 场景标签
+        { label: 'Morning', value: 'Morning' },
+        { label: 'Night', value: 'Night' },
+        { label: 'On the Road', value: 'On the Road' },
+        { label: 'While Working', value: 'While Working' },
+        { label: 'Party', value: 'Party' },
+        { label: 'Pre-Sleep', value: 'Pre-Sleep' },
+        { label: 'Workout', value: 'Workout' },
+        { label: 'Study', value: 'Study' },
+        { label: 'Late Night Thoughts', value: 'Late Night Thoughts' },
+        { label: 'Deep Meditation', value: 'Deep Meditation' },
+        
+        // 风格标签
+        { label: 'Minimalist', value: 'Minimalist' },
+        { label: 'Ambient', value: 'Ambient' },
+        { label: 'Classical-Electronic Fusion', value: 'Classical-Electronic Fusion' },
+        { label: 'Electro Fantasy', value: 'Electro Fantasy' },
+        { label: 'Groovy', value: 'Groovy' },
+        { label: 'Retro', value: 'Retro' },
+        { label: 'Futuristic', value: 'Futuristic' },
+        { label: 'World Sounds', value: 'World Sounds' },
+        { label: 'Nature Sounds', value: 'Nature Sounds' },
+        { label: 'Youthful', value: 'Youthful' },
+        { label: 'Nostalgic', value: 'Nostalgic' },
+        { label: 'Warm', value: 'Warm' },
+        { label: 'Rebellious', value: 'Rebellious' },
+      ]
+    }
+
     const formState = reactive({
       id: '',
       name: '',
@@ -215,59 +254,40 @@ export default defineComponent({
       try {
         const res = await listMusicFileTagCategoryUsingGet()
         if (res.data.code === 0 && res.data.data) {
-          // Process categories
+          // 处理分类（保持不变）
           const apiCategories = (res.data.data.categoryList || []).map(cat => ({
             label: cat,
             value: cat
           }))
           const genreCategories = getMusicGenres()
           
-          // Add user-defined custom categories
+          // 添加用户自定义类别
           const customCategories = musicStore.customCategories.map(cat => ({
             label: cat,
             value: cat
           }))
           
-          // Correct deduplication method: use Map to deduplicate by value property
+          // 使用 Map 去重
           const categoryMap = new Map()
           
-          // Merge all categories
+          // 合并所有类别
           const allCategories = [...apiCategories, ...genreCategories, ...customCategories]
           
-          // Deduplicate by value
+          // 根据 value 去重
           allCategories.forEach(category => {
             if (!categoryMap.has(category.value)) {
               categoryMap.set(category.value, category)
             }
           })
           
-          // Convert back to array
+          // 转回数组
           categories.value = Array.from(categoryMap.values())
           
-          // Process tags
-          const apiTags = (res.data.data.tagList || []).map(tag => ({
-            label: tag,
-            value: tag
-          }))
-
-          // Use getMusicGenres() as basic tags, avoid duplicate definitions
-          const musicGenres = getMusicGenres()
+          // 处理标签 - 这里只使用情绪和场景标签
+          const emotionSceneTags = getEmotionAndSceneTags()
           
-          // Similarly use Map to deduplicate tags
-          const tagMap = new Map()
-          
-          // Merge all tags
-          const allTags = [...apiTags, ...musicGenres]
-          
-          // Deduplicate by value
-          allTags.forEach(tag => {
-            if (!tagMap.has(tag.value)) {
-              tagMap.set(tag.value, tag)
-            }
-          })
-          
-          // Convert back to array
-          defaultTags.value = Array.from(tagMap.values())
+          // 直接使用情绪和场景标签，不合并其他标签
+          defaultTags.value = emotionSceneTags
         }
       } catch (error) {
         message.error(t('fetchCategoriesFailed'))
@@ -298,6 +318,7 @@ export default defineComponent({
 
         if (res.data.code === 0) {
           message.success(t('updateSuccess'))
+          message.info(t('resourceUnderReview'))
           emit('success')
           emit('update:visible', false)
         } else {

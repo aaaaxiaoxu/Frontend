@@ -22,7 +22,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: '入口页面',
+      name: 'Landing Page',
       component: LandingPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
@@ -30,7 +30,7 @@ const router = createRouter({
     },
     {
       path: '/home',
-      name: '主页',
+      name: 'Home Page',
       component: HomePage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
@@ -38,7 +38,7 @@ const router = createRouter({
     },
     {
       path: '/user/login',
-      name: '用户登录',
+      name: 'UserLogin',
       component: UserLoginPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
@@ -46,7 +46,7 @@ const router = createRouter({
     },
     {
       path: '/user/register',
-      name: '用户注册',
+      name: 'UserRegister',
       component: UserRegisterPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
@@ -54,7 +54,7 @@ const router = createRouter({
     },
     {
       path: '/admin/userManage',
-      name: '用户管理',
+      name: 'UserManagement',
       component: UserManagePage,
       meta: {
         access: ACCESS_ENUM.ADMIN,
@@ -62,7 +62,7 @@ const router = createRouter({
     },
     {
       path: '/admin/resourceReview',
-      name: '资源审核',
+      name: 'ResourceReview',
       component: ResourceReviewPage,
       meta: {
         access: ACCESS_ENUM.ADMIN,
@@ -70,7 +70,7 @@ const router = createRouter({
     },
     {
       path: '/user/edit',
-      name: '个人信息',
+      name: 'PersonalInformation',
       component: UserEditPage,
       meta: {
         access: ACCESS_ENUM.USER,
@@ -78,7 +78,7 @@ const router = createRouter({
     },
     {
       path: '/user/uploads',
-      name: '我的上传',
+      name: 'Myupload',
       component: UserUploadStatus,
       meta: {
         access: ACCESS_ENUM.USER,
@@ -86,7 +86,7 @@ const router = createRouter({
     },
     {
       path: '/noAuth',
-      name: '无权限',
+      name: 'NoAuth',
       component: NoAuth,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
@@ -94,7 +94,7 @@ const router = createRouter({
     },
     {
       path: '/add_musicFile',
-      name: '创建音乐文件',
+      name: 'CreatMusicFile',
       component: AddMusicFilePage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
@@ -102,7 +102,7 @@ const router = createRouter({
     },
     {
       path: '/music',
-      name: '音乐列表',
+      name: 'MusicList',
       component: MusicPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
@@ -110,7 +110,7 @@ const router = createRouter({
     },
     {
       path: '/search',
-      name: '搜索结果',
+      name: 'SearchResult',
       component: SearchedMusicPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
@@ -118,7 +118,7 @@ const router = createRouter({
     },
     {
       path: '/music/detail/:id',
-      name: '音乐详情',
+      name: 'MusicDetail',
       component: MusicDetailPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,
@@ -126,7 +126,7 @@ const router = createRouter({
     },
     {
       path: '/user/upload-avatar',
-      name: '上传头像',
+      name: 'UploadAvatar',
       component: UserAvatarUploadPage,
       meta: {
         access: ACCESS_ENUM.NOT_LOGIN,

@@ -99,7 +99,7 @@
       </template>
     </a-table>
 
-    <!-- 拒绝理由弹窗 -->
+
     <a-modal
       v-model:visible="rejectModalVisible"
       title="Rejection Reason"
@@ -117,7 +117,7 @@
       </a-form>
     </a-modal>
 
-    <!-- 资源详情弹窗 -->
+
     <a-modal v-model:visible="detailsModalVisible" title="Resource Details" width="700px" :footer="null">
       <div v-if="currentResource" class="resource-details">
         <div class="resource-cover">
@@ -219,10 +219,10 @@ import { playMusic as globalPlayMusic } from '@/utils/audioPlayerStore'
 import { useI18n } from 'vue-i18n'
 import InteractiveHoverButton from '@/components/ui/interactive-hover-button/InteractiveHoverButton.vue'
 
-// 初始化i18n
+
 const { t } = useI18n()
 
-// 定义组件属性
+
 const props = defineProps({
   status: {
     type: Number,
@@ -230,10 +230,10 @@ const props = defineProps({
   },
 })
 
-// 定义事件
+
 const emit = defineEmits(['refresh'])
 
-// 表格数据
+
 const dataList = ref<any[]>([])
 const loading = ref(false)
 const pagination = reactive({
@@ -244,7 +244,7 @@ const pagination = reactive({
   showTotal: (total: number) => `Total ${total} items`,
 })
 
-// 表格列定义
+
 const columns = computed(() => [
   {
     title: 'ID',
@@ -294,7 +294,7 @@ const columns = computed(() => [
   },
 ])
 
-// 拒绝弹窗状态
+
 const rejectModalVisible = ref(false)
 const confirmLoading = ref(false)
 const rejectForm = reactive({
@@ -303,24 +303,24 @@ const rejectForm = reactive({
   reviewMessage: '',
 })
 
-// 详情弹窗状态
+
 const detailsModalVisible = ref(false)
 const currentResource = ref<any>(null)
 
-// 用户信息相关
+
 const loadingUserInfo = ref(false)
 
-// 搜索参数
+
 const searchParams = reactive({
   name: '',
   category: undefined,
   uploader: '',
 })
 
-// 分类列表
+
 const categories = ref<string[]>([])
 
-// 获取所有分类
+
 const fetchCategories = async () => {
   try {
     const res = await listMusicFileTagCategoryUsingGet()
@@ -332,11 +332,11 @@ const fetchCategories = async () => {
   }
 }
 
-// 处理搜索
-const handleSearch = () => {
-  pagination.current = 1 // 重置到第一页
 
-  // 如果是搜索用户账户，使用专用搜索方法
+const handleSearch = () => {
+  pagination.current = 1
+
+
   if (searchParams.uploader && searchParams.uploader.trim()) {
     searchByUserAccount()
   } else {
@@ -344,15 +344,15 @@ const handleSearch = () => {
   }
 }
 
-// 搜索用户账户的专用方法
+
 const searchByUserAccount = async () => {
   loading.value = true
 
   try {
-    // 首先获取所有资源
+
     const queryRequest: API.MusicFileQueryRequest = {
       current: 1,
-      pageSize: 100, // 增大分页大小以获取更多结果
+      pageSize: 100,
       reviewStatus: props.status,
     }
 
@@ -371,23 +371,23 @@ const searchByUserAccount = async () => {
 
       message.loading('Searching for matching user accounts...', 0)
 
-      // 引入用户接口
+
       const { getUserVoByIdUsingGet } = await import('@/api/userController')
       const matchedRecords = []
       const searchTerm = searchParams.uploader.trim().toLowerCase()
 
-      // 处理每个资源记录
+
       for (const record of allRecords) {
         if (record.userId) {
           try {
-            // 获取用户信息
+
             const userResponse = await getUserVoByIdUsingGet({ id: record.userId })
 
             if (userResponse.data.code === 0 && userResponse.data.data) {
               const userData = userResponse.data.data
               record.user = userData
 
-              // 检查用户账户或用户名是否匹配
+
               const userAccount = (userData.userAccount || '').toLowerCase()
               const userName = (userData.userName || '').toLowerCase()
 
@@ -401,7 +401,7 @@ const searchByUserAccount = async () => {
         }
       }
 
-      // 更新界面
+
       message.destroy()
       dataList.value = matchedRecords
       pagination.total = matchedRecords.length
@@ -426,7 +426,7 @@ const searchByUserAccount = async () => {
   }
 }
 
-// 重置搜索表单
+
 const handleReset = () => {
   searchParams.name = ''
   searchParams.category = undefined
@@ -435,23 +435,23 @@ const handleReset = () => {
   fetchData()
 }
 
-// 获取表格数据
+
 const fetchData = async () => {
   loading.value = true
 
   try {
-    // 如果有名称或分类搜索参数，使用POST查询接口
+
     if (searchParams.name || searchParams.category) {
-      // 构建查询请求
+
       const queryRequest: API.MusicFileQueryRequest = {
         current: pagination.current,
         pageSize: pagination.pageSize,
-        reviewStatus: props.status, // 重要：指定审核状态
+        reviewStatus: props.status,
         name: searchParams.name || undefined,
         category: searchParams.category || undefined
       }
 
-      // 使用POST查询接口
+
       const searchResponse = await listMusicFileByPageUsingPost(queryRequest)
 
       if (searchResponse?.data?.code === 0 && searchResponse.data.data) {
@@ -467,7 +467,7 @@ const fetchData = async () => {
         message.info('No matching results found')
       }
     } else {
-      // 不搜索时使用原来的API
+
       const queryParams = {
         current: pagination.current,
         pageSize: pagination.pageSize
@@ -498,14 +498,14 @@ const fetchData = async () => {
   }
 }
 
-// 表格变化事件处理
+
 const handleTableChange = (pag: any) => {
   pagination.current = pag.current
   pagination.pageSize = pag.pageSize
   fetchData()
 }
 
-// 审核状态相关函数
+
 const getStatusText = (status: number) => {
   switch (status) {
     case 0:
@@ -532,7 +532,7 @@ const getStatusColor = (status: number) => {
   }
 }
 
-// 审核操作函数
+
 const approveResource = async (record: any) => {
   try {
     const response = await reviewMusicFileUsingPost({
@@ -590,18 +590,18 @@ const handleRejectOk = async () => {
   }
 }
 
-// 详情弹窗函数
+
 const showDetailsModal = (record: any) => {
   currentResource.value = record
   detailsModalVisible.value = true
 
-  // 如果有用户ID但没有用户信息，自动加载用户信息
+
   if (record.userId && !record.user?.userName) {
     loadUserInfo(record.userId)
   }
 }
 
-// 播放音乐
+
 const playMusic = async (record: any) => {
   if (!record || !record.id) {
     message.error('Invalid music file')
@@ -609,7 +609,7 @@ const playMusic = async (record: any) => {
   }
 
   try {
-    // 如果直接有URL，使用它
+
     if (record.url) {
       globalPlayMusic({
         id: record.id,
@@ -622,13 +622,13 @@ const playMusic = async (record: any) => {
       return
     }
 
-    // 否则使用流API
+
     message.loading('Loading audio...', 0)
 
-    // 构建完整的API URL
+
     const streamUrl = `/api/musicfile/stream/${record.id}`
 
-    // 获取音频流
+
     const response = await fetch(streamUrl, {
       method: 'GET',
       headers: {
@@ -640,13 +640,13 @@ const playMusic = async (record: any) => {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    // 获取blob数据
+
     const blob = await response.blob()
 
-    // 创建本地URL
+
     const audioUrl = URL.createObjectURL(blob)
 
-    // 使用全局播放器
+
     globalPlayMusic({
       id: record.id,
       name: record.name || 'Unknown music',
@@ -660,11 +660,11 @@ const playMusic = async (record: any) => {
     console.error('Playback failed:', error)
     message.error('Audio playback failed, please try again')
   } finally {
-    message.destroy() // 清除loading消息
+    message.destroy()
   }
 }
 
-// 格式化函数
+
 const formatTime = (time: string | null | undefined) => {
   if (!time) return 'Unknown'
   return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
@@ -684,7 +684,7 @@ const formatDuration = (seconds: number | null | undefined) => {
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
 }
 
-// 加载用户信息
+
 const loadUserInfo = async (userId: number) => {
   if (!userId) {
     message.warning('Cannot get uploader ID')
@@ -693,12 +693,12 @@ const loadUserInfo = async (userId: number) => {
 
   loadingUserInfo.value = true
   try {
-    // 引入用户接口
+
     const { getUserVoByIdUsingGet } = await import('@/api/userController')
     const response = await getUserVoByIdUsingGet({ id: userId })
 
     if (response.data.code === 0 && response.data.data) {
-      // 更新当前资源的用户信息
+
       currentResource.value.user = response.data.data
       message.success('User information loaded')
     } else {
@@ -712,13 +712,13 @@ const loadUserInfo = async (userId: number) => {
   }
 }
 
-// 组件挂载时加载数据
+
 onMounted(() => {
   fetchCategories()
   fetchData()
 })
 
-// 暴露fetchData方法给父组件调用
+
 defineExpose({
   fetchData,
 })
@@ -727,7 +727,7 @@ defineExpose({
 <style scoped>
 .resource-review-table {
   width: 100%;
-  margin-bottom: 60px; /* 为底部播放条留出空间 */
+  margin-bottom: 60px;
 }
 
 .action-buttons {

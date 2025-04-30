@@ -145,6 +145,8 @@ const en={
     uploadFailed: 'Upload failed',
     uploadError: 'Upload error',
     uploadForbidden: 'Your account has been forbidden to upload due to violations. Please contact the administrator.',
+    uploadSuccess: 'Upload successful',
+    resourceUnderReview: 'Your resource is under review and will be displayed in your resource list once approved.',
       // MusicEditModal 相关翻译
 
     pleaseEnterMusicName: 'Please enter music name',
@@ -165,7 +167,7 @@ const en={
     genreRock: 'Rock',
     genreClassical: 'Classical',
     genreJazz: 'Jazz',
-    genreHipHop: 'HipHop',
+    genreHipHop: 'Hip Hop',
     genreRnB: 'R&B',
     genreCountry: 'Country',
     genreElectronic: 'Electronic',
@@ -381,7 +383,7 @@ const en={
     categoryNameAlreadyExists: 'Category name already exists',
     tagUpdatedSuccess: 'Tag updated successfully',
     tagNameAlreadyExists: 'Tag name already exists',
-    
+
     // MelodyHub Feature页面
     easyUploadTitle: 'Easy Upload',
     easyUploadDesc: 'Upload your music with just a few clicks. Supports various audio formats for a seamless experience.',
@@ -395,7 +397,42 @@ const en={
     sharingDesc: 'Share your favorite tracks and playlists with friends or discover music from other users.',
     updatesTitle: 'Regular Updates',
     updatesDesc: 'We constantly improve our platform with new features and enhanced user experience.',
-    banNumber: 'banNumber'
+    banNumber: 'banNumber',
+
+
+    tagHappy: 'Happy',
+    tagRelaxed: 'Relaxed',
+    tagPensive: 'Pensive',
+    tagMotivational: 'Motivational',
+    tagMelancholic: 'Melancholic',
+
+    tagMorning: 'Morning',
+    tagNight: 'Night',
+    tagOnTheRoad: 'On the Road',
+    tagWorking: 'While Working',
+    tagParty: 'Party',
+
+    tagPreSleep: 'Pre-Sleep',
+    tagWorkout: 'Workout',
+    tagStudy: 'Study',
+    tagLateNight: 'Late Night Thoughts',
+    tagMeditation: 'Deep Meditation',
+
+    tagMinimalist: 'Minimalist',
+    tagAmbient: 'Ambient',
+    tagClassicalElectronic: 'Classical-Electronic Fusion',
+    tagElectroFantasy: 'Electro Fantasy',
+    tagGroovy: 'Groovy',
+
+    tagRetro: 'Retro',
+    tagFuturistic: 'Futuristic',
+    tagWorldSounds: 'World Sounds',
+    tagNature: 'Nature Sounds',
+
+    tagYouthful: 'Youthful',
+    tagNostalgic: 'Nostalgic',
+    tagWarm: 'Warm',
+    tagRebellious: 'Rebellious',
   }
 }
 export default en

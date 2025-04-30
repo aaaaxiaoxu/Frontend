@@ -8,7 +8,7 @@ const PROD_BASE_URL = "http://118.31.173.230";
 // Create an Axios instance
 const myAxios = axios.create({
   baseURL: PROD_BASE_URL,
-  timeout: 10000,
+  timeout: 300000,
   withCredentials: true,
 });
 
@@ -36,7 +36,7 @@ myAxios.interceptors.response.use(
         !response.request.responseURL.includes('user/get/login') &&
         !window.location.pathname.includes('/user/login')
       ) {
-        message.warning('请先登录')
+        message.warning('Please Login first!')
         window.location.href = `/user/login?redirect=${window.location.href}`
       }
     }

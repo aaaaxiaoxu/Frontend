@@ -260,36 +260,76 @@ const editForm = reactive({
 // Available categories and tags lists
 const availableCategories = ['Pop', 'Rock', 'Electronic', 'Jazz', 'Indie', 'Classical', 'R&B']
 const availableTags = [
-  t('message.genreHot'), 
-  t('message.genrePop'), 
-  t('message.genreClassical'), 
-  t('message.genreModern'), 
-  t('message.genreSoothing'), 
-  t('message.genreEnergetic'), 
-  t('message.genreParty'), 
-  t('message.genreWork'), 
-  t('message.genreRelaxing')
+  // 情绪标签
+  t('message.tagHappy'),
+  t('message.tagRelaxed'),
+  t('message.tagPensive'),
+  t('message.tagMotivational'),
+  t('message.tagMelancholic'),
+  
+  // 场景标签
+  t('message.tagMorning'),
+  t('message.tagNight'),
+  t('message.tagOnTheRoad'),
+  t('message.tagWorking'),
+  t('message.tagParty'),
+  t('message.tagPreSleep'),
+  t('message.tagWorkout'),
+  t('message.tagStudy'),
+  t('message.tagLateNight'),
+  t('message.tagMeditation'),
+  
+  // 风格标签
+  t('message.tagMinimalist'),
+  t('message.tagAmbient'),
+  t('message.tagClassicalElectronic'),
+  t('message.tagElectroFantasy'),
+  t('message.tagGroovy'),
+  t('message.tagRetro'),
+  t('message.tagFuturistic'),
+  t('message.tagWorldSounds'),
+  t('message.tagNature'),
+  t('message.tagYouthful'),
+  t('message.tagNostalgic'),
+  t('message.tagWarm'),
+  t('message.tagRebellious')
 ]
 
 // Add default tag options
 const defaultTags = ref([
-  { label: t('message.genreHot'), value: t('message.genreHot') },
-  { label: t('message.genrePop'), value: t('message.genrePop') },
-  { label: t('message.genreClassical'), value: t('message.genreClassical') },
-  { label: t('message.genreModern'), value: t('message.genreModern') },
-  { label: t('message.genreSoothing'), value: t('message.genreSoothing') },
-  { label: t('message.genreEnergetic'), value: t('message.genreEnergetic') },
-  { label: t('message.genreParty'), value: t('message.genreParty') },
-  { label: t('message.genreWork'), value: t('message.genreWork') },
-  { label: t('message.genreRelaxing'), value: t('message.genreRelaxing') },
-  { label: t('message.genrePop'), value: 'Pop Music' },
-  { label: t('message.genreRock'), value: 'Rock' },
-  { label: t('message.genreClassical'), value: 'Classical' },
-  { label: t('message.genreJazz'), value: 'Jazz' },
-  { label: t('message.genreHipHop'), value: 'Hip Hop' },
-  { label: t('message.genreRnB'), value: 'R&B' },
-  { label: t('message.genreCountry'), value: 'Country' },
-  { label: t('message.genreElectronic'), value: 'Electronic' },
+  // 情绪标签
+  { label: t('message.tagHappy'), value: 'Happy' },
+  { label: t('message.tagRelaxed'), value: 'Relaxed' },
+  { label: t('message.tagPensive'), value: 'Pensive' },
+  { label: t('message.tagMotivational'), value: 'Motivational' },
+  { label: t('message.tagMelancholic'), value: 'Melancholic' },
+  
+  // 场景标签
+  { label: t('message.tagMorning'), value: 'Morning' },
+  { label: t('message.tagNight'), value: 'Night' },
+  { label: t('message.tagOnTheRoad'), value: 'On the Road' },
+  { label: t('message.tagWorking'), value: 'While Working' },
+  { label: t('message.tagParty'), value: 'Party' },
+  { label: t('message.tagPreSleep'), value: 'Pre-Sleep' },
+  { label: t('message.tagWorkout'), value: 'Workout' },
+  { label: t('message.tagStudy'), value: 'Study' },
+  { label: t('message.tagLateNight'), value: 'Late Night Thoughts' },
+  { label: t('message.tagMeditation'), value: 'Deep Meditation' },
+  
+  // 风格标签
+  { label: t('message.tagMinimalist'), value: 'Minimalist' },
+  { label: t('message.tagAmbient'), value: 'Ambient' },
+  { label: t('message.tagClassicalElectronic'), value: 'Classical-Electronic Fusion' },
+  { label: t('message.tagElectroFantasy'), value: 'Electro Fantasy' },
+  { label: t('message.tagGroovy'), value: 'Groovy' },
+  { label: t('message.tagRetro'), value: 'Retro' },
+  { label: t('message.tagFuturistic'), value: 'Futuristic' },
+  { label: t('message.tagWorldSounds'), value: 'World Sounds' },
+  { label: t('message.tagNature'), value: 'Nature Sounds' },
+  { label: t('message.tagYouthful'), value: 'Youthful' },
+  { label: t('message.tagNostalgic'), value: 'Nostalgic' },
+  { label: t('message.tagWarm'), value: 'Warm' },
+  { label: t('message.tagRebellious'), value: 'Rebellious' },
 ])
 
 // Get user information - identical to MusicCard

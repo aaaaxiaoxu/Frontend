@@ -378,7 +378,7 @@ const zh={
     categoryNameAlreadyExists: '类别名称已存在',
     tagUpdatedSuccess: '标签更新成功',
     tagNameAlreadyExists: '标签名称已存在',
-    
+
     // MelodyHub 特性页面
     easyUploadTitle: '轻松上传',
     easyUploadDesc: '只需点击几下即可上传您的音乐。支持各种音频格式，体验无缝。',
@@ -392,7 +392,43 @@ const zh={
     sharingDesc: '与朋友分享您喜爱的曲目和播放列表，或发现其他用户的音乐。',
     updatesTitle: '定期更新',
     updatesDesc: '我们不断完善平台，提供新功能和增强用户体验。',
-    banNumber: '封禁次数'
+    banNumber: '封禁次数',
+
+    tagHappy: '愉悦',
+    tagRelaxed: '放松',
+    tagPensive: '沉思',
+    tagMotivational: '激励',
+    tagMelancholic: '哀伤',
+
+    tagMorning: '早晨',
+    tagNight: '夜晚',
+    tagOnTheRoad: '路上',
+    tagWorking: '工作时',
+    tagParty: '聚会',
+
+    tagPreSleep: '睡前',
+    tagWorkout: '健身',
+    tagStudy: '学习',
+    tagLateNight: '深夜思考',
+    tagMeditation: '深度冥想',
+
+    tagMinimalist: '简约',
+    tagAmbient: '环境音',
+    tagClassicalElectronic: '古典与电子融合',
+    tagElectroFantasy: '电子幻想',
+    tagGroovy: '律动感',
+
+    tagRetro: '复古',
+    tagFuturistic: '未来感',
+    tagWorldSounds: '世界音乐',
+    tagNature: '自然声音',
+
+    tagYouthful: '青春',
+    tagNostalgic: '怀旧',
+    tagWarm: '温暖',
+    tagRebellious: '反叛',
+
+    resourceUnderReview: '您的资源正在被审核，审核通过后将会显示在您的资源列表中。',
   }
 }
 export default zh

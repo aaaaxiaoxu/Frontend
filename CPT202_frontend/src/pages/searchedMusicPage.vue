@@ -9,17 +9,9 @@
         <a-row :gutter="[16, 16]">
           <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in musicList" :key="item.id">
             <div class="music-card-wrapper" @click="showMusicDetails(item)">
-              <music-card
+              <music-card-category
                 :id="item.id"
-                :name="item.name"
-                :coverUrl="item.coverUrl"
-                :url="item.url"
-                :artist="item.artist || '未知艺术家'"
                 :category="item.category"
-                @download.stop="handleDownload(item)"
-                @edit.stop="handleEdit(item)"
-                @delete.stop="handleDelete(item.id)"
-                @play.stop="handlePlay(item)"
               />
             </div>
           </a-col>
@@ -51,7 +43,7 @@ import {
   Col as ACol,
   Pagination as APagination,
 } from 'ant-design-vue'
-import MusicCard from '@/components/MusicCard.vue'
+import MusicCardCategory from '@/components/MusicCardCategory.vue'
 import { searchMusicFilesUsingGet } from '@/api/musicFileController'
 import { useMusicStore } from '@/stores/musicStore'
 
