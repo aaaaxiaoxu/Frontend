@@ -477,128 +477,81 @@ const fetchMusicData = async () => {
       }
       response = await listMusicFileByPageUsingPost(queryParams)
     } else if (currentCategory.startsWith('custom_')) {
-      
       const categoryName = currentCategory.replace('custom_', '')
       const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
         category: categoryName,
         current: pagination.current,
-        pageSize: pagination.pageSize,
+        pageSize: pagination.pageSize
       }
       response = await listMusicFileVoByCategoryPageUsingGet(params)
     } else if (currentCategory.startsWith('tag_')) {
-      
       const tagName = currentCategory.replace('tag_', '')
-      console.log('========== 标签筛选开始 ==========')
-      console.log('当前选中的标签:', tagName)
       
-      
-      const queryParams = {
+      const queryParams: API.MusicFileQueryRequest = {
         current: pagination.current,
         pageSize: pagination.pageSize,
-        
-
+        reviewStatus: 1
       }
-      console.log('发送请求参数:', queryParams)
       
-      try {
-       
-        const response = await listMusicFileByPageUsingPost(queryParams)
-        console.log('API响应状态:', response?.data?.code)
+      const response = await listMusicFileByPageUsingPost(queryParams)
+      
+      if (response && response.data.code === 0 && response.data.data) {
+        const allMusic = response.data.data.records || []
         
-
-        if (response && response.data.code === 0 && response.data.data) {
-          const allMusic = response.data.data.records || []
-          console.log(`获取到 ${allMusic.length} 条音乐记录`)
+        const filteredMusic = []
+        
+        for (let i = 0; i < allMusic.length; i++) {
+          const music = allMusic[i]
           
-          if (allMusic.length > 0) {
-            console.log('第一条音乐记录示例:', allMusic[0])
-            console.log('第一条音乐的tags属性:', allMusic[0].tags, '类型:', typeof allMusic[0].tags)
+          if (!music || !music.tags) {
+            continue
           }
           
-      
-          const filteredMusic = []
-          
-          for (let i = 0; i < allMusic.length; i++) {
-            const music = allMusic[i]
-            console.log(`\n检查音乐[${i}]: "${music.name || '未命名'}"`)
+          try {
+            const tagsArray = JSON.parse(music.tags)
             
-          
-            if (!music || !music.tags) {
-              console.log(`  - 跳过: 没有tags属性`)
-              continue
+            let found = false
+            for (let j = 0; j < tagsArray.length; j++) {
+              const tag = tagsArray[j]
+              
+              if (tag.toLowerCase() === tagName.toLowerCase()) {
+                found = true
+                break
+              }
             }
             
-            console.log(`  - tags原始值: ${music.tags}`)
+            if (found) {
+              filteredMusic.push(music)
+            }
+          } catch (error) {
+            console.log(`  - 尝试替代解析方法`)
+            const tagsString = String(music.tags)
+              .replace(/^\[|\]$/g, '') // 移除开头和结尾的方括号
+              .replace(/\\"/g, '"') // 处理转义的引号
+              .replace(/"/g, '') // 移除所有引号
             
+            const tagsArray = tagsString.split(',').map(tag => tag.trim())
+            console.log(`  - 替代方法解析结果:`, tagsArray)
             
-            try {
-              
-              const tagsArray = JSON.parse(music.tags)
-              console.log(`  - 解析后的标签数组:`, tagsArray)
-              
-              
-              let found = false
-              for (let j = 0; j < tagsArray.length; j++) {
-                const tag = tagsArray[j]
-                console.log(`    - 比较: "${tag.toLowerCase()}" vs "${tagName.toLowerCase()}"`)
-                
-                if (tag.toLowerCase() === tagName.toLowerCase()) {
-                  found = true
-                  console.log(`    - 匹配成功!`)
-                  break
-                }
-              }
-              
-              if (found) {
-                console.log(`  - 结果: 添加到筛选结果`)
-                filteredMusic.push(music)
-              } else {
-                console.log(`  - 结果: 不包含目标标签`)
-              }
-            } catch (error) {
-              console.error(`  - 解析出错:`, error)
-              
-              
-              console.log(`  - 尝试替代解析方法`)
-              const tagsString = String(music.tags)
-                .replace(/^\[|\]$/g, '') // 移除开头和结尾的方括号
-                .replace(/\\"/g, '"') // 处理转义的引号
-                .replace(/"/g, '') // 移除所有引号
-              
-              const tagsArray = tagsString.split(',').map(tag => tag.trim())
-              console.log(`  - 替代方法解析结果:`, tagsArray)
-              
-              // 查找是否有匹配的标签
-              const found = tagsArray.some(tag => tag.toLowerCase() === tagName.toLowerCase())
-              
-              if (found) {
-                console.log(`  - 结果: 通过替代方法找到匹配，添加到筛选结果`)
-                filteredMusic.push(music)
-              } else {
-                console.log(`  - 结果: 替代方法也未找到匹配`)
-              }
+            // 查找是否有匹配的标签
+            const found = tagsArray.some(tag => tag.toLowerCase() === tagName.toLowerCase())
+            
+            if (found) {
+              console.log(`  - 结果: 通过替代方法找到匹配，添加到筛选结果`)
+              filteredMusic.push(music)
+            } else {
+              console.log(`  - 结果: 替代方法也未找到匹配`)
             }
           }
-          
-          console.log(`\n找到 ${filteredMusic.length} 条包含标签 "${tagName}" 的音乐`)
-          
-          
-          musicList.value = filteredMusic
-          pagination.total = filteredMusic.length
-          console.log('========== 标签筛选完成 ==========')
-        } else {
-          console.error('API响应错误:', response?.data)
-          message.error(t('message.failedToLoadMusic') + ': ' + (response?.data?.message || t('message.unknownError')))
-          musicList.value = []
-          pagination.total = 0
         }
-      } catch (error) {
-        console.error('发送请求时出错:', error)
-        message.error(t('message.errorFetchingMusicData') + ': ' + error.message)
+        
+        musicList.value = filteredMusic
+        pagination.total = filteredMusic.length
+      } else {
+        console.error('API响应错误:', response?.data)
+        message.error(t('message.failedToLoadMusic') + ': ' + (response?.data?.message || t('message.unknownError')))
         musicList.value = []
         pagination.total = 0
-      } finally {
-        loading.value = false
       }
       
       return
@@ -612,7 +565,7 @@ const fetchMusicData = async () => {
       const params: API.listMusicFileVOByCategoryPageUsingGETParams = {
         category: category,
         current: pagination.current,
-        pageSize: pagination.pageSize,
+        pageSize: pagination.pageSize
       }
       response = await listMusicFileVoByCategoryPageUsingGet(params)
     } else {
