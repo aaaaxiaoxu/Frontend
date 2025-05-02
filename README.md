@@ -19,7 +19,7 @@ npm install
 
 ### 3. Configure Development Environment
 
-In `src/utils/request.ts`, change the `baseURL` from production to development:
+In `src/request.ts`, change the `baseURL` from production to development:
 
 ```ts
 // Distinguish between development and production environments
