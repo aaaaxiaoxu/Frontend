@@ -429,6 +429,8 @@ const zh={
     tagRebellious: '反叛',
 
     resourceUnderReview: '您的资源正在被审核，审核通过后将会显示在您的资源列表中。',
+    lightMode: '亮色模式',
+    darkMode: '暗色模式',
   }
 }
 export default zh

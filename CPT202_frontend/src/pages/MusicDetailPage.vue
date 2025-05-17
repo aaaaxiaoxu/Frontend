@@ -730,3 +730,165 @@ const retryFetch = () => {
   background-color: #52c41a;
 }
 </style>
+
+<!-- 添加黑夜模式样式 -->
+<style>
+/* 黑夜模式下的整体页面样式 */
+[data-theme='dark'] .music-detail-page {
+  background-color: #121212;
+}
+
+[data-theme='dark'] .detail-container {
+  background-color: #1f1f1f;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .detail-header {
+  border-bottom-color: #303030;
+}
+
+[data-theme='dark'] .detail-header h2 {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 表单和文本样式 */
+[data-theme='dark'] .ant-form-item-label > label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-form-item span,
+[data-theme='dark'] .uploader-name {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme='dark'] .ant-input,
+[data-theme='dark'] .ant-select-selector,
+[data-theme='dark'] .ant-select-selection-search-input {
+  background-color: #141414;
+  border-color: #434343;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-input:hover,
+[data-theme='dark'] .ant-select:hover .ant-select-selector {
+  border-color: #165996;
+}
+
+[data-theme='dark'] .ant-input:focus,
+[data-theme='dark'] .ant-select-focused .ant-select-selector {
+  border-color: #177ddc;
+  box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2);
+}
+
+/* 按钮样式 */
+[data-theme='dark'] .interactive-hover-button {
+  background-color: #1f1f1f;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .interactive-hover-button:hover {
+  background-color: #303030;
+  color: #177ddc;
+}
+
+[data-theme='dark'] .playing-button {
+  background-color: #177ddc;
+  color: white;
+}
+
+[data-theme='dark'] .delete-btn :deep(.bg-primary) {
+  background-color: #a61d24;
+}
+
+[data-theme='dark'] .playing-button :deep(.bg-primary) {
+  background-color: #3f6600;
+}
+
+/* 标签样式 */
+[data-theme='dark'] .tag-item {
+  background-color: #111b26;
+  border-color: #153450;
+  color: #177ddc;
+}
+
+[data-theme='dark'] .no-tags {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* 音乐封面样式 */
+[data-theme='dark'] .music-cover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 模态框样式 */
+[data-theme='dark'] .ant-modal-content,
+[data-theme='dark'] .ant-modal-header {
+  background-color: #1f1f1f;
+  color: rgba(255, 255, 255, 0.85);
+  border-color: #303030;
+}
+
+[data-theme='dark'] .ant-modal-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-modal-close {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme='dark'] .ant-modal-close:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+[data-theme='dark'] .ant-modal-footer {
+  border-top-color: #303030;
+}
+
+/* 下拉菜单样式 */
+[data-theme='dark'] .ant-select-dropdown {
+  background-color: #1f1f1f;
+}
+
+[data-theme='dark'] .ant-select-item {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-select-item-option-selected {
+  background-color: #111b26;
+}
+
+[data-theme='dark'] .ant-select-item-option-active {
+  background-color: #111b26;
+}
+
+/* 结果和确认对话框样式 */
+[data-theme='dark'] .ant-result-title,
+[data-theme='dark'] .ant-result-subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-popconfirm-message-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-popconfirm-buttons .ant-btn {
+  background-color: #1f1f1f;
+  border-color: #434343;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-popconfirm-buttons .ant-btn-primary {
+  background-color: #177ddc;
+  border-color: #177ddc;
+  color: white;
+}
+
+/* 加载状态样式 */
+[data-theme='dark'] .ant-spin-text {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-spin-dot-item {
+  background-color: #177ddc;
+}
+</style>

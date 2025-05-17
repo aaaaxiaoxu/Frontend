@@ -213,4 +213,47 @@ export default defineComponent({
 .primary-button:hover {
   background-color: #40a9ff;
 }
+
+/* 黑暗模式样式 */
+:deep([data-theme='dark']) .upload-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:deep([data-theme='dark']) .ant-upload-list-text-container {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:deep([data-theme='dark']) .ant-upload-list-item {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:deep([data-theme='dark']) .ant-upload-list-item-name {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:deep([data-theme='dark']) .ant-upload-text {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:deep([data-theme='dark']) .ant-upload-hint {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+:deep([data-theme='dark']) .ant-upload-drag {
+  background-color: #1e1e1e;
+  border: 1px dashed #303030;
+}
+
+:deep([data-theme='dark']) .ant-upload-drag:hover {
+  border-color: #177ddc;
+}
+
+:deep([data-theme='dark']) .cover-upload {
+  background-color: #1e1e1e;
+  border: 1px dashed #303030;
+}
+
+:deep([data-theme='dark']) .cover-upload:hover {
+  border-color: #177ddc;
+}
 </style>

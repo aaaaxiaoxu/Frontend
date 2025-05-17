@@ -461,4 +461,107 @@ const goToUpload = () => {
   background-color: white;
   color: rgba(0, 0, 0, 0.85);
 }
+
+/* 黑夜模式样式 */
+[data-theme='dark'] .home-page {
+  background-color: #121212;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .hero-banner {
+  color: #ffffff;
+  background-color: #121212;
+}
+
+[data-theme='dark'] .banner-content p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .popular-music {
+  background-color: #121212;
+}
+
+[data-theme='dark'] .stats-section {
+  background-color: #1a1a1a;
+}
+
+[data-theme='dark'] .stat-item {
+  background-color: #1e1e1e;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .stat-number {
+  color: #4e89ff;
+}
+
+[data-theme='dark'] .stat-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme='dark'] .user-reviews {
+  background-color: #121212;
+}
+
+[data-theme='dark'] .review-card {
+  background-color: #1e1e1e;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .user-name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme='dark'] .review-text {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme='dark'] .animated-testimonials-section {
+  background-color: #121212;
+}
+
+[data-theme='dark'] .section-title h2 {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme='dark'] .section-title p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 弹出框黑夜模式 */
+[data-theme='dark'] .ant-modal-content {
+  background-color: #1e1e1e;
+}
+
+[data-theme='dark'] .ant-modal-header {
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #303030;
+}
+
+[data-theme='dark'] .ant-modal-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-modal-close-x {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme='dark'] .modal-custom-footer {
+  border-top: 1px solid #303030;
+}
+
+[data-theme='dark'] .cancel-button {
+  border-color: #434343;
+  background-color: #1f1f1f;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 黑夜模式下评分组件样式 */
+[data-theme='dark'] .ant-rate-star-first,
+[data-theme='dark'] .ant-rate-star-second {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme='dark'] .ant-rate-star-full .ant-rate-star-second {
+  color: #fadb14;
+}
 </style>

@@ -416,6 +416,7 @@ const handleSubmit = async (values: any) => {
   right: 0;
   bottom: 0;
   background-color: #f5f5f5;
+  color: #333 !important; /* 确保文字颜色不受主题影响 */
 }
 
 /* Particle background styles */
@@ -431,13 +432,14 @@ const handleSubmit = async (values: any) => {
 /* Form card styles */
 .form-card {
   width: 100%;
-  max-width: 450px;
+  max-width: 550px;
   background-color: #ffffff;
   border-radius: 8px;
   padding: 30px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1;
+  color: #333 !important; /* 确保文字颜色不受主题影响 */
   overflow-y: auto;
   max-height: 90vh;
 }
@@ -482,9 +484,12 @@ const handleSubmit = async (values: any) => {
 }
 
 .send-code-button {
+  height: 40px;
+  min-width: 85px;
   border-radius: 4px;
-  min-width: 60px;
-  background-color: #1890ff;
+  background-color: #000;
+  color: #ffffff !important; /* 强制白色文字 */
+  border: none;
 }
 
 .submit-button {
@@ -500,6 +505,7 @@ const handleSubmit = async (values: any) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #ffffff !important; /* 强制白色文字 */
 }
 
 .submit-button:hover {

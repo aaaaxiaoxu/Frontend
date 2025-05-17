@@ -1,0 +1,261 @@
+:root {
+  /* 亮色主题（默认） */
+  --color-background: #ffffff;
+  --color-text-primary: rgba(0, 0, 0, 0.85);
+  --color-text-secondary: rgba(0, 0, 0, 0.65);
+  --color-text-tertiary: rgba(0, 0, 0, 0.45);
+  --color-border: #f0f0f0;
+  --color-hover: #f5f5f5;
+  --color-card-background: #ffffff;
+  --color-header-background: rgba(255, 255, 255, 0.8);
+  --color-shadow: rgba(34, 42, 53, 0.06);
+  --color-button-text: #000000;
+  --color-menu-hover: #f0f0f0;
+}
+
+[data-theme='dark'] {
+  /* 暗色主题 */
+  --color-background: #121212;
+  --color-text-primary: rgba(255, 255, 255, 0.85);
+  --color-text-secondary: rgba(255, 255, 255, 0.65);
+  --color-text-tertiary: rgba(255, 255, 255, 0.45);
+  --color-border: #303030;
+  --color-hover: #282828;
+  --color-card-background: #1e1e1e;
+  --color-header-background: rgba(18, 18, 18, 0.8);
+  --color-shadow: rgba(0, 0, 0, 0.3);
+  --color-button-text: #ffffff;
+  --color-menu-hover: #282828;
+}
+
+/* 为元素应用主题变量 */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 导航栏样式 */
+.navbar-wrapper .relative.z-\[60\] {
+  background-color: var(--color-header-background);
+}
+
+[data-theme='dark'] .navbar-wrapper .relative.z-\[60\] {
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 菜单项样式 */
+.navbar-wrapper .text-neutral-600,
+.navbar-wrapper .text-black {
+  color: var(--color-text-primary) !important;
+}
+
+/* 移动菜单样式 */
+.navbar-wrapper .absolute.inset-x-0.top-14.z-50 {
+  background-color: var(--color-card-background);
+}
+
+/* 图标颜色 */
+.theme-toggle svg {
+  color: var(--color-text-primary);
+}
+
+/* 强制所有文字在黑暗模式下显示为白色，但排除搜索框 */
+[data-theme='dark'] .navbar-wrapper *:not(.search-input-wrapper):not(.search-input-wrapper *),
+[data-theme='dark'] .navbar-wrapper a:not(.search-input-wrapper a),
+[data-theme='dark'] .navbar-wrapper span:not(.search-input-wrapper span),
+[data-theme='dark'] .navbar-wrapper div:not(.search-input-wrapper):not(.search-input-wrapper div) {
+  color: white !important;
+}
+
+[data-theme='dark'] svg:not(.search-input-wrapper svg) {
+  color: white !important;
+}
+
+/* 特别处理导航项文字 */
+[data-theme='dark'] .navbar-wrapper .logo-text,
+[data-theme='dark'] .navbar-wrapper .nav-item,
+[data-theme='dark'] .navbar-wrapper .mobile-menu-item {
+  color: white !important;
+}
+
+/* 添加全局选择器提高优先级 */
+html[data-theme='dark'] body .navbar-wrapper span:not(.search-input-wrapper span):not(.search-input-wrapper *),
+html[data-theme='dark'] body .navbar-wrapper a:not(.search-input-wrapper a):not(.search-input-wrapper *),
+html[data-theme='dark'] body .navbar-wrapper div:not(.search-input-wrapper):not(.search-input-wrapper div),
+html[data-theme='dark'] body .site-logo,
+html[data-theme='dark'] body .main-nav-item,
+html[data-theme='dark'] body .nav-text,
+html[data-theme='dark'] body .mobile-nav-item,
+html[data-theme='dark'] body .mobile-nav-text {
+  color: white !important;
+}
+
+/* 修复导航项颜色 */
+html[data-theme='dark'] .navbar-wrapper [class*="text-black"]:not(.search-input-wrapper):not(.search-input-wrapper *),
+html[data-theme='dark'] .navbar-wrapper [class*="text-neutral"]:not(.search-input-wrapper):not(.search-input-wrapper *),
+html[data-theme='dark'] .navbar-wrapper [class*="text-zinc"]:not(.search-input-wrapper):not(.search-input-wrapper *) {
+  color: white !important;
+}
+
+/* 卡片和容器样式 */
+.ant-card,
+.ant-modal-content,
+.ant-dropdown-menu {
+  background-color: var(--color-card-background) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.ant-dropdown-menu-item:hover {
+  background-color: var(--color-hover) !important;
+}
+
+/* 输入框样式 */
+.ant-input,
+.ant-input-affix-wrapper {
+  background-color: var(--color-card-background) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+/* 按钮样式 */
+.ant-btn {
+  color: var(--color-button-text) !important;
+}
+
+/* 表格样式 */
+.ant-table {
+  background-color: var(--color-card-background) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.ant-table-thead > tr > th {
+  background-color: var(--color-hover) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* 过渡效果 */
+.ant-card,
+.ant-modal-content,
+.ant-dropdown-menu,
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-btn,
+.ant-table,
+.ant-table-thead > tr > th {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* 彩虹按钮在暗黑模式下的样式 */
+[data-theme='dark'] .btn-content {
+  background-color: #000 !important;
+  color: white !important;
+}
+
+[data-theme='dark'] .rainbow-btn {
+  border-color: #333 !important;
+}
+
+[data-theme='light'] .btn-content {
+  background-color: white !important;
+  color: black !important;
+}
+
+/* 主页暗黑模式样式 */
+[data-theme='dark'] .animated-testimonials-section {
+  background-color: var(--color-background);
+}
+
+[data-theme='dark'] .testimonial-card {
+  background-color: var(--color-card-background);
+  color: var(--color-text-primary);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .testimonial-author {
+  color: var(--color-text-secondary);
+}
+
+[data-theme='dark'] .testimonial-designation {
+  color: var(--color-text-tertiary);
+}
+
+[data-theme='dark'] .review-card {
+  background-color: var(--color-card-background);
+}
+
+[data-theme='dark'] .ant-modal-content {
+  background-color: var(--color-card-background);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .ant-modal-title {
+  color: var(--color-text-primary);
+}
+
+[data-theme='dark'] .ant-modal-close {
+  color: var(--color-text-primary);
+}
+
+/* 登录和注册页面按钮样式，确保不受主题影响 */
+#userLoginPage .submit-button,
+#userRegisterPage .submit-button,
+#userRegisterPage .send-code-button,
+#userLoginPage a-button[type="primary"],
+#userRegisterPage a-button[type="primary"] {
+  color: #ffffff !important;
+}
+
+#userLoginPage,
+#userRegisterPage {
+  background-color: #f5f5f5 !important;
+}
+
+#userLoginPage .form-card,
+#userRegisterPage .form-card {
+  background-color: #ffffff !important;
+  color: #333 !important;
+}
+
+#userLoginPage .title,
+#userLoginPage .subtitle,
+#userLoginPage .form-label,
+#userRegisterPage .title,
+#userRegisterPage .subtitle,
+#userRegisterPage .form-label {
+  color: #333 !important;
+}
+
+#userLoginPage .link,
+#userRegisterPage .link,
+#userLoginPage .language-link,
+#userRegisterPage .language-link {
+  color: #1890ff !important;
+}
+
+/* 用户下拉菜单在黑夜模式下的样式 */
+[data-theme='dark'] .ant-dropdown-menu {
+  background-color: var(--color-card-background) !important;
+}
+
+[data-theme='dark'] .ant-dropdown-menu-item {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme='dark'] .ant-dropdown-menu-item .anticon {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme='dark'] .ant-dropdown-menu-item:hover {
+  background-color: var(--color-hover) !important;
+}
+
+/* 模态框标题栏暗黑模式样式 */
+[data-theme='dark'] .ant-modal-header {
+  background-color: #121212 !important;
+  border-bottom-color: #303030 !important;
+}
+
+[data-theme='dark'] .ant-modal-title {
+  color: rgba(255, 255, 255, 0.85) !important;
+} 

@@ -130,6 +130,7 @@ const handleSubmit = async (values: any) => {
   right: 0;
   bottom: 0;
   background-color: #f5f5f5;
+  color: #333 !important;
 }
 
 /* Particle background styles */
@@ -197,6 +198,7 @@ const handleSubmit = async (values: any) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #ffffff !important;
 }
 
 .submit-button:hover {

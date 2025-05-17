@@ -9,6 +9,7 @@
             placeholder="Resource Name"
             allow-clear
             @pressEnter="handleSearch"
+            class="search-input"
           />
         </a-col>
         <a-col :span="6">
@@ -17,6 +18,7 @@
             placeholder="Category"
             style="width: 100%"
             allow-clear
+            class="search-input"
           >
             <a-select-option v-for="category in categories" :key="category" :value="category">
               {{ category }}
@@ -29,6 +31,7 @@
             placeholder="User Account"
             allow-clear
             @pressEnter="handleSearch"
+            class="search-input"
           />
         </a-col>
         <a-col :span="6">
@@ -742,8 +745,7 @@ defineExpose({
 }
 
 .resource-cover {
-  display: flex;
-  justify-content: center;
+  text-align: center;
 }
 
 .no-cover {
@@ -753,16 +755,168 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  margin: 0 auto;
 }
 
 .resource-actions {
-  margin-top: 20px;
+  margin-top: 16px;
   display: flex;
-  justify-content: center;
+  gap: 8px;
 }
 
 .search-form {
   margin-bottom: 16px;
+}
+
+.search-input {
+  width: 100%;
+  border-radius: 4px;
+  height: 32px;
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  border: 1px solid #d9d9d9 !important;
+}
+
+.search-input::placeholder {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.search-input .ant-input {
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.ant-select-selector {
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  border-color: #d9d9d9 !important;
+}
+
+.ant-select-selection-placeholder {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* 移除黑夜模式特定的搜索框样式，使搜索框样式在黑夜模式下也保持一致 */
+/* 
+[data-theme='dark'] .search-input,
+[data-theme='dark'] .search-input .ant-input,
+[data-theme='dark'] .ant-select-selector {
+  background-color: #1f1f1f;
+  color: rgba(255, 255, 255, 0.85);
+  border-color: #303030;
+}
+
+[data-theme='dark'] .search-input::placeholder,
+[data-theme='dark'] .ant-select-selection-placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+*/
+
+[data-theme='dark'] .no-cover {
+  background-color: #1e1e1e;
+  color: rgba(255, 255, 255, 0.85);
+}
+</style>
+
+<!-- 添加全局样式（不使用scoped）以覆盖Ant Design的默认行为 -->
+<style>
+/* 禁用黑夜模式下的表格行悬停效果 */
+[data-theme='dark'] .ant-table-tbody > tr.ant-table-row:hover,
+[data-theme='dark'] .ant-table-tbody > tr.ant-table-row:hover > td,
+[data-theme='dark'] .ant-table-tbody > tr:hover,
+[data-theme='dark'] .ant-table-tbody > tr:hover > td,
+[data-theme='dark'] .ant-table-tbody > tr.ant-table-row-hover,
+[data-theme='dark'] .ant-table-tbody > tr.ant-table-row-hover > td,
+[data-theme='dark'] .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+  background-color: transparent !important;
+}
+
+/* 确保搜索框在黑夜模式下保持白色 */
+.resource-review-table .ant-input,
+.resource-review-table .ant-select .ant-select-selector {
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  border-color: #d9d9d9 !important;
+}
+
+.resource-review-table .ant-input::placeholder,
+.resource-review-table .ant-select-selection-placeholder {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.resource-review-table .ant-select-dropdown {
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.resource-review-table .ant-select-item {
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.resource-review-table .ant-select-item-option-selected {
+  background-color: #e6f7ff !important;
+}
+
+.resource-review-table .ant-select-item-option-active {
+  background-color: #f5f5f5 !important;
+}
+
+/* 黑夜模式下的表格样式 */
+[data-theme='dark'] .resource-review-table {
+  background-color: #141414;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 黑夜模式下的模态框样式 */
+[data-theme='dark'] .ant-modal-content,
+[data-theme='dark'] .ant-modal-header {
+  background-color: #1f1f1f;
+  color: rgba(255, 255, 255, 0.85);
+  border-color: #303030;
+}
+
+[data-theme='dark'] .ant-modal-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-modal-close {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme='dark'] .ant-modal-close:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* 黑夜模式下的表单元素样式 */
+[data-theme='dark'] .ant-form-item-label > label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-form textarea.ant-input {
+  background-color: #141414 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  border-color: #434343 !important;
+}
+
+/* 黑夜模式下的描述列表样式 */
+[data-theme='dark'] .ant-descriptions-bordered .ant-descriptions-item-label,
+[data-theme='dark'] .ant-descriptions-bordered .ant-descriptions-item-content {
+  background-color: #1f1f1f;
+  border-color: #303030;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 黑夜模式下的链接样式 */
+[data-theme='dark'] a {
+  color: #177ddc;
+}
+
+[data-theme='dark'] a:hover {
+  color: #165996;
+}
+
+/* 黑夜模式下的加载指示器样式 */
+[data-theme='dark'] .ant-spin-dot-item {
+  background-color: #177ddc;
 }
 </style>

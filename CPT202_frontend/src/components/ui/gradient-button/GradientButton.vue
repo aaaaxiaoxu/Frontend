@@ -11,7 +11,8 @@
 
 <script lang="ts" setup>
 import { cn } from '@/lib/utils';
-import { computed } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useThemeStore } from '@/stores/useThemeStore';
 
 interface GradientButtonProps {
   borderWidth?: number;
@@ -41,6 +42,19 @@ const props = withDefaults(defineProps<GradientButtonProps>(), {
   bgColor: '#000',
 });
 
+const themeStore = useThemeStore();
+const currentBgColor = ref(props.bgColor);
+
+// 监听主题变化或bgColor属性变化
+watch(() => [themeStore.theme, props.bgColor], ([newTheme]) => {
+  currentBgColor.value = newTheme === 'dark' ? '#000' : '#fff';
+});
+
+// 初始化时设置正确的背景色
+onMounted(() => {
+  currentBgColor.value = themeStore.theme === 'dark' ? '#000' : '#fff';
+});
+
 const durationInMilliseconds = computed(() => `${props.duration}ms`);
 const allColors = computed(() => props.colors.join(', '));
 const borderWidthInPx = computed(() => `${props.borderWidth}px`);
@@ -64,8 +78,9 @@ const blurPx = computed(() => `${props.blur}px`);
 
 .btn-content {
   border-radius: v-bind(borderRadiusInPx);
-  background-color: v-bind(bgColor);
+  background-color: v-bind(currentBgColor);
   z-index: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @keyframes rotate-rainbow {

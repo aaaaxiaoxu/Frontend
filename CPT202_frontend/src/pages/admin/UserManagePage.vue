@@ -1,15 +1,21 @@
 <template>
-  <div id="UserManagePage">
+  <div id="UserManagePage" class="user-manage-page">
     <!-- Search -->
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
-      <a-form-item :label="t('message.accountLabel')">
+      <a-form-item>
+        <template #label>
+          <span class="form-label">Account:</span>
+        </template>
         <a-input
           v-model:value="searchParams.userAccount"
           :placeholder="t('message.enterAccount')"
           allow-clear
         />
       </a-form-item>
-      <a-form-item :label="t('message.username')">
+      <a-form-item>
+        <template #label>
+          <span class="form-label">username:</span>
+        </template>
         <a-input
           v-model:value="searchParams.userName"
           :placeholder="t('message.enterUsername')"
@@ -369,9 +375,22 @@ const getBanNumberColor = (banNumber) => {
   margin-right: 8px;
 }
 
+/* 表单标签自定义样式 */
+.form-label {
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+}
+
+[data-theme='dark'] .form-label {
+  color: #ffffff !important;
+}
+
 /* 修复搜索框无法点击的问题 */
 #UserManagePage {
   position: relative;
+  padding: 24px;
+  min-height: 100vh;
+  background-color: #fff;
 }
 
 #UserManagePage .ant-form {
@@ -388,5 +407,189 @@ const getBanNumberColor = (banNumber) => {
 
 #UserManagePage .ant-form-item {
   pointer-events: auto !important;
+}
+
+/* 黑夜模式样式 */
+[data-theme='dark'] #UserManagePage {
+  background-color: #121212;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 特别强化表单标签的颜色 - 增加选择器权重 */
+html[data-theme='dark'] #UserManagePage .ant-form-item-label > label,
+html[data-theme='dark'] #UserManagePage .ant-form-item-label > label.ant-form-item-required,
+html[data-theme='dark'] #UserManagePage a-form-item > .ant-form-item-label > label,
+html[data-theme='dark'] #UserManagePage form .ant-form-item-label > label {
+  color: #ffffff !important;
+}
+
+/* 表格黑夜模式样式 */
+[data-theme='dark'] #UserManagePage .ant-table {
+  background-color: #1e1e1e;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] #UserManagePage .ant-table-thead > tr > th {
+  background-color: #141414;
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid #303030;
+}
+
+[data-theme='dark'] #UserManagePage .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #303030;
+}
+
+/* 禁用黑夜模式下的表格行悬停效果 */
+[data-theme='dark'] #UserManagePage .ant-table-tbody > tr:hover > td,
+[data-theme='dark'] #UserManagePage .ant-table-tbody > tr.ant-table-row:hover > td,
+[data-theme='dark'] #UserManagePage .ant-table-tbody > tr > td.ant-table-cell-row-hover,
+[data-theme='dark'] #UserManagePage .ant-table-tbody > tr.ant-table-row-hover > td {
+  background-color: transparent !important;
+  transition: none !important;
+}
+
+/* 确保所有悬停效果被禁用 */
+[data-theme='dark'] #UserManagePage .ant-table-tbody > tr:hover::before,
+[data-theme='dark'] #UserManagePage .ant-table-tbody > tr.ant-table-row:hover::before,
+[data-theme='dark'] #UserManagePage .ant-table-tbody > tr.ant-table-row-hover::before {
+  background: transparent !important;
+}
+
+/* 添加权重更高的选择器确保禁用悬停效果 */
+html[data-theme='dark'] body #UserManagePage .ant-table-tbody > tr:hover > td,
+html[data-theme='dark'] body #UserManagePage .ant-table-tbody > tr.ant-table-row:hover > td,
+html[data-theme='dark'] body #UserManagePage .ant-table-tbody > tr > td.ant-table-cell-row-hover,
+html[data-theme='dark'] body #UserManagePage .ant-table-tbody > tr.ant-table-row-hover > td {
+  background-color: transparent !important;
+}
+
+/* 直接处理最外层表格容器，强制覆盖所有行为 */
+[data-theme='dark'] #UserManagePage .ant-table-wrapper tr {
+  background-color: transparent !important;
+}
+
+[data-theme='dark'] #UserManagePage .ant-table-wrapper tr:hover,
+[data-theme='dark'] #UserManagePage .ant-table-wrapper tr:hover > td,
+[data-theme='dark'] #UserManagePage .ant-table-wrapper tr.ant-table-row:hover,
+[data-theme='dark'] #UserManagePage .ant-table-wrapper tr.ant-table-row:hover > td {
+  background-color: #121212 !important;
+}
+
+/* 添加Ant Design特殊类处理 */
+[data-theme='dark'] #UserManagePage .ant-table-row-hover,
+[data-theme='dark'] #UserManagePage .ant-table-row-hover > td,
+[data-theme='dark'] #UserManagePage .ant-table-row:hover,
+[data-theme='dark'] #UserManagePage .ant-table-row:hover > td,
+[data-theme='dark'] #UserManagePage tr.ant-table-row:hover,
+[data-theme='dark'] #UserManagePage tr.ant-table-row:hover > td {
+  background-color: #121212 !important;
+}
+
+/* 使用更特定的选择器确保覆盖所有可能的悬停状态 */
+[data-theme='dark'] #UserManagePage table tbody tr.ant-table-row:hover,
+[data-theme='dark'] #UserManagePage table tbody tr.ant-table-row:hover > td,
+[data-theme='dark'] #UserManagePage table tbody tr:hover,
+[data-theme='dark'] #UserManagePage table tbody tr:hover > td {
+  background-color: #121212 !important;
+}
+
+[data-theme='dark'] #UserManagePage .ant-pagination-item {
+  background-color: #1e1e1e;
+  border-color: #303030;
+}
+
+[data-theme='dark'] #UserManagePage .ant-pagination-item a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] #UserManagePage .ant-pagination-item-active {
+  background-color: #177ddc;
+  border-color: #177ddc;
+}
+
+[data-theme='dark'] #UserManagePage .ant-pagination-prev button,
+[data-theme='dark'] #UserManagePage .ant-pagination-next button {
+  background-color: #1e1e1e;
+  color: rgba(255, 255, 255, 0.85);
+  border-color: #303030;
+}
+
+[data-theme='dark'] #UserManagePage .ant-select-dropdown {
+  background-color: #1e1e1e;
+  border: 1px solid #303030;
+}
+
+[data-theme='dark'] #UserManagePage .ant-select-item {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] #UserManagePage .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background-color: #111;
+}
+
+[data-theme='dark'] #UserManagePage .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #177ddc;
+  color: white;
+}
+
+/* 图片查看器暗黑模式 */
+[data-theme='dark'] #UserManagePage .ant-image-preview-mask {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+[data-theme='dark'] #UserManagePage .ant-image-preview-wrap {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+[data-theme='dark'] #UserManagePage .ant-image-preview-operations {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* 弹出确认框暗黑模式 */
+[data-theme='dark'] #UserManagePage .ant-popover-inner {
+  background-color: #1e1e1e;
+}
+
+[data-theme='dark'] #UserManagePage .ant-popover-title {
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid #303030;
+}
+
+[data-theme='dark'] #UserManagePage .ant-popover-inner-content {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] #UserManagePage .ant-popover-arrow-content {
+  background-color: #1e1e1e;
+}
+
+/* 保持编辑表单输入框为白色背景 */
+[data-theme='dark'] #UserManagePage .ant-input,
+[data-theme='dark'] #UserManagePage .ant-select-selector {
+  background-color: white !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  border-color: #d9d9d9 !important;
+}
+</style>
+
+<!-- 添加全局样式（不使用scoped）以覆盖Ant Design的默认行为 -->
+<style>
+/* 全局强制覆盖表格行悬停效果 */
+[data-theme='dark'] .ant-table-tbody > tr.ant-table-row:hover,
+[data-theme='dark'] .ant-table-tbody > tr.ant-table-row:hover > td,
+[data-theme='dark'] .ant-table-tbody > tr:hover,
+[data-theme='dark'] .ant-table-tbody > tr:hover > td,
+[data-theme='dark'] .ant-table-tbody > tr.ant-table-row-hover,
+[data-theme='dark'] .ant-table-tbody > tr.ant-table-row-hover > td,
+[data-theme='dark'] .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+  background-color: #121212 !important;
+}
+
+/* 在白色背景上保持正常悬停效果 */
+.ant-table-tbody > tr.ant-table-row:hover,
+.ant-table-tbody > tr.ant-table-row:hover > td,
+.ant-table-tbody > tr:hover,
+.ant-table-tbody > tr:hover > td {
+  background-color: #fafafa;
 }
 </style>

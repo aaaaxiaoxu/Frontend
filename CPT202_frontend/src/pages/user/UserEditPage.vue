@@ -1,6 +1,6 @@
 <template>
   <div id="userEditPage">
-    <a-card title="Personal Information" style="width: 600px; margin: 50px auto">
+    <a-card title="Personal Information" style="width: 600px; margin: 50px auto" :class="{'dark-mode-card': isDarkMode}">
       <a-form
         :model="userForm"
         name="userForm"
@@ -21,6 +21,7 @@
               style="margin-top: 16px"
             >
               <a-button
+                :class="{'dark-mode-button': isDarkMode}"
                 style="background-color: #87ceeb; border-color: #87ceeb; color: white"
                 :loading="uploading"
               >
@@ -33,7 +34,7 @@
 
         <!-- User Account (read-only) -->
         <a-form-item label="Account" name="userAccount">
-          <a-input v-model:value="userForm.userAccount" disabled />
+          <a-input v-model:value="userForm.userAccount" disabled :class="{'dark-mode-input': isDarkMode}" />
         </a-form-item>
 
         <!-- User Name -->
@@ -42,7 +43,7 @@
           name="userName"
           :rules="[{ required: true, message: 'Please input your username!' }]"
         >
-          <a-input v-model:value="userForm.userName" />
+          <a-input v-model:value="userForm.userName" :class="{'dark-mode-input': isDarkMode}" />
         </a-form-item>
 
         <!-- User Profile -->
@@ -51,6 +52,7 @@
             v-model:value="userForm.userProfile"
             :rows="4"
             placeholder="Tell us about yourself"
+            :class="{'dark-mode-input': isDarkMode}"
           />
         </a-form-item>
 
@@ -67,6 +69,7 @@
             >Save Changes</a-button
           >
           <a-button
+            :class="{'dark-mode-button': isDarkMode}"
             style="background-color: #87ceeb; border-color: #87ceeb; color: white"
             @click="showPasswordModal"
           >
@@ -86,12 +89,14 @@
       :confirm-loading="passwordLoading"
       @ok="handlePasswordChange"
       @cancel="resetPasswordForm"
+      :class="{'dark-mode-modal': isDarkMode}"
     >
       <a-form ref="passwordFormRef" :model="passwordForm" :rules="passwordRules" layout="vertical">
         <a-form-item label="New Password" name="newPassword">
           <a-input-password
             v-model:value="passwordForm.newPassword"
             placeholder="Enter new password"
+            :class="{'dark-mode-input': isDarkMode}"
           >
             <template #prefix><LockOutlined /></template>
           </a-input-password>
@@ -100,6 +105,7 @@
           <a-input-password
             v-model:value="passwordForm.confirmPassword"
             placeholder="Confirm new password"
+            :class="{'dark-mode-input': isDarkMode}"
           >
             <template #prefix><LockOutlined /></template>
           </a-input-password>
@@ -110,16 +116,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { message, UploadProps, Modal, Form, InputPassword } from 'ant-design-vue'
 import type { FormInstance, FormRule } from 'ant-design-vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { updateUserUsingPost, uploadAvatarUsingPost } from '@/api/userController.ts'
 import { CloudUploadOutlined, AlertOutlined, LockOutlined } from '@ant-design/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useThemeStore } from '@/stores/useThemeStore'
 
 const router = useRouter()
 const route = useRoute()
+const themeStore = useThemeStore()
+
+// Check if dark mode is enabled
+const isDarkMode = computed(() => themeStore.theme === 'dark')
 
 // Get login user store
 const loginUserStore = useLoginUserStore()
@@ -289,15 +300,81 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+#userEditPage {
+  background-color: var(--color-background);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.dark-mode-card {
+  background-color: var(--color-card-background) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+.dark-mode-card :deep(.ant-card-head) {
+  background-color: var(--color-card-background) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+.dark-mode-card :deep(.ant-card-head-title) {
+  color: var(--color-text-primary) !important;
+}
+
+.dark-mode-card :deep(.ant-form-item-label > label) {
+  color: var(--color-text-primary) !important;
+}
+
+.dark-mode-input {
+  background-color: var(--color-card-background) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+.dark-mode-input:disabled {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  color: var(--color-text-secondary) !important;
+}
+
+.dark-mode-input :deep(.ant-input) {
+  background-color: var(--color-card-background) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.dark-mode-button {
+  color: white !important;
+}
+
+.dark-mode-modal {
+  background-color: var(--color-card-background) !important;
+}
+
+.dark-mode-modal :deep(.ant-modal-content) {
+  background-color: var(--color-card-background) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.dark-mode-modal :deep(.ant-modal-header) {
+  background-color: var(--color-card-background) !important;
+  border-color: var(--color-border) !important;
+}
+
+.dark-mode-modal :deep(.ant-modal-title) {
+  color: var(--color-text-primary) !important;
+}
+
+.dark-mode-modal :deep(.ant-modal-close) {
+  color: var(--color-text-primary) !important;
+}
+
+.dark-mode-modal :deep(.ant-form-item-label > label) {
+  color: var(--color-text-primary) !important;
+}
+
 .avatar-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-#userEditPage {
-  padding: 24px;
-  background-color: #f0f2f5;
-  min-height: calc(100vh - 64px);
 }
 </style>

@@ -1243,3 +1243,301 @@ onMounted(() => {
   opacity: 0.8;
 }
 </style>
+
+<!-- 添加全局黑夜模式样式 -->
+<style>
+/* 黑夜模式下的整体页面样式 */
+[data-theme='dark'] .music-page-layout {
+  background-color: #121212;
+}
+
+[data-theme='dark'] .ant-layout-sider {
+  background-color: #1f1f1f !important;
+  border-right: 1px solid #303030 !important;
+}
+
+[data-theme='dark'] .ant-menu {
+  background-color: #1f1f1f;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-menu-item {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme='dark'] .ant-menu-item:hover {
+  color: #177ddc;
+}
+
+[data-theme='dark'] .ant-menu-item-selected {
+  background-color: #111b26 !important;
+  color: #177ddc;
+}
+
+[data-theme='dark'] .ant-menu-submenu-title {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme='dark'] .ant-menu-submenu-title:hover {
+  color: #177ddc;
+}
+
+[data-theme='dark'] .ant-menu-submenu-open .ant-menu-submenu-title {
+  color: #177ddc;
+}
+
+[data-theme='dark'] .ant-layout-content {
+  background-color: #121212;
+}
+
+[data-theme='dark'] .ant-layout-content > div {
+  background-color: #1f1f1f !important;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 黑夜模式下的卡片样式 */
+[data-theme='dark'] .music-card-wrapper .ant-card {
+  background-color: #262626;
+  border-color: #303030;
+}
+
+[data-theme='dark'] .music-card-wrapper .ant-card-meta-title,
+[data-theme='dark'] .music-card-wrapper .ant-card-meta-description {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .upload-card {
+  background-color: #262626;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='dark'] .upload-card:hover {
+  background-color: #303030;
+}
+
+[data-theme='dark'] .upload-text h3 {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .upload-text p {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* 黑夜模式下的分页器样式 */
+[data-theme='dark'] .ant-pagination-item {
+  background-color: #1f1f1f;
+  border-color: #303030;
+}
+
+[data-theme='dark'] .ant-pagination-item a {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme='dark'] .ant-pagination-item-active {
+  border-color: #177ddc;
+}
+
+[data-theme='dark'] .ant-pagination-item-active a {
+  color: #177ddc;
+}
+
+[data-theme='dark'] .ant-pagination-prev .ant-pagination-item-link,
+[data-theme='dark'] .ant-pagination-next .ant-pagination-item-link,
+[data-theme='dark'] .ant-select-selector {
+  background-color: #1f1f1f;
+  border-color: #303030;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* 黑夜模式下的模态框样式 */
+[data-theme='dark'] .ant-modal-content,
+[data-theme='dark'] .ant-modal-header {
+  background-color: #1f1f1f;
+  color: rgba(255, 255, 255, 0.85);
+  border-color: #303030;
+}
+
+[data-theme='dark'] .ant-modal-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-modal-close {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme='dark'] .ant-modal-close:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+[data-theme='dark'] .ant-modal-footer {
+  border-top-color: #303030;
+}
+
+/* 黑夜模式下的表单样式 */
+[data-theme='dark'] .ant-form-item-label > label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-input {
+  background-color: #141414;
+  border-color: #434343;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-input:hover {
+  border-color: #165996;
+}
+
+[data-theme='dark'] .ant-input:focus,
+[data-theme='dark'] .ant-input-focused {
+  border-color: #177ddc;
+  box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2);
+}
+
+/* 类别标题样式 */
+[data-theme='dark'] .category-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 音乐卡片黑夜模式下的占位符 */
+[data-theme='dark'] .music-cover-placeholder {
+  background-color: #262626;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* 黑夜模式下的标签样式 */
+[data-theme='dark'] .ant-tag {
+  background-color: #1f1f1f;
+  border-color: #303030;
+}
+
+/* 以下是新增的黑夜模式样式 */
+
+/* 音乐信息覆盖层 */
+[data-theme='dark'] .music-info-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* 自定义类别和标签项 */
+[data-theme='dark'] .custom-category-item,
+[data-theme='dark'] .custom-tag-item {
+  background-color: #1f1f1f;
+}
+
+[data-theme='dark'] .custom-category-wrapper span,
+[data-theme='dark'] .custom-tag-item span {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .edit-icon,
+[data-theme='dark'] .delete-icon {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* 按钮样式 */
+[data-theme='dark'] .ant-btn {
+  background-color: #1f1f1f;
+  border-color: #434343;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-btn:hover {
+  background-color: #303030;
+  border-color: #177ddc;
+  color: #177ddc;
+}
+
+[data-theme='dark'] .ant-btn-primary {
+  background-color: #177ddc;
+  border-color: #177ddc;
+  color: #fff;
+}
+
+[data-theme='dark'] .ant-btn-primary:hover {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+[data-theme='dark'] .cancel-button {
+  background-color: #141414;
+  border-color: #434343;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 下拉菜单样式 */
+[data-theme='dark'] .ant-dropdown-menu {
+  background-color: #1f1f1f;
+}
+
+[data-theme='dark'] .ant-dropdown-menu-item {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-dropdown-menu-item:hover {
+  background-color: #111b26;
+}
+
+/* 滚动条样式 */
+[data-theme='dark'] ::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background-color: #434343;
+  border-radius: 3px;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-track {
+  background-color: #1f1f1f;
+}
+
+/* 交互式按钮 */
+[data-theme='dark'] .interactive-hover-button {
+  background-color: #1f1f1f;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .interactive-hover-button:hover {
+  background-color: #303030;
+  color: #177ddc;
+}
+
+/* 选择器和下拉菜单 */
+[data-theme='dark'] .ant-select-dropdown {
+  background-color: #1f1f1f;
+}
+
+[data-theme='dark'] .ant-select-item {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-select-item-option-selected {
+  background-color: #111b26;
+}
+
+[data-theme='dark'] .ant-select-item-option-active {
+  background-color: #111b26;
+}
+
+/* 文件上传区域 */
+[data-theme='dark'] .cover-upload-placeholder {
+  background-color: #141414;
+  border-color: #434343;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme='dark'] .cover-upload-placeholder:hover {
+  border-color: #177ddc;
+}
+
+/* 模态框底部自定义样式 */
+[data-theme='dark'] .modal-custom-footer {
+  border-top-color: #303030;
+}
+
+/* 音乐播放器样式 */
+[data-theme='dark'] .player-bar {
+  background-color: #1f1f1f;
+  border-top: 1px solid #303030;
+}
+</style>

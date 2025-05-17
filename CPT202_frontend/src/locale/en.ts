@@ -433,6 +433,8 @@ const en={
     tagNostalgic: 'Nostalgic',
     tagWarm: 'Warm',
     tagRebellious: 'Rebellious',
+    lightMode: 'Light Mode',
+    darkMode: 'Dark Mode',
   }
 }
 export default en
