@@ -7,7 +7,7 @@ const DEV_BASE_URL = "http://localhost:8080";
 const PROD_BASE_URL = "http://118.31.173.230";
 // Create an Axios instance
 const myAxios = axios.create({
-  baseURL: PROD_BASE_URL,
+  baseURL: DEV_BASE_URL,
   timeout: 300000,
   withCredentials: true,
 });
