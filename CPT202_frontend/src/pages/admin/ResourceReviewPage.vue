@@ -120,6 +120,86 @@ const fetchRejectedData = () => {
   color: rgba(255, 255, 255, 0.85);
   border-color: #303030;
 }
+
+/* 按钮黑夜模式样式 */
+[data-theme='dark'] #ResourceReviewPage .ant-btn {
+  background-color: #1f1f1f;
+  border-color: #434343;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] #ResourceReviewPage .ant-btn:hover {
+  background-color: #303030;
+  border-color: #177ddc;
+}
+
+[data-theme='dark'] #ResourceReviewPage .ant-btn-primary {
+  background-color: #177ddc;
+  border-color: #177ddc;
+  color: #fff;
+}
+
+[data-theme='dark'] #ResourceReviewPage .ant-btn-primary:hover {
+  background-color: #165996;
+  border-color: #165996;
+}
+
+/* 模态框黑夜模式样式 */
+[data-theme='dark'] .ant-modal-content,
+[data-theme='dark'] .ant-modal-header {
+  background-color: #1f1f1f;
+  color: rgba(255, 255, 255, 0.85);
+  border-color: #303030;
+}
+
+[data-theme='dark'] .ant-modal-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-modal-close {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme='dark'] .ant-modal-close:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+[data-theme='dark'] .ant-modal-footer {
+  border-top-color: #303030;
+}
+
+/* 表单黑夜模式样式 */
+[data-theme='dark'] .ant-form-item-label > label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-input,
+[data-theme='dark'] .ant-textarea {
+  background-color: #141414;
+  border-color: #434343;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .ant-input:hover,
+[data-theme='dark'] .ant-textarea:hover {
+  border-color: #165996;
+}
+
+[data-theme='dark'] .ant-input:focus,
+[data-theme='dark'] .ant-input-focused,
+[data-theme='dark'] .ant-textarea:focus,
+[data-theme='dark'] .ant-textarea-focused {
+  border-color: #177ddc;
+  box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2);
+}
+
+/* 描述列表黑夜模式样式 */
+[data-theme='dark'] .ant-descriptions-bordered .ant-descriptions-item-label,
+[data-theme='dark'] .ant-descriptions-bordered .ant-descriptions-item-content {
+  background-color: #1f1f1f;
+  border-color: #303030;
+  color: rgba(255, 255, 255, 0.85);
+}
 </style>
 
 <!-- 添加全局样式（不使用scoped）以覆盖Ant Design的默认行为 -->

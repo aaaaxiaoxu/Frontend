@@ -95,7 +95,7 @@ const beforeAvatarUpload = (file) => {
 
   // Save file to list
   avatarFileList.value = [{ ...file, status: 'done', url: URL.createObjectURL(file) }]
-  
+
   // Set preview image
   avatarPreview.value = URL.createObjectURL(file)
 
@@ -114,7 +114,7 @@ const handleUploadAvatar = async () => {
     // Use account to upload avatar
     const avatarRes = await uploadAvatarByAccountUsingPost(
       { userAccount: userAccount.value }, // Use string account
-      {}, 
+      {},
       avatarFile,
       { timeout: 30000 } // Increase timeout
     )
@@ -271,6 +271,11 @@ const skipUpload = () => {
   font-weight: 500;
   font-size: 16px;
   transition: all 0.3s;
+  color: white !important; /* 添加 !important 确保样式优先级 */
+}
+
+.upload-button :deep(span) {
+  color: white !important;
 }
 
 .upload-button:hover {
